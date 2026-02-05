@@ -95,7 +95,7 @@
         <span>My Socials</span>
       </div>
 
-      <div class="desktop-icon" ondblclick="window.open('https://alula.github.io/SpaceCadetPinball/', '_blank'); playClick();" onclick="selectIcon(this); playClick();">
+      <div class="desktop-icon" data-window="pinball" ondblclick="openWindow('pinball')" onclick="selectIcon(this); playClick();">
         <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png">
         <span>3D Pinball</span>
       </div>
@@ -413,6 +413,26 @@
       </div>
     </div>
 
+    <!-- 3D Pinball Window -->
+    <div class="window" id="window-pinball" style="top: 30px; left: 100px; width: 640px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-pinball')">
+        <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png" style="width:16px;height:16px;">
+        <span class="window-title">3D Pinball for Windows - Space Cadet</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('pinball')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('pinball')">□</button>
+          <button class="window-btn close" onclick="closeWindow('pinball')">✕</button>
+        </div>
+      </div>
+      <div class="window-menubar">
+        <span class="menu-item" onclick="playClick()">Game</span>
+        <span class="menu-item" onclick="playClick()">Options</span>
+        <span class="menu-item" onclick="playClick()">Help</span>
+      </div>
+      <div class="window-content" style="padding: 0; background: #000; height: 440px;">
+        <iframe src="pinball/index.html" width="100%" height="440" style="border: none; display: block;" allow="autoplay"></iframe>
+      </div>
+    </div>
 
     <!-- Taskbar -->
     <div class="taskbar">
@@ -471,7 +491,7 @@
             <span>Peak Revival-X</span>
           </div>
           <div class="start-separator"></div>
-          <div class="start-item small" onclick="window.open('https://alula.github.io/SpaceCadetPinball/', '_blank'); toggleStartMenu(); playClick();">
+          <div class="start-item small" onclick="openWindow('pinball'); toggleStartMenu(); playClick();">
             <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png">
             <span>3D Pinball</span>
           </div>
