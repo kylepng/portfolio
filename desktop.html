@@ -75,19 +75,9 @@
         <span>Peak Revival-X</span>
       </div>
 
-      <div class="desktop-icon" data-window="autoflow" ondblclick="openWindow('autoflow')" onclick="selectIcon(this); playClick();">
-        <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png">
-        <span>Auto Flow v8</span>
-      </div>
-
-      <div class="desktop-icon" data-window="sigmavideo" ondblclick="openWindow('sigmavideo')" onclick="selectIcon(this); playClick();">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='vg' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='4' y='8' width='40' height='32' rx='3' fill='url(%23vg)' stroke='%234c1d95' stroke-width='2'/%3E%3Cpolygon points='20,16 32,24 20,32' fill='white'/%3E%3C/svg%3E">
-        <span>Sigma Video</span>
-      </div>
-
-      <div class="desktop-icon" data-window="freemeals" ondblclick="openWindow('freemeals')" onclick="selectIcon(this); playClick();">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='hg' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff6b9d'/%3E%3Cstop offset='100%25' stop-color='%23c44569'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M24 42 L6 24 C2 18 4 10 12 10 C18 10 22 14 24 18 C26 14 30 10 36 10 C44 10 46 18 42 24 Z' fill='url(%23hg)' stroke='%23a83253' stroke-width='2'/%3E%3C/svg%3E">
-        <span>Free Meals</span>
+      <div class="desktop-icon" data-window="upwork" ondblclick="openWindow('upwork')" onclick="selectIcon(this); playClick();">
+        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-0.png">
+        <span>Upwork</span>
       </div>
 
       <div class="desktop-icon" data-window="about" ondblclick="openWindow('about')" onclick="selectIcon(this); playClick();">
@@ -95,7 +85,7 @@
         <span>About Me</span>
       </div>
 
-      <div class="desktop-icon" ondblclick="window.open('https://github.com/kylepng', '_blank'); playClick();" onclick="selectIcon(this); playClick();">
+      <div class="desktop-icon" ondblclick="window.open('https://github.com/ergophobian', '_blank'); playClick();" onclick="selectIcon(this); playClick();">
         <img src="https://win98icons.alexmeub.com/icons/png/html-0.png">
         <span>GitHub</span>
       </div>
@@ -134,7 +124,7 @@
             <div class="sidebar-header">📋 Project Tasks</div>
             <div class="sidebar-content">
               <div class="sidebar-link" onclick="showNotification('TestFlight', 'PepMaxx is in closed beta. Contact @somnicore for access!'); playClick();">📱 View TestFlight</div>
-              <div class="sidebar-link" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">💻 Source Code</div>
+              <div class="sidebar-link" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">💻 Source Code</div>
               <div class="sidebar-link" onclick="showNotification('Documentation', 'Full docs coming soon with public launch!'); playClick();">📖 Documentation</div>
             </div>
           </div>
@@ -184,7 +174,7 @@
           </div>
           <div class="project-buttons">
             <button class="xp-button primary" onclick="playClick()">🍎 TestFlight</button>
-            <button class="xp-button" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">📂 GitHub</button>
+            <button class="xp-button" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">📂 GitHub</button>
           </div>
         </div>
       </div>
@@ -248,174 +238,59 @@
       </div>
     </div>
 
-    <!-- Auto Flow Window -->
-    <div class="window" id="window-autoflow" style="top: 50px; left: 260px; width: 620px;">
-      <div class="window-titlebar" onmousedown="startDrag(event, 'window-autoflow')">
-        <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png" style="width:16px;height:16px;">
-        <span class="window-title">Auto Flow + Nano Banana Pro v8.0</span>
+    <!-- Upwork Window -->
+    <div class="window" id="window-upwork" style="top: 50px; left: 260px; width: 580px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-upwork')">
+        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-0.png" style="width:16px;height:16px;">
+        <span class="window-title">Upwork - Freelance Profile</span>
         <div class="window-controls">
-          <button class="window-btn minimize" onclick="minimizeWindow('autoflow')">_</button>
-          <button class="window-btn maximize" onclick="maximizeWindow('autoflow')">□</button>
-          <button class="window-btn close" onclick="closeWindow('autoflow')">✕</button>
+          <button class="window-btn minimize" onclick="minimizeWindow('upwork')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('upwork')">□</button>
+          <button class="window-btn close" onclick="closeWindow('upwork')">✕</button>
         </div>
       </div>
       <div class="window-menubar">
         <span class="menu-item">File</span>
         <span class="menu-item">Edit</span>
         <span class="menu-item">View</span>
-        <span class="menu-item">Tools</span>
         <span class="menu-item">Help</span>
       </div>
       <div class="window-content">
         <div class="xp-sidebar">
           <div class="sidebar-section">
-            <div class="sidebar-header">⚡ Actions</div>
+            <div class="sidebar-header">💼 Services</div>
             <div class="sidebar-content">
-              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow', '_blank'); playClick();">📥 Install</div>
-              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow/blob/main/README.md', '_blank'); playClick();">📖 Guide</div>
-              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow/issues', '_blank'); playClick();">🐛 Report Bug</div>
-            </div>
-          </div>
-          <div class="sidebar-section">
-            <div class="sidebar-header">📊 Version</div>
-            <div class="sidebar-content">
-              <div class="sidebar-link">v8.0.0</div>
-              <div class="sidebar-link">2024</div>
+              <div class="sidebar-link" onclick="playClick();">📱 App Development</div>
+              <div class="sidebar-link" onclick="playClick();">🎬 Content Creation</div>
+              <div class="sidebar-link" onclick="playClick();">📈 Social Media</div>
+              <div class="sidebar-link" onclick="playClick();">🤖 AI Automation</div>
             </div>
           </div>
         </div>
         <div class="main-content">
-          <div class="content-header">Extension Details</div>
+          <div class="content-header">Freelance Services</div>
           <div class="project-info">
-            <img class="project-icon" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><defs><linearGradient id='pg3' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%2300d4ff'/><stop offset='100%' stop-color='%230891b2'/></linearGradient></defs><rect fill='url(%23pg3)' rx='6' width='48' height='48'/><text x='50%' y='58%' text-anchor='middle' fill='white' font-size='20'>🤖</text></svg>">
+            <img class="project-icon" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><defs><linearGradient id='upw' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%2314a800'/><stop offset='100%' stop-color='%23108a00'/></linearGradient></defs><rect fill='url(%23upw)' rx='6' width='48' height='48'/><text x='50%' y='58%' text-anchor='middle' fill='white' font-size='20' font-weight='bold'>U</text></svg>">
             <div class="project-details">
-              <h2>Auto Flow v8.0</h2>
-              <p class="tagline">+ Nano Banana Pro</p>
-              <span class="project-badge badge-live">v8.0.0</span>
+              <h2>Upwork Freelancer</h2>
+              <p class="tagline">Top Rated Developer</p>
+              <span class="project-badge badge-live">Available</span>
             </div>
           </div>
           <p class="project-description">
-            Chrome extension for Google Flow AI - unlimited videos and images with Veo 3.1 and Nano Banana Pro.
+            Experienced freelancer specializing in mobile app development, TikTok marketing, and AI-powered content automation.
           </p>
           <div class="features-box">
-            <h4>v8.0 Features</h4>
+            <h4>What I Offer</h4>
             <ul>
-              <li>Video Gallery (0.5x-6x speed)</li>
-              <li>Double-click expand</li>
-              <li>Retry Failed button</li>
-              <li>Rate limit auto-retry</li>
-              <li>Rainbow RGB gateway</li>
+              <li>React Native / Expo Apps</li>
+              <li>TikTok Shop Management</li>
+              <li>UGC & AI Video Content</li>
+              <li>Social Media Growth</li>
             </ul>
           </div>
           <div class="project-buttons">
-            <button class="xp-button primary" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">📂 GitHub</button>
-            <button class="xp-button" onclick="playClick()">🔧 Install</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sigma Video Window -->
-    <div class="window" id="window-sigmavideo" style="top: 100px; left: 300px; width: 560px;">
-      <div class="window-titlebar" onmousedown="startDrag(event, 'window-sigmavideo')">
-        <img src="https://win98icons.alexmeub.com/icons/png/video_file-0.png" style="width:16px;height:16px;">
-        <span class="window-title">Sigma Video Gen</span>
-        <div class="window-controls">
-          <button class="window-btn minimize" onclick="minimizeWindow('sigmavideo')">_</button>
-          <button class="window-btn maximize" onclick="maximizeWindow('sigmavideo')">□</button>
-          <button class="window-btn close" onclick="closeWindow('sigmavideo')">✕</button>
-        </div>
-      </div>
-      <div class="window-menubar">
-        <span class="menu-item">File</span>
-        <span class="menu-item">Edit</span>
-        <span class="menu-item">View</span>
-        <span class="menu-item">Help</span>
-      </div>
-      <div class="window-content">
-        <div class="xp-sidebar">
-          <div class="sidebar-section">
-            <div class="sidebar-header">🎬 Pipeline</div>
-            <div class="sidebar-content">
-              <div class="sidebar-link" onclick="showNotification('Scripts', 'AI-generated scripts for TikTok viral content'); playClick();">📝 Scripts</div>
-              <div class="sidebar-link" onclick="showNotification('Voiceovers', 'ElevenLabs AI voice generation'); playClick();">🎙️ Voiceovers</div>
-              <div class="sidebar-link" onclick="showNotification('Images', 'Nano Banana Pro / Imagen 4 generation'); playClick();">🖼️ Images</div>
-              <div class="sidebar-link" onclick="showNotification('Videos', 'Veo 3.1 image-to-video generation'); playClick();">🎞️ Videos</div>
-            </div>
-          </div>
-        </div>
-        <div class="main-content">
-          <div class="content-header">AI Video Pipeline</div>
-          <div class="project-info">
-            <img class="project-icon" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><defs><linearGradient id='pg4' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%238b5cf6'/><stop offset='100%' stop-color='%236d28d9'/></linearGradient></defs><rect fill='url(%23pg4)' rx='6' width='48' height='48'/><text x='50%' y='58%' text-anchor='middle' fill='white' font-size='20'>🎬</text></svg>">
-            <div class="project-details">
-              <h2>Sigma Video Gen</h2>
-              <p class="tagline">AI Video for TikTok</p>
-              <span class="project-badge badge-dev">Active</span>
-            </div>
-          </div>
-          <p class="project-description">
-            Automated AI video generation. ElevenLabs voiceover, Gemini images, Veo video.
-          </p>
-          <div class="features-box">
-            <h4>Capabilities</h4>
-            <ul>
-              <li>Script to video automation</li>
-              <li>Word-level timestamps</li>
-              <li>Multiple formats</li>
-              <li>VA assignment system</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Free Meals Window -->
-    <div class="window" id="window-freemeals" style="top: 70px; left: 200px; width: 540px;">
-      <div class="window-titlebar" onmousedown="startDrag(event, 'window-freemeals')">
-        <img src="https://win98icons.alexmeub.com/icons/png/users-0.png" style="width:16px;height:16px;">
-        <span class="window-title">Free Meals on Wheels</span>
-        <div class="window-controls">
-          <button class="window-btn minimize" onclick="minimizeWindow('freemeals')">_</button>
-          <button class="window-btn maximize" onclick="maximizeWindow('freemeals')">□</button>
-          <button class="window-btn close" onclick="closeWindow('freemeals')">✕</button>
-        </div>
-      </div>
-      <div class="window-menubar">
-        <span class="menu-item">File</span>
-        <span class="menu-item">Edit</span>
-        <span class="menu-item">View</span>
-        <span class="menu-item">Help</span>
-      </div>
-      <div class="window-content">
-        <div class="xp-sidebar">
-          <div class="sidebar-section">
-            <div class="sidebar-header">❤️ Non-Profit</div>
-            <div class="sidebar-content">
-              <div class="sidebar-link" onclick="showNotification('Volunteer', 'Sign up at freemealsonwheels.org to help deliver meals!'); playClick();">🙋 Volunteer</div>
-              <div class="sidebar-link" onclick="showNotification('Donate', 'Support our mission at freemealsonwheels.org/donate'); playClick();">💰 Donate</div>
-              <div class="sidebar-link" onclick="showNotification('Locations', 'Serving communities across the USA'); playClick();">📍 Locations</div>
-            </div>
-          </div>
-        </div>
-        <div class="main-content">
-          <div class="content-header">App Information</div>
-          <div class="project-info">
-            <img class="project-icon" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><defs><linearGradient id='pg5' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%23f472b6'/><stop offset='100%' stop-color='%23db2777'/></linearGradient></defs><rect fill='url(%23pg5)' rx='6' width='48' height='48'/><text x='50%' y='58%' text-anchor='middle' fill='white' font-size='20'>❤️</text></svg>">
-            <div class="project-details">
-              <h2>Free Meals on Wheels</h2>
-              <p class="tagline">Non-Profit App</p>
-              <span class="project-badge badge-dev">In Development</span>
-            </div>
-          </div>
-          <div class="features-box">
-            <h4>Features</h4>
-            <ul>
-              <li>Volunteer coordination</li>
-              <li>Donation tracking</li>
-              <li>Food distribution</li>
-              <li>Impact reporting</li>
-            </ul>
+            <button class="xp-button primary" onclick="window.open('https://www.upwork.com/freelancers/~01234567890', '_blank'); playClick();">💼 Hire Me</button>
           </div>
         </div>
       </div>
@@ -441,38 +316,39 @@
       <div class="window-content">
         <div class="xp-sidebar">
           <div class="sidebar-section">
-            <div class="sidebar-header">🔗 Links</div>
+            <div class="sidebar-header">🔗 Connect</div>
             <div class="sidebar-content">
-              <div class="sidebar-link" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">🐙 GitHub</div>
-              <div class="sidebar-link" onclick="window.open('https://tiktok.com/@somnicore', '_blank'); playClick();">🎵 TikTok</div>
-              <div class="sidebar-link" onclick="window.open('https://twitter.com/somnicore', '_blank'); playClick();">✉️ Contact</div>
+              <div class="sidebar-link" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">🐙 GitHub</div>
+              <div class="sidebar-link" onclick="window.open('https://tiktok.com/@ergophobian', '_blank'); playClick();">🎵 TikTok</div>
+              <div class="sidebar-link" onclick="window.open('https://x.com/indefatigabile', '_blank'); playClick();">𝕏 Twitter</div>
+              <div class="sidebar-link" onclick="openWindow('upwork'); playClick();">💼 Upwork</div>
             </div>
           </div>
         </div>
         <div class="main-content">
-          <div class="content-header">Developer Profile</div>
+          <div class="content-header">About Me</div>
           <div class="project-info">
             <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; font-weight: bold;">K</div>
             <div class="project-details">
               <h2>Kyle</h2>
-              <p class="tagline">@somnicore</p>
+              <p class="tagline">@ergophobian</p>
             </div>
           </div>
           <p class="project-description">
-            Marketing on TikTok. Scaling businesses with TikTok and UGC. Building with Claude Code.
+            App developer, social media marketer, and freelancer. Building PepMaxx, growing brands on TikTok, and taking on projects on Upwork.
           </p>
           <div class="features-box">
-            <h4>Skills</h4>
+            <h4>What I Do</h4>
             <ul>
-              <li>TikTok Marketing</li>
-              <li>Claude Code</li>
-              <li>Scaling Businesses with TikTok</li>
-              <li>UGC Content Creation</li>
+              <li>Mobile App Development (React Native)</li>
+              <li>TikTok Marketing & Growth</li>
+              <li>UGC & AI Content Creation</li>
+              <li>Freelance Development</li>
             </ul>
           </div>
           <div class="project-buttons">
-            <button class="xp-button primary" onclick="window.open('https://tiktok.com/@somnicore', '_blank'); playClick();">🎵 TikTok</button>
-            <button class="xp-button" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">🐙 GitHub</button>
+            <button class="xp-button primary" onclick="openWindow('socials'); playClick();">📱 My Socials</button>
+            <button class="xp-button" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">🐙 GitHub</button>
           </div>
         </div>
       </div>
@@ -537,7 +413,7 @@
         <div style="background: #fff; border: 1px solid #808080; padding: 10px;">
           <div style="font-weight: bold; color: #333; margin-bottom: 8px; font-size: 14px;">🐙 GitHub</div>
           <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-            <a href="https://github.com/kylepng" target="_blank" class="social-link github">@kylepng</a>
+            <a href="https://github.com/ergophobian" target="_blank" class="social-link github">@ergophobian</a>
           </div>
         </div>
       </div>
@@ -561,13 +437,12 @@
       </div>
       <div class="window-content" style="padding: 0; background: #000; min-height: 480px; position: relative;">
         <iframe
-          src="https://alula.github.io/SpaceCadetPinball/"
+          src="pinball/index.html"
           width="100%"
           height="480"
           style="border: none; display: block;"
           title="3D Pinball Space Cadet"
           allow="autoplay; fullscreen"
-          loading="lazy"
         ></iframe>
       </div>
     </div>
@@ -579,7 +454,7 @@
         start
       </button>
       <div class="quick-launch">
-        <div class="quick-launch-btn" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">
+        <div class="quick-launch-btn" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">
           <img src="https://win98icons.alexmeub.com/icons/png/html-0.png">
         </div>
         <div class="quick-launch-btn" onclick="openWindow('socials'); playClick();">
@@ -616,22 +491,22 @@
             <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png">
             <span>PepMaxx</span>
           </div>
-          <div class="start-item" onclick="openWindow('autoflow'); toggleStartMenu(); playClick();">
-            <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png">
-            <span>Auto Flow v8</span>
+          <div class="start-item" onclick="openWindow('upwork'); toggleStartMenu(); playClick();">
+            <img src="https://win98icons.alexmeub.com/icons/png/briefcase-0.png">
+            <span>Upwork</span>
           </div>
-          <div class="start-item" onclick="openWindow('sigmavideo'); toggleStartMenu(); playClick();">
-            <img src="https://win98icons.alexmeub.com/icons/png/video_file-0.png">
-            <span>Sigma Video Gen</span>
+          <div class="start-item" onclick="openWindow('socials'); toggleStartMenu(); playClick();">
+            <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png">
+            <span>My Socials</span>
           </div>
           <div class="start-item" onclick="openWindow('peakrevival'); toggleStartMenu(); playClick();">
             <img src="https://win98icons.alexmeub.com/icons/png/briefcase-0.png">
             <span>Peak Revival-X</span>
           </div>
           <div class="start-separator"></div>
-          <div class="start-item small" onclick="openWindow('freemeals'); toggleStartMenu(); playClick();">
-            <img src="https://win98icons.alexmeub.com/icons/png/users-0.png">
-            <span>Free Meals on Wheels</span>
+          <div class="start-item small" onclick="openWindow('pinball'); toggleStartMenu(); playClick();">
+            <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png">
+            <span>3D Pinball</span>
           </div>
           <div class="all-programs" onclick="playClick();">
             <span>All Programs</span>
@@ -647,7 +522,7 @@
             <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png">
             <span>My Socials</span>
           </div>
-          <div class="start-item small" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">
+          <div class="start-item small" onclick="window.open('https://github.com/ergophobian', '_blank'); playClick();">
             <img src="https://win98icons.alexmeub.com/icons/png/html-0.png">
             <span>GitHub</span>
           </div>
