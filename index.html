@@ -1719,9 +1719,9 @@
           <div class="sidebar-section">
             <div class="sidebar-header">🛒 Shop</div>
             <div class="sidebar-content">
-              <div class="sidebar-link">🛍️ TikTok Shop</div>
-              <div class="sidebar-link">📊 Analytics</div>
-              <div class="sidebar-link">📦 Inventory</div>
+              <div class="sidebar-link" onclick="window.open('https://www.tiktok.com/@peakrevivalx', '_blank'); playClick();">🛍️ TikTok Shop</div>
+              <div class="sidebar-link" onclick="showNotification('Analytics', 'Shop analytics are private. Contact for partnership inquiries!'); playClick();">📊 Analytics</div>
+              <div class="sidebar-link" onclick="showNotification('Inventory', '6 products in stock: Turkesterone, Fadogia, Creatine, TUDCA, Shilajit, Sulforaphane'); playClick();">📦 Inventory</div>
             </div>
           </div>
         </div>
@@ -1778,9 +1778,9 @@
           <div class="sidebar-section">
             <div class="sidebar-header">⚡ Actions</div>
             <div class="sidebar-content">
-              <div class="sidebar-link">📥 Install</div>
-              <div class="sidebar-link">📖 Guide</div>
-              <div class="sidebar-link">🐛 Report Bug</div>
+              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow', '_blank'); playClick();">📥 Install</div>
+              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow/blob/main/README.md', '_blank'); playClick();">📖 Guide</div>
+              <div class="sidebar-link" onclick="window.open('https://github.com/duckmartians/Auto-Flow/issues', '_blank'); playClick();">🐛 Report Bug</div>
             </div>
           </div>
           <div class="sidebar-section">
@@ -1844,10 +1844,10 @@
           <div class="sidebar-section">
             <div class="sidebar-header">🎬 Pipeline</div>
             <div class="sidebar-content">
-              <div class="sidebar-link">📝 Scripts</div>
-              <div class="sidebar-link">🎙️ Voiceovers</div>
-              <div class="sidebar-link">🖼️ Images</div>
-              <div class="sidebar-link">🎞️ Videos</div>
+              <div class="sidebar-link" onclick="showNotification('Scripts', 'AI-generated scripts for TikTok viral content'); playClick();">📝 Scripts</div>
+              <div class="sidebar-link" onclick="showNotification('Voiceovers', 'ElevenLabs AI voice generation'); playClick();">🎙️ Voiceovers</div>
+              <div class="sidebar-link" onclick="showNotification('Images', 'Nano Banana Pro / Imagen 4 generation'); playClick();">🖼️ Images</div>
+              <div class="sidebar-link" onclick="showNotification('Videos', 'Veo 3.1 image-to-video generation'); playClick();">🎞️ Videos</div>
             </div>
           </div>
         </div>
@@ -1899,9 +1899,9 @@
           <div class="sidebar-section">
             <div class="sidebar-header">❤️ Non-Profit</div>
             <div class="sidebar-content">
-              <div class="sidebar-link">🙋 Volunteer</div>
-              <div class="sidebar-link">💰 Donate</div>
-              <div class="sidebar-link">📍 Locations</div>
+              <div class="sidebar-link" onclick="showNotification('Volunteer', 'Sign up at freemealsonwheels.org to help deliver meals!'); playClick();">🙋 Volunteer</div>
+              <div class="sidebar-link" onclick="showNotification('Donate', 'Support our mission at freemealsonwheels.org/donate'); playClick();">💰 Donate</div>
+              <div class="sidebar-link" onclick="showNotification('Locations', 'Serving communities across the USA'); playClick();">📍 Locations</div>
             </div>
           </div>
         </div>
@@ -1952,7 +1952,7 @@
             <div class="sidebar-content">
               <div class="sidebar-link" onclick="window.open('https://github.com/kylepng', '_blank'); playClick();">🐙 GitHub</div>
               <div class="sidebar-link" onclick="window.open('https://tiktok.com/@somnicore', '_blank'); playClick();">🎵 TikTok</div>
-              <div class="sidebar-link" onclick="playClick()">✉️ Contact</div>
+              <div class="sidebar-link" onclick="window.open('https://twitter.com/somnicore', '_blank'); playClick();">✉️ Contact</div>
             </div>
           </div>
         </div>
@@ -2263,29 +2263,40 @@
     }
 
     // Authentic Windows XP sound URLs
-    // Authentic Windows XP Sounds from open source archives
+    // Authentic Windows XP Sounds - gentle clicks and chimes
     const XPSounds = {
       startup: 'https://www.winhistory.de/more/winstart/mp3/winxp.mp3',
       shutdown: 'https://www.winhistory.de/more/winstart/mp3/winxpshutdown.mp3',
-      logon: 'https://www.winhistory.de/more/winstart/mp3/winxplogon.mp3',
-      logoff: 'https://www.winhistory.de/more/winstart/mp3/winxplogoff.mp3',
-      click: 'https://www.soundjay.com/buttons/button-09a.mp3',
-      error: 'https://www.winhistory.de/more/winstart/mp3/chord.mp3',
+      // Use base64 encoded soft click sound for instant loading
+      click: 'data:audio/wav;base64,UklGRl9vT19teleGVBQCAAAAABAAAAAAf/x4AHgA9AAA8AAAEAA3Yb3U=',
       notify: 'https://www.winhistory.de/more/winstart/mp3/notify.mp3',
-      exclamation: 'https://www.winhistory.de/more/winstart/mp3/ding.mp3',
-      question: 'https://www.winhistory.de/more/winstart/mp3/chord.mp3',
-      maximize: 'https://www.soundjay.com/buttons/button-21.mp3',
-      minimize: 'https://www.soundjay.com/buttons/button-20.mp3',
-      menuOpen: 'https://www.soundjay.com/buttons/button-35.mp3',
-      recycle: 'https://www.winhistory.de/more/winstart/mp3/recycle.mp3'
+      error: 'https://www.winhistory.de/more/winstart/mp3/chord.mp3'
     };
 
+    // Simple soft click using Web Audio API
+    let audioCtx = null;
+    function playSoftClick() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.frequency.value = 1800;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.1 * globalVolume, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.05);
+      } catch(e) {}
+    }
+
     function playClick() {
-      playXPSound(XPSounds.click, 0.4);
+      playSoftClick();
     }
 
     function playStartSound() {
-      playXPSound(XPSounds.menuOpen, 0.5);
+      playSoftClick();
     }
 
     function playWindowOpen() {
