@@ -269,7 +269,7 @@
   </button>
   <!-- Mobile Overlay -->
   <div class="mobile-overlay" id="mobile-overlay">
-    <h1>Kyle Kumar</h1>
+    <h1>Kyle K.</h1>
     <p>This portfolio is best experienced on desktop. It features a 3D interactive room with a Windows XP desktop simulation.</p>
     <div class="links">
       <a href="https://github.com/ergophobian" target="_blank">GitHub @ergophobian</a>
@@ -558,7 +558,6 @@
       createKeyboard();
       createMouse();
       createDecorations();
-      createSleepingCharacter();
       createCats();
 
       // Mouse/click events
@@ -1307,114 +1306,6 @@
       scene.add(cable);
     }
 
-    function createSleepingCharacter() {
-      // Sleeping person at the desk - Kyle asleep on the keyboard
-      const charGroup = new THREE.Group();
-
-      const skinMat = new THREE.MeshStandardMaterial({ color: 0xf4c5a0, roughness: 0.8 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: 0x2a1a0a, roughness: 0.9 });
-      const shirtMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.7 });
-      const pantsMat = new THREE.MeshStandardMaterial({ color: 0x2a2a3a, roughness: 0.7 });
-
-      // Torso (leaning forward, chest resting near desk edge)
-      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.35, 0.22), shirtMat);
-      torso.position.set(0, 0.72, 0.7);
-      torso.rotation.x = 0.6; // Leaning forward onto desk
-      charGroup.add(torso);
-
-      // Head (face down on the desk, resting on arms)
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), skinMat);
-      head.scale.set(1, 0.9, 1);
-      head.position.set(0, 0.6, 0.42);
-      charGroup.add(head);
-
-      // Hair on top/back of head
-      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 10, 0, Math.PI * 2, 0, Math.PI * 0.6), hairMat);
-      hair.position.set(0, 0.63, 0.42);
-      charGroup.add(hair);
-
-      // Left arm (stretched forward on desk)
-      const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.32), shirtMat);
-      leftArm.position.set(-0.18, 0.56, 0.45);
-      leftArm.rotation.x = 0.1;
-      charGroup.add(leftArm);
-
-      // Right arm (stretched forward on desk, slightly different angle)
-      const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.32), shirtMat);
-      rightArm.position.set(0.18, 0.56, 0.45);
-      rightArm.rotation.x = 0.1;
-      rightArm.rotation.y = -0.05;
-      charGroup.add(rightArm);
-
-      // Left hand
-      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), skinMat);
-      leftHand.scale.set(1.2, 0.6, 1.3);
-      leftHand.position.set(-0.18, 0.56, 0.28);
-      charGroup.add(leftHand);
-
-      // Right hand
-      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), skinMat);
-      rightHand.scale.set(1.2, 0.6, 1.3);
-      rightHand.position.set(0.18, 0.56, 0.28);
-      charGroup.add(rightHand);
-
-      // Upper legs (seated in chair, slightly visible)
-      const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.35), pantsMat);
-      leftLeg.position.set(-0.1, 0.42, 0.85);
-      leftLeg.rotation.x = 0.1;
-      charGroup.add(leftLeg);
-
-      const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.35), pantsMat);
-      rightLeg.position.set(0.1, 0.42, 0.85);
-      rightLeg.rotation.x = 0.1;
-      charGroup.add(rightLeg);
-
-      // Lower legs (hanging under desk)
-      const leftShin = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.3, 0.1), pantsMat);
-      leftShin.position.set(-0.1, 0.22, 0.95);
-      charGroup.add(leftShin);
-
-      const rightShin = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.3, 0.1), pantsMat);
-      rightShin.position.set(0.1, 0.22, 0.95);
-      charGroup.add(rightShin);
-
-      // Shoes
-      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5 });
-      const leftShoe = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.15), shoeMat);
-      leftShoe.position.set(-0.1, 0.07, 0.98);
-      charGroup.add(leftShoe);
-
-      const rightShoe = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.15), shoeMat);
-      rightShoe.position.set(0.1, 0.07, 0.98);
-      charGroup.add(rightShoe);
-
-      // Subtle breathing animation (slight rise/fall of torso)
-      charGroup.userData = { breathPhase: 0 };
-      charGroup.name = 'sleepingCharacter';
-
-      scene.add(charGroup);
-
-      // Floating "Z" particles for sleeping effect
-      const zCanvas = document.createElement('canvas');
-      zCanvas.width = 64; zCanvas.height = 64;
-      const zCtx = zCanvas.getContext('2d');
-      zCtx.fillStyle = '#ffffff';
-      zCtx.font = 'bold 48px Arial';
-      zCtx.textAlign = 'center';
-      zCtx.fillText('Z', 32, 50);
-      const zTexture = new THREE.CanvasTexture(zCanvas);
-
-      const zMat = new THREE.SpriteMaterial({ map: zTexture, transparent: true, opacity: 0.6 });
-      for (let i = 0; i < 3; i++) {
-        const z = new THREE.Sprite(zMat.clone());
-        z.scale.set(0.06 + i * 0.02, 0.06 + i * 0.02, 1);
-        z.position.set(0.15, 0.75 + i * 0.12, 0.35);
-        z.userData = { baseY: 0.75 + i * 0.12, phase: i * 1.2, idx: i };
-        z.name = 'zzz_' + i;
-        scene.add(z);
-      }
-    }
-
     function createDecorations() {
       // Plant
       const potMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.8 });
@@ -1899,30 +1790,6 @@
         }
       });
 
-      // Animate floating Z's
-      for (let i = 0; i < 3; i++) {
-        const z = scene.getObjectByName('zzz_' + i);
-        if (z) {
-          z.position.y = z.userData.baseY + Math.sin(time * 0.8 + z.userData.phase) * 0.06;
-          z.position.x = 0.15 + Math.sin(time * 0.5 + z.userData.phase) * 0.04;
-          z.material.opacity = 0.3 + Math.sin(time + z.userData.phase) * 0.2;
-        }
-      }
-
-      // Animate sleeping character breathing
-      const sleeper = scene.getObjectByName('sleepingCharacter');
-      if (sleeper) {
-        sleeper.userData.breathPhase += 0.02;
-        // Subtle torso rise/fall
-        if (sleeper.children[0]) {
-          sleeper.children[0].position.y = 0.72 + Math.sin(sleeper.userData.breathPhase) * 0.008;
-        }
-        // Head bobs very slightly
-        if (sleeper.children[1]) {
-          sleeper.children[1].position.y = 0.6 + Math.sin(sleeper.userData.breathPhase) * 0.005;
-        }
-      }
-
       // Subtle screen flicker
       if (screenLight) {
         screenLight.intensity = 0.5 + Math.sin(time * 3) * 0.02 + Math.random() * 0.01;
@@ -1967,7 +1834,7 @@
     }
 
     // Initialize
-    try { init(); } catch(e) { document.getElementById('controls-hint').innerHTML = '<div style="color:red;font-size:16px;">ERROR: ' + e.message + '<br>' + e.stack + '</div>'; console.error(e); }
+    init();
   </script>
 </body>
 </html>

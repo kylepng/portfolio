@@ -57,10 +57,10 @@ XPApps['notepad'] = {
       <div class="notepad-menu-dropdown" id="notepad-menu-help">
         <div class="notepad-menu-option" data-action="about"><span class="menu-label">About Notepad</span></div>
       </div>
-      <textarea class="notepad-textarea" id="notepad-text" spellcheck="false" wrap="soft">Welcome to Kyle Kumar's Portfolio!
+      <textarea class="notepad-textarea" id="notepad-text" spellcheck="false" wrap="soft">Welcome to Kyle K.'s Portfolio!
 ======================================
 
-Hey there! I'm Kyle Kumar -- developer, builder, and lifelong learner.
+Hey there! I'm Kyle K. -- developer, builder, and lifelong learner.
 
 Currently working on:
   * PepMaxx - Premium peptide tracking app (iOS/Android)
