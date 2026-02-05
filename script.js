@@ -86,42 +86,28 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
         const now = audioCtx.currentTime;
-        const vol = 0.35 * globalVolume;
+        const vol = 0.25 * globalVolume;
 
-        // Click component - short noise burst (the snap)
-        const clickLen = Math.floor(audioCtx.sampleRate * 0.008);
-        const clickBuf = audioCtx.createBuffer(1, clickLen, audioCtx.sampleRate);
-        const clickData = clickBuf.getChannelData(0);
-        for (let i = 0; i < clickLen; i++) {
-          clickData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / clickLen, 8);
+        // Simple short click - just a tiny noise pop
+        const len = Math.floor(audioCtx.sampleRate * 0.006);
+        const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 12);
         }
-        const clickSrc = audioCtx.createBufferSource();
-        clickSrc.buffer = clickBuf;
-        const clickFilter = audioCtx.createBiquadFilter();
-        clickFilter.type = 'bandpass';
-        clickFilter.frequency.value = 3500 + Math.random() * 1000;
-        clickFilter.Q.value = 1.5;
-        const clickGain = audioCtx.createGain();
-        clickGain.gain.setValueAtTime(vol * 0.6, now);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
-        clickSrc.connect(clickFilter);
-        clickFilter.connect(clickGain);
-        clickGain.connect(audioCtx.destination);
-        clickSrc.start(now);
-        clickSrc.stop(now + 0.015);
-
-        // Thock component - low resonant tap
-        const thock = audioCtx.createOscillator();
-        thock.type = 'sine';
-        thock.frequency.setValueAtTime(280 + Math.random() * 80, now);
-        thock.frequency.exponentialRampToValueAtTime(80, now + 0.04);
-        const thockGain = audioCtx.createGain();
-        thockGain.gain.setValueAtTime(vol * 0.4, now);
-        thockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-        thock.connect(thockGain);
-        thockGain.connect(audioCtx.destination);
-        thock.start(now);
-        thock.stop(now + 0.04);
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        const hp = audioCtx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 2000;
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.008);
+        src.connect(hp);
+        hp.connect(gain);
+        gain.connect(audioCtx.destination);
+        src.start(now);
+        src.stop(now + 0.008);
       } catch(e) {}
     }
 
