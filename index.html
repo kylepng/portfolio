@@ -601,9 +601,9 @@
         const catColor = catColors[Math.floor(Math.random() * catColors.length)];
         const catMaterial = new THREE.MeshStandardMaterial({ color: catColor, roughness: 0.9 });
 
-        // Body
-        const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.15, 4, 8), catMaterial);
-        body.rotation.z = Math.PI / 2;
+        // Body (using stretched sphere since CapsuleGeometry not in r128)
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), catMaterial);
+        body.scale.set(1.5, 0.8, 0.8);
         body.position.y = 0.1;
         catGroup.add(body);
 
