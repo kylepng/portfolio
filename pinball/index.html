@@ -5,147 +5,114 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>3D Pinball for Windows - Space Cadet</title>
   <style>
-    :root {
-      --ActiveBorder: rgb(212, 208, 200);
-      --ActiveTitle: rgb(10, 36, 106);
-      --AppWorkspace: rgb(128, 128, 128);
-      --Background: rgb(58, 110, 165);
-      --ButtonFace: rgb(212, 208, 200);
-      --ButtonHilight: rgb(255, 255, 255);
-      --ButtonLight: rgb(212, 208, 200);
-      --ButtonShadow: rgb(128, 128, 128);
-      --ButtonDkShadow: rgb(64, 64, 64);
-      --ButtonText: rgb(0, 0, 0);
-      --GradientActiveTitle: rgb(166, 202, 240);
-      --TitleText: rgb(255, 255, 255);
-      --WindowText: rgb(0, 0, 0);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--Background);
-      text-align: center;
-      margin: 0;
-      padding: 0;
+      background-color: #000;
+      overflow: hidden;
+    }
+
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     canvas.emscripten {
       border: 0 none;
       background-color: #000;
-    }
-
-    .window {
-      font-size: 8pt;
-      color: var(--WindowText);
-      background-color: var(--ButtonFace);
-      border: 1px solid var(--ActiveBorder);
-      box-shadow: -.5px -.5px 0 .5px var(--ButtonHilight), 0 0 0 1px var(--ButtonShadow), -.5px -.5px 0 1.5px var(--ButtonLight), 0 0 0 2px var(--ButtonDkShadow);
-      margin-left: auto;
-      margin-right: auto;
-      display: inline-block;
-    }
-
-    .titlebar {
-      text-align: start;
-      margin: 0;
-      padding: 1px;
-      display: flex;
-      user-select: none;
-      background-color: var(--ActiveTitle);
-      background-image: linear-gradient(to right, var(--ActiveTitle), var(--GradientActiveTitle));
-      color: var(--TitleText);
-    }
-
-    .titlebar-title {
-      display: flex;
-      padding: 0 4px;
-      flex-grow: 1;
-      font-weight: 700;
-      align-items: center;
+      flex: 1;
+      width: 100%;
     }
 
     #status {
-      margin: 20px;
-    }
-
-    .instructions {
-      background: #1a1a2e;
-      color: #eee;
-      padding: 10px 15px;
-      font-size: 11px;
-      text-align: left;
-      border-top: 1px solid #333;
-    }
-
-    .instructions h4 {
-      margin: 0 0 8px 0;
-      color: #4fc3f7;
-      font-size: 12px;
-    }
-
-    .instructions .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px 15px;
-    }
-
-    .instructions .control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .instructions kbd {
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 3px;
-      padding: 2px 6px;
-      font-family: monospace;
-      font-size: 10px;
-      min-width: 20px;
+      color: #fff;
+      padding: 20px;
       text-align: center;
     }
 
-    .instructions .tip {
-      margin-top: 8px;
+    .controls-bar {
+      background: linear-gradient(180deg, #1e3a5f 0%, #0d1a2d 100%);
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #0a1020;
+    }
+
+    .controls-bar kbd {
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 2px;
+      padding: 1px 4px;
+      font-family: monospace;
+      font-size: 9px;
+    }
+
+    .controls-bar .label {
+      color: #4fc3f7;
+      font-weight: bold;
+    }
+
+    .controls-bar .tip {
+      margin-left: auto;
       color: #888;
       font-style: italic;
     }
   </style>
 </head>
 <body>
-  <div class="active window">
-    <div class="titlebar">
-      <span class="titlebar-title">3D Pinball for Windows - Space Cadet</span>
+  <div id="game-container">
+    <div class="controls-bar">
+      <span class="label">Controls:</span>
+      <span><kbd>Space</kbd> Launch</span>
+      <span><kbd>F2</kbd> New Game</span>
+      <span><kbd>Z</kbd> Left Flipper</span>
+      <span><kbd>/</kbd> Right Flipper</span>
+      <span><kbd>X</kbd> / <kbd>.</kbd> Nudge</span>
+      <span class="tip">Click game first!</span>
     </div>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
+    <div id="status">Loading game...</div>
+    <div>
       <progress hidden id="progress" max="100" value="0"></progress>
     </div>
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="0"></canvas>
-    <div class="instructions" id="controls-panel">
-      <h4>Controls</h4>
-      <div class="controls">
-        <div class="control"><kbd>Space</kbd> Launch Ball</div>
-        <div class="control"><kbd>F2</kbd> New Game</div>
-        <div class="control"><kbd>Z</kbd> Left Flipper</div>
-        <div class="control"><kbd>/</kbd> Right Flipper</div>
-        <div class="control"><kbd>X</kbd> Nudge Left</div>
-        <div class="control"><kbd>.</kbd> Nudge Right</div>
-      </div>
-      <div class="tip">Click the game area to focus, then use keyboard to play!</div>
-    </div>
   </div>
 
   <script>
+    // Mute all audio by intercepting AudioContext
+    (function() {
+      const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+      if (OriginalAudioContext) {
+        window.AudioContext = window.webkitAudioContext = function() {
+          const ctx = new OriginalAudioContext();
+          // Create a gain node set to 0 (muted)
+          const mutedGain = ctx.createGain();
+          mutedGain.gain.value = 0;
+          mutedGain.connect(ctx.destination);
+          // Override destination to route through muted gain
+          Object.defineProperty(ctx, 'destination', {
+            get: function() { return mutedGain; }
+          });
+          return ctx;
+        };
+      }
+    })();
+
     // Auto-focus canvas when loaded
     window.addEventListener('load', function() {
       setTimeout(function() {
         const canvas = document.getElementById('canvas');
-        if (canvas) {
-          canvas.focus();
-        }
-      }, 1000);
+        if (canvas) canvas.focus();
+      }, 1500);
     });
 
     // Click anywhere to focus canvas
@@ -211,7 +178,7 @@
       }
     };
 
-    Module.setStatus("Downloading...");
+    Module.setStatus("Loading...");
     window.onerror = function() {
       Module.setStatus("Exception thrown, see JavaScript console"),
       Module.setStatus = function(e) {
