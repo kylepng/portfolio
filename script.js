@@ -616,6 +616,13 @@
       icon.classList.add('selected');
     }
 
+    // Click on empty desktop area deselects all icons
+    document.getElementById('desktop').addEventListener('click', function(e) {
+      if (e.target === this || e.target.classList.contains('icons-container')) {
+        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+      }
+    });
+
     // ========== TASKBAR ==========
     function updateTaskbar() {
       const taskbarApps = document.getElementById('taskbar-apps');
