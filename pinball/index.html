@@ -30,6 +30,43 @@
   </script>
 
   <script>
+    // Master volume control - intercept Web Audio API before game loads
+    (function() {
+      var OrigAC = window.AudioContext || window.webkitAudioContext;
+      if (!OrigAC) return;
+      var origConnect = AudioNode.prototype.connect;
+      var masterGain = null;
+      var realCtx = null;
+
+      function PatchedAC() {
+        realCtx = new OrigAC();
+        masterGain = realCtx.createGain();
+        masterGain.gain.value = 0.15; // Default 15% volume
+        origConnect.call(masterGain, realCtx.destination);
+        window._masterGain = masterGain;
+        window._audioCtx = realCtx;
+        return realCtx;
+      }
+      PatchedAC.prototype = OrigAC.prototype;
+      Object.defineProperty(PatchedAC, 'name', { value: 'AudioContext' });
+      window.AudioContext = window.webkitAudioContext = PatchedAC;
+
+      // Route all connections to destination through master gain
+      AudioNode.prototype.connect = function(dest, output, input) {
+        if (realCtx && dest === realCtx.destination && masterGain) {
+          return origConnect.call(this, masterGain, output);
+        }
+        return origConnect.apply(this, arguments);
+      };
+
+      // Parent frame volume control
+      window.setMasterVolume = function(v) {
+        if (masterGain) masterGain.gain.value = v;
+      };
+    })();
+  </script>
+
+  <script>
     var statusElement = document.getElementById("status");
     var progressElement = document.getElementById("progress");
     var Module = {

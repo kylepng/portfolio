@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- YouTube API only needed in desktop.html -->
   <style>
     * {
       margin: 0;
@@ -234,39 +234,9 @@
       }
     }
 
-    /* Music Toggle Button */
-    .music-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.6);
-      border: none;
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
-    }
-    .music-toggle:hover {
-      background: rgba(0, 0, 0, 0.8);
-    }
-    .music-toggle.muted {
-      opacity: 0.6;
-    }
   </style>
 </head>
 <body>
-  <!-- Music Toggle Button -->
-  <button class="music-toggle" id="music-toggle" onclick="toggleMusicBtn()">
-    <span id="music-icon">🔊</span>
-    <span id="music-text">Music</span>
-  </button>
   <!-- Mobile Overlay -->
   <div class="mobile-overlay" id="mobile-overlay">
     <h1>Kyle K.</h1>
@@ -304,80 +274,6 @@
   <!-- Back button -->
   <button class="back-btn" id="back-btn" onclick="exitDesktop()">← Back to 3D View</button>
 
-  <!-- Hidden YouTube Player for Music -->
-  <div id="yt-player" style="position: absolute; left: -9999px; top: -9999px;"></div>
-
-  <script>
-    // ========== YOUTUBE MUSIC PLAYER ==========
-    let ytPlayer = null;
-    let isMusicPlaying = false;
-    let musicInitialized = false;
-
-    function onYouTubeIframeAPIReady() {
-      ytPlayer = new YT.Player('yt-player', {
-        height: '0',
-        width: '0',
-        videoId: 'RSFqIWudfq0', // Yabujin Flash Cassanova slowed
-        playerVars: {
-          autoplay: 0,
-          loop: 1,
-          playlist: 'RSFqIWudfq0',
-          controls: 0,
-          disablekb: 1,
-          modestbranding: 1
-        },
-        events: {
-          onReady: function(event) {
-            ytPlayer.setVolume(30);
-            musicInitialized = true;
-          },
-          onStateChange: function(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-              ytPlayer.playVideo();
-            }
-          }
-        }
-      });
-    }
-
-    function startMusic() {
-      if (musicInitialized && ytPlayer && !isMusicPlaying) {
-        ytPlayer.playVideo();
-        isMusicPlaying = true;
-      }
-    }
-
-    function stopMusic() {
-      if (ytPlayer && isMusicPlaying) {
-        ytPlayer.pauseVideo();
-        isMusicPlaying = false;
-      }
-    }
-
-    function toggleMusicBtn() {
-      const btn = document.getElementById('music-toggle');
-      const icon = document.getElementById('music-icon');
-      const text = document.getElementById('music-text');
-
-      if (!musicInitialized || !ytPlayer) {
-        return;
-      }
-
-      if (isMusicPlaying) {
-        ytPlayer.pauseVideo();
-        isMusicPlaying = false;
-        icon.textContent = '🔇';
-        text.textContent = 'Muted';
-        btn.classList.add('muted');
-      } else {
-        ytPlayer.playVideo();
-        isMusicPlaying = true;
-        icon.textContent = '🔊';
-        text.textContent = 'Music';
-        btn.classList.remove('muted');
-      }
-    }
-  </script>
 
   <script>
     // ============ SATISFYING SOUNDS ============
@@ -1667,8 +1563,6 @@
             document.getElementById('screen-glow').classList.remove('active');
             isZooming = false;
             isInDesktop = true;
-            // Start the lofi music
-            startMusic();
           }, 300);
         }
       }

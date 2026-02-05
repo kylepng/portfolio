@@ -156,26 +156,26 @@
     document.addEventListener('DOMContentLoaded', initVolumeSlider);
 
     // ========== PINBALL VOLUME ==========
-    let pinballVolume = 0.2; // 20% default
+    let pinballVolume = 0.15; // 15% default
 
     function setPinballVolume(val) {
+      val = Math.round(val);
       pinballVolume = val / 100;
-      document.getElementById('pinball-vol-label').textContent = val + '%';
-      // Control audio inside the pinball iframe
+      const label = document.getElementById('pinball-vol-label');
+      if (label) label.textContent = val + '%';
+
+      // Exponential curve: 1% → 0.000001, 10% → 0.001, 50% → 0.125, 100% → 1.0
+      const expVol = Math.pow(pinballVolume, 3);
+
       try {
         const frame = document.getElementById('pinball-frame');
-        if (frame && frame.contentWindow) {
-          const audios = frame.contentWindow.document.querySelectorAll('audio, video');
-          audios.forEach(a => { a.volume = pinballVolume; });
-          // Also try to set gain nodes if available
-          if (frame.contentWindow.gainNode) {
-            frame.contentWindow.gainNode.gain.value = pinballVolume;
-          }
+        if (frame && frame.contentWindow && frame.contentWindow.setMasterVolume) {
+          frame.contentWindow.setMasterVolume(expVol);
         }
       } catch(e) {}
     }
 
-    // Apply pinball volume periodically while pinball is open
+    // Keep applying volume as game loads
     setInterval(() => {
       if (openWindows && openWindows.has('pinball')) {
         setPinballVolume(pinballVolume * 100);
@@ -468,8 +468,8 @@
         }
       }
 
-      // Ctrl+Escape or Windows key: Toggle Start Menu
-      if ((e.ctrlKey && e.key === 'Escape') || e.key === 'Meta') {
+      // Ctrl+Escape: Toggle Start Menu (removed Meta/Win key - too annoying)
+      if (e.ctrlKey && e.key === 'Escape') {
         e.preventDefault();
         toggleStartMenu();
       }
@@ -1023,18 +1023,8 @@
         showNotification('Welcome!', 'Click Start to explore my portfolio.');
       }, 1500);
 
-      // Auto-start music after boot - but not if parent already plays music
+      // Auto-start music after boot
       function startMusic() {
-        // If in iframe and parent already has music playing, just sync state
-        if (inIframe) {
-          try {
-            if (window.parent.isMusicPlaying) {
-              isMusicPlaying = true;
-              document.getElementById('music-btn').classList.add('playing');
-              return;
-            }
-          } catch(e) {}
-        }
         if (musicInitialized && ytPlayer) {
           ytPlayer.playVideo();
           document.getElementById('music-btn').classList.add('playing');
@@ -1069,16 +1059,8 @@
     let isMusicPlaying = false;
     let musicInitialized = false;
 
-    // Check if parent (index.html) already has a YouTube player
-    const inIframe = window.self !== window.top;
-    let parentPlayer = null;
-
-    if (inIframe) {
-      try { parentPlayer = window.parent.ytPlayer; } catch(e) {}
-    }
-
     window.onYouTubeIframeAPIReady = function() {
-      if (musicInitialized) return; // Prevent duplicate players
+      if (musicInitialized) return;
       ytPlayer = new YT.Player('yt-player', {
         height: '0',
         width: '0',
@@ -1092,62 +1074,21 @@
           modestbranding: 1
         },
         events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange
+          onReady: function() {
+            ytPlayer.setVolume(50);
+            musicInitialized = true;
+            isMusicPlaying = false;
+          },
+          onStateChange: function(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+              ytPlayer.playVideo();
+            }
+          }
         }
       });
     }
 
-    function onPlayerReady(event) {
-      ytPlayer.setVolume(50);
-      musicInitialized = true;
-      isMusicPlaying = false;
-    }
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED) {
-        ytPlayer.playVideo();
-      }
-    }
-
-    // If in iframe and parent has music, use parent's player instead
-    if (inIframe) {
-      try {
-        if (window.parent.ytPlayer && window.parent.musicInitialized) {
-          // Parent already handles music - just sync our state
-          musicInitialized = true;
-          isMusicPlaying = window.parent.isMusicPlaying || false;
-          ytPlayer = window.parent.ytPlayer;
-        }
-      } catch(e) {}
-    }
-
     function toggleMusic() {
-      // Try to use parent's player if in iframe
-      if (inIframe) {
-        try {
-          const pp = window.parent.ytPlayer;
-          if (pp) {
-            const musicBtn = document.getElementById('music-btn');
-            if (window.parent.isMusicPlaying) {
-              pp.pauseVideo();
-              window.parent.isMusicPlaying = false;
-              isMusicPlaying = false;
-              if (musicBtn) musicBtn.classList.remove('playing');
-              showNotification('Music', 'Music paused');
-            } else {
-              pp.playVideo();
-              window.parent.isMusicPlaying = true;
-              isMusicPlaying = true;
-              if (musicBtn) musicBtn.classList.add('playing');
-              showNotification('Music', 'Now playing: Lofi beats');
-            }
-            return;
-          }
-        } catch(e) {}
-      }
-
-      // Fallback: use own player
       if (!musicInitialized || !ytPlayer) {
         if (typeof YT !== 'undefined' && YT.Player) {
           window.onYouTubeIframeAPIReady();
