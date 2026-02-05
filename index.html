@@ -947,6 +947,23 @@
     let squirrels = [];
     let sleepingPerson = null;
 
+    // Compute terrain surface height at any world position
+    function getTerrainHeight(wx, wz) {
+      const x = wx;
+      const y = -wz; // terrain local y = -world z (due to rotateX(-PI/2))
+      const hill1 = Math.sin(x * 0.15) * Math.cos(y * 0.1) * 0.8;
+      const hill2 = Math.sin(x * 0.08 + 0.5) * Math.sin(y * 0.12) * 0.5;
+      const hill3 = Math.cos(x * 0.05 + y * 0.05) * 0.6;
+      const micro = Math.sin(x * 0.5) * Math.cos(y * 0.5) * 0.05;
+      const hillHeight = hill1 + hill2 + hill3 + micro;
+      const dist = Math.sqrt(x * x + y * y);
+      const deskGroundHeight = 0.5;
+      const flattenRadius = 5;
+      const blend = dist < flattenRadius ? Math.pow(dist / flattenRadius, 2) : 1;
+      const displacement = deskGroundHeight + (hillHeight - deskGroundHeight) * blend;
+      return -0.5 + displacement;
+    }
+
     function createCats() {
       // 3 cats: orange tabby, tuxedo black/white, gray
       const catConfigs = [
@@ -1140,6 +1157,9 @@
     }
 
     function createSleepingPerson() {
+      // Chair is at (0, 0.15, 1.1), seat surface at global y≈0.50
+      // Desk surface at y=0.54, desk spans z=-0.75 to z=0.75
+      // Person sits in chair, leans forward, head/arms on desk
       const personGroup = new THREE.Group();
       const skinMat = new THREE.MeshStandardMaterial({ color: 0xF5CBA7, roughness: 0.8 });
       const hoodieMat = new THREE.MeshStandardMaterial({ color: 0x2C3E50, roughness: 0.85 });
@@ -1147,113 +1167,111 @@
       const hairMat = new THREE.MeshStandardMaterial({ color: 0x3B2507, roughness: 0.9 });
       const shoeMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
 
-      // === TORSO (leaning forward onto desk) ===
-      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.35, 0.2), hoodieMat);
-      torso.position.set(0, 0.72, 0.55);
-      torso.rotation.x = -0.7; // Leaning forward
+      // === TORSO (leaning forward from chair onto desk) ===
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.2), hoodieMat);
+      torso.position.set(0, 0.7, -0.25);
+      torso.rotation.x = -0.9; // Leaning forward hard
       torso.name = 'personTorso';
       personGroup.add(torso);
 
-      // Upper back hunch (sphere to round out the hoodie)
+      // Upper back hunch
       const upperBack = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), hoodieMat);
       upperBack.scale.set(1.0, 0.7, 0.9);
-      upperBack.position.set(0, 0.82, 0.62);
+      upperBack.position.set(0, 0.78, -0.15);
       personGroup.add(upperBack);
 
-      // === HEAD (resting on arms on desk, facing down) ===
+      // === HEAD (resting on arms on desk surface y=0.54) ===
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), skinMat);
       head.scale.set(1.0, 0.9, 1.0);
-      head.position.set(0, 0.58, 0.25);
+      head.position.set(0, 0.60, -0.62);
       head.name = 'personHead';
       personGroup.add(head);
 
       // Hair on top/back of head
       const hair = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 8), hairMat);
       hair.scale.set(1.0, 0.7, 1.0);
-      hair.position.set(0, 0.63, 0.28);
+      hair.position.set(0, 0.65, -0.58);
       personGroup.add(hair);
 
-      // Hair fringe (front of head, slightly visible)
+      // Hair fringe
       const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), hairMat);
       fringe.scale.set(1.5, 0.4, 0.8);
-      fringe.position.set(0, 0.62, 0.2);
+      fringe.position.set(0, 0.64, -0.68);
       personGroup.add(fringe);
 
-      // === ARMS (resting on desk, forming pillow for head) ===
-      // Right arm
-      const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.3, 8), hoodieMat);
-      armR.position.set(0.12, 0.56, 0.35);
+      // === ARMS (reaching forward onto desk) ===
+      const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), hoodieMat);
+      armR.position.set(0.13, 0.58, -0.45);
       armR.rotation.z = 0.3;
-      armR.rotation.x = -1.2;
+      armR.rotation.x = -1.3;
       personGroup.add(armR);
 
-      // Left arm
-      const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.3, 8), hoodieMat);
-      armL.position.set(-0.12, 0.56, 0.35);
+      const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), hoodieMat);
+      armL.position.set(-0.13, 0.58, -0.45);
       armL.rotation.z = -0.3;
-      armL.rotation.x = -1.2;
+      armL.rotation.x = -1.3;
       personGroup.add(armL);
 
-      // Forearms/hands (under the head as pillow)
+      // Forearms (under head as pillow, on desk)
       const forearmR = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
-      forearmR.position.set(0.08, 0.555, 0.2);
+      forearmR.position.set(0.08, 0.57, -0.65);
       forearmR.rotation.x = -0.2;
       forearmR.rotation.z = 1.3;
       personGroup.add(forearmR);
 
       const forearmL = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
-      forearmL.position.set(-0.08, 0.555, 0.2);
+      forearmL.position.set(-0.08, 0.57, -0.65);
       forearmL.rotation.x = -0.2;
       forearmL.rotation.z = -1.3;
       personGroup.add(forearmL);
 
-      // Hands (small spheres)
+      // Hands
       const handR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
-      handR.position.set(0.05, 0.555, 0.15);
+      handR.position.set(0.05, 0.57, -0.72);
       personGroup.add(handR);
       const handL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
-      handL.position.set(-0.05, 0.555, 0.15);
+      handL.position.set(-0.05, 0.57, -0.72);
       personGroup.add(handL);
 
-      // === LEGS (under the desk, sitting in chair) ===
-      // Upper legs (thighs) - horizontal on chair seat
+      // === LEGS (in the chair, thighs going forward toward desk) ===
       const thighR = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
-      thighR.position.set(0.1, 0.5, 0.7);
-      thighR.rotation.x = -1.3;
+      thighR.position.set(0.1, 0.48, -0.05);
+      thighR.rotation.x = -1.4;
       personGroup.add(thighR);
 
       const thighL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
-      thighL.position.set(-0.1, 0.5, 0.7);
-      thighL.rotation.x = -1.3;
+      thighL.position.set(-0.1, 0.48, -0.05);
+      thighL.rotation.x = -1.4;
       personGroup.add(thighL);
 
-      // Lower legs (shins) - going down from chair
+      // Shins going down under desk
       const shinR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
-      shinR.position.set(0.1, 0.22, 0.5);
-      shinR.rotation.x = 0.1;
+      shinR.position.set(0.1, 0.22, -0.25);
+      shinR.rotation.x = 0.15;
       personGroup.add(shinR);
 
       const shinL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
-      shinL.position.set(-0.1, 0.22, 0.5);
-      shinL.rotation.x = 0.1;
+      shinL.position.set(-0.1, 0.22, -0.25);
+      shinL.rotation.x = 0.15;
       personGroup.add(shinL);
 
       // Shoes
       const shoeR = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
-      shoeR.position.set(0.1, 0.05, 0.47);
+      shoeR.position.set(0.1, 0.05, -0.30);
       personGroup.add(shoeR);
       const shoeL = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
-      shoeL.position.set(-0.1, 0.05, 0.47);
+      shoeL.position.set(-0.1, 0.05, -0.30);
       personGroup.add(shoeL);
 
       // Hood bunched up behind head
       const hood = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), hoodieMat);
       hood.scale.set(1.3, 0.6, 1.0);
-      hood.position.set(0, 0.7, 0.38);
+      hood.position.set(0, 0.72, -0.42);
       personGroup.add(hood);
 
-      // Position: seated in chair area
-      personGroup.position.set(0, 0.0, 0.0);
+      // Position group at the chair (z=1.1), matching chair rotation
+      personGroup.position.set(0, 0.0, 1.1);
+      personGroup.rotation.y = 0.15; // Match chair angle
 
       personGroup.userData = {
         breathePhase: Math.random() * Math.PI * 2,
@@ -1413,7 +1431,7 @@
       dogGroup.add(pawBL);
 
       // Position: lying down near the desk
-      dogGroup.position.set(0.8, 0.0, 1.5);
+      dogGroup.position.set(0.8, getTerrainHeight(0.8, 1.5), 1.5);
       dogGroup.rotation.y = -0.8; // Angled toward desk
 
       dogGroup.userData = {
@@ -1522,8 +1540,9 @@
         backLegR.position.set(-0.07, 0.04, -0.05);
         rabbitGroup.add(backLegR);
 
-        // Position on grass
-        rabbitGroup.position.set(config.x, 0.0, config.z);
+        // Position on grass (use terrain height)
+        const rabbitGroundY = getTerrainHeight(config.x, config.z);
+        rabbitGroup.position.set(config.x, rabbitGroundY, config.z);
         rabbitGroup.rotation.y = Math.random() * Math.PI * 2;
 
         rabbitGroup.userData = {
@@ -1532,7 +1551,7 @@
           isHopping: false,
           hopProgress: 0,
           hopDirection: Math.random() * Math.PI * 2,
-          baseY: 0.0,
+          baseY: rabbitGroundY,
           baseX: config.x,
           baseZ: config.z,
           bodyMesh: body
@@ -1638,8 +1657,9 @@
         backLegR.position.set(-0.05, 0.03, -0.04);
         squirrelGroup.add(backLegR);
 
-        // Position near trees
-        squirrelGroup.position.set(config.x, 0.0, config.z);
+        // Position near trees (use terrain height)
+        const sqGroundY = getTerrainHeight(config.x, config.z);
+        squirrelGroup.position.set(config.x, sqGroundY, config.z);
         squirrelGroup.rotation.y = Math.random() * Math.PI * 2;
 
         squirrelGroup.userData = {
@@ -1652,7 +1672,8 @@
           scurryDirection: Math.random() * Math.PI * 2,
           scurryDistance: 0.5 + Math.random() * 0.5,
           startX: config.x,
-          startZ: config.z
+          startZ: config.z,
+          groundY: sqGroundY
         };
 
         squirrels.push(squirrelGroup);
@@ -2440,7 +2461,7 @@
       rgbRing2.position.x = 0.095;
       hpGroup.add(rgbRing2);
 
-      hpGroup.position.set(0.7, 0.58, 0.2);
+      hpGroup.position.set(0.7, 0.65, 0.2);
       hpGroup.rotation.y = -0.5;
       hpGroup.rotation.x = Math.PI / 2; // Laying flat
       scene.add(hpGroup);
@@ -2715,7 +2736,7 @@
           }
           // Sitting pose: legs tucked, body lower, tail relaxed
           if (ud.bodyMesh) ud.bodyMesh.position.y = 0.1;
-          cat.position.y = 0.0;
+          cat.position.y = getTerrainHeight(cat.position.x, cat.position.z);
           // Tail gentle sway while sitting
           if (ud.tailSegments) {
             ud.tailSegments.forEach((seg, t) => {
@@ -2751,8 +2772,8 @@
           // Face walking direction
           cat.rotation.y = -ud.direction + Math.PI / 2;
 
-          // Body bob while walking
-          cat.position.y = 0.02 + Math.sin(time * 10) * 0.01;
+          // Body bob while walking (follow terrain)
+          cat.position.y = getTerrainHeight(cat.position.x, cat.position.z) + 0.02 + Math.sin(time * 10) * 0.01;
           if (ud.bodyMesh) ud.bodyMesh.position.y = 0.14 + Math.sin(time * 10) * 0.005;
 
           // Leg walk animation (front/back pairs alternate)
@@ -2783,13 +2804,13 @@
         const sp = sleepingPerson.userData;
         const breathe = Math.sin(time * 1.2 + sp.breathePhase) * 0.005;
         if (sp.torso) {
-          sp.torso.position.y = 0.72 + breathe;
+          sp.torso.position.y = 0.70 + breathe;
         }
         if (sp.head) {
-          sp.head.position.y = 0.58 + breathe * 0.5;
+          sp.head.position.y = 0.60 + breathe * 0.5;
         }
         if (sp.upperBack) {
-          sp.upperBack.position.y = 0.82 + breathe;
+          sp.upperBack.position.y = 0.78 + breathe;
         }
       }
 
@@ -2841,6 +2862,7 @@
 
           if (rd.hopProgress >= 1) {
             rd.isHopping = false;
+            rd.baseY = getTerrainHeight(rabbit.position.x, rabbit.position.z);
             rabbit.position.y = rd.baseY;
             rabbit.rotation.z = 0;
             rd.baseX = rabbit.position.x;
@@ -2889,15 +2911,17 @@
           sq.position.x += Math.cos(sd.scurryDirection) * scurrySpeed;
           sq.position.z += Math.sin(sd.scurryDirection) * scurrySpeed;
 
-          // Bobbing while scurrying
-          sq.position.y = Math.abs(Math.sin(sd.scurryProgress * Math.PI * 8)) * 0.03;
+          // Bobbing while scurrying (on terrain)
+          sd.groundY = getTerrainHeight(sq.position.x, sq.position.z);
+          sq.position.y = sd.groundY + Math.abs(Math.sin(sd.scurryProgress * Math.PI * 8)) * 0.03;
 
           // Face direction
           sq.rotation.y = -sd.scurryDirection + Math.PI / 2;
 
           if (sd.scurryProgress >= 1) {
             sd.isScurrying = false;
-            sq.position.y = 0;
+            sd.groundY = getTerrainHeight(sq.position.x, sq.position.z);
+            sq.position.y = sd.groundY;
           }
 
           // Keep near trees
