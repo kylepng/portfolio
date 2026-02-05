@@ -2243,38 +2243,26 @@
 
   <script>
     // ========== AUDIO ==========
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx;
+    let audioCtx = null;
     let globalVolume = 0.8;
 
-    // Authentic Windows XP Sounds
-    const xpSounds = {
-      click: 'https://www.winhistory.de/more/winstart/mp3/winxp.mp3',
-      start: 'https://www.winhistory.de/more/winstart/mp3/winxpstart.mp3',
-      startup: 'https://www.winhistory.de/more/winstart/mp3/winxp.mp3',
-      error: 'https://www.myinstants.com/media/sounds/erro.mp3',
-      notify: 'https://www.myinstants.com/media/sounds/windows-xp-balloon.mp3'
-    };
-
-    function playXPSound(soundUrl, volume = 0.5) {
-      const audio = new Audio(soundUrl);
-      audio.volume = volume * globalVolume;
-      audio.play().catch(() => {});
-    }
-
-    // Authentic Windows XP sound URLs
-    // Authentic Windows XP Sounds - gentle clicks and chimes
+    // Windows XP Sounds
     const XPSounds = {
       startup: 'https://www.winhistory.de/more/winstart/mp3/winxp.mp3',
       shutdown: 'https://www.winhistory.de/more/winstart/mp3/winxpshutdown.mp3',
-      // Use base64 encoded soft click sound for instant loading
-      click: 'data:audio/wav;base64,UklGRl9vT19teleGVBQCAAAAABAAAAAAf/x4AHgA9AAA8AAAEAA3Yb3U=',
       notify: 'https://www.winhistory.de/more/winstart/mp3/notify.mp3',
       error: 'https://www.winhistory.de/more/winstart/mp3/chord.mp3'
     };
 
+    function playXPSound(soundUrl, volume = 0.5) {
+      try {
+        const audio = new Audio(soundUrl);
+        audio.volume = volume * globalVolume;
+        audio.play().catch(() => {});
+      } catch(e) {}
+    }
+
     // Simple soft click using Web Audio API
-    let audioCtx = null;
     function playSoftClick() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
