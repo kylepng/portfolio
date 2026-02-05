@@ -455,6 +455,10 @@
       createMouse();
       createDecorations();
       createCats();
+      createSleepingPerson();
+      createDog();
+      createRabbits();
+      createSquirrels();
       createBirds();
       createTrees();
       createRocks();
@@ -938,6 +942,10 @@
 
     // Cats array
     let cats = [];
+    let dog = null;
+    let rabbits = [];
+    let squirrels = [];
+    let sleepingPerson = null;
 
     function createCats() {
       // 3 cats: orange tabby, tuxedo black/white, gray
@@ -1128,6 +1136,527 @@
 
         cats.push(catGroup);
         scene.add(catGroup);
+      });
+    }
+
+    function createSleepingPerson() {
+      const personGroup = new THREE.Group();
+      const skinMat = new THREE.MeshStandardMaterial({ color: 0xF5CBA7, roughness: 0.8 });
+      const hoodieMat = new THREE.MeshStandardMaterial({ color: 0x2C3E50, roughness: 0.85 });
+      const pantsMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.8 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: 0x3B2507, roughness: 0.9 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
+
+      // === TORSO (leaning forward onto desk) ===
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.35, 0.2), hoodieMat);
+      torso.position.set(0, 0.72, 0.55);
+      torso.rotation.x = -0.7; // Leaning forward
+      torso.name = 'personTorso';
+      personGroup.add(torso);
+
+      // Upper back hunch (sphere to round out the hoodie)
+      const upperBack = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), hoodieMat);
+      upperBack.scale.set(1.0, 0.7, 0.9);
+      upperBack.position.set(0, 0.82, 0.62);
+      personGroup.add(upperBack);
+
+      // === HEAD (resting on arms on desk, facing down) ===
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), skinMat);
+      head.scale.set(1.0, 0.9, 1.0);
+      head.position.set(0, 0.58, 0.25);
+      head.name = 'personHead';
+      personGroup.add(head);
+
+      // Hair on top/back of head
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 8), hairMat);
+      hair.scale.set(1.0, 0.7, 1.0);
+      hair.position.set(0, 0.63, 0.28);
+      personGroup.add(hair);
+
+      // Hair fringe (front of head, slightly visible)
+      const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), hairMat);
+      fringe.scale.set(1.5, 0.4, 0.8);
+      fringe.position.set(0, 0.62, 0.2);
+      personGroup.add(fringe);
+
+      // === ARMS (resting on desk, forming pillow for head) ===
+      // Right arm
+      const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.3, 8), hoodieMat);
+      armR.position.set(0.12, 0.56, 0.35);
+      armR.rotation.z = 0.3;
+      armR.rotation.x = -1.2;
+      personGroup.add(armR);
+
+      // Left arm
+      const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.3, 8), hoodieMat);
+      armL.position.set(-0.12, 0.56, 0.35);
+      armL.rotation.z = -0.3;
+      armL.rotation.x = -1.2;
+      personGroup.add(armL);
+
+      // Forearms/hands (under the head as pillow)
+      const forearmR = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
+      forearmR.position.set(0.08, 0.555, 0.2);
+      forearmR.rotation.x = -0.2;
+      forearmR.rotation.z = 1.3;
+      personGroup.add(forearmR);
+
+      const forearmL = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
+      forearmL.position.set(-0.08, 0.555, 0.2);
+      forearmL.rotation.x = -0.2;
+      forearmL.rotation.z = -1.3;
+      personGroup.add(forearmL);
+
+      // Hands (small spheres)
+      const handR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
+      handR.position.set(0.05, 0.555, 0.15);
+      personGroup.add(handR);
+      const handL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
+      handL.position.set(-0.05, 0.555, 0.15);
+      personGroup.add(handL);
+
+      // === LEGS (under the desk, sitting in chair) ===
+      // Upper legs (thighs) - horizontal on chair seat
+      const thighR = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
+      thighR.position.set(0.1, 0.5, 0.7);
+      thighR.rotation.x = -1.3;
+      personGroup.add(thighR);
+
+      const thighL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
+      thighL.position.set(-0.1, 0.5, 0.7);
+      thighL.rotation.x = -1.3;
+      personGroup.add(thighL);
+
+      // Lower legs (shins) - going down from chair
+      const shinR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
+      shinR.position.set(0.1, 0.22, 0.5);
+      shinR.rotation.x = 0.1;
+      personGroup.add(shinR);
+
+      const shinL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
+      shinL.position.set(-0.1, 0.22, 0.5);
+      shinL.rotation.x = 0.1;
+      personGroup.add(shinL);
+
+      // Shoes
+      const shoeR = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
+      shoeR.position.set(0.1, 0.05, 0.47);
+      personGroup.add(shoeR);
+      const shoeL = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
+      shoeL.position.set(-0.1, 0.05, 0.47);
+      personGroup.add(shoeL);
+
+      // Hood bunched up behind head
+      const hood = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), hoodieMat);
+      hood.scale.set(1.3, 0.6, 1.0);
+      hood.position.set(0, 0.7, 0.38);
+      personGroup.add(hood);
+
+      // Position: seated in chair area
+      personGroup.position.set(0, 0.0, 0.0);
+
+      personGroup.userData = {
+        breathePhase: Math.random() * Math.PI * 2,
+        torso: torso,
+        head: head,
+        upperBack: upperBack
+      };
+
+      sleepingPerson = personGroup;
+      scene.add(personGroup);
+    }
+
+    function createDog() {
+      const dogGroup = new THREE.Group();
+      const furMat = new THREE.MeshStandardMaterial({ color: 0xDAA520, roughness: 0.85 });
+      const lightFurMat = new THREE.MeshStandardMaterial({ color: 0xF0D58C, roughness: 0.85 });
+      const noseMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.3 });
+      const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 });
+      const eyeHighlight = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const tongueMat = new THREE.MeshStandardMaterial({ color: 0xFF6B8A, roughness: 0.5 });
+
+      // === BODY (multi-sphere, lying down) ===
+      // Main body
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 10), furMat);
+      body.scale.set(1.8, 0.9, 1.0);
+      body.position.set(0, 0.16, 0);
+      body.name = 'dogBody';
+      dogGroup.add(body);
+
+      // Chest (lighter fur)
+      const chest = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), lightFurMat);
+      chest.scale.set(1.0, 0.85, 0.9);
+      chest.position.set(0.18, 0.14, 0);
+      dogGroup.add(chest);
+
+      // Rear haunches
+      const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), furMat);
+      haunch.scale.set(1.0, 0.85, 1.1);
+      haunch.position.set(-0.18, 0.15, 0);
+      dogGroup.add(haunch);
+
+      // === HEAD ===
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 10), furMat);
+      head.position.set(0.32, 0.24, 0);
+      head.name = 'dogHead';
+      dogGroup.add(head);
+
+      // Snout
+      const snout = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), furMat);
+      snout.scale.set(1.2, 0.7, 0.8);
+      snout.position.set(0.42, 0.2, 0);
+      dogGroup.add(snout);
+
+      // Snout underside (lighter)
+      const snoutBottom = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), lightFurMat);
+      snoutBottom.scale.set(1.0, 0.5, 0.7);
+      snoutBottom.position.set(0.4, 0.17, 0);
+      dogGroup.add(snoutBottom);
+
+      // Nose
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 6), noseMat);
+      nose.position.set(0.49, 0.21, 0);
+      dogGroup.add(nose);
+
+      // === EYES ===
+      const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 6), eyeMat);
+      eyeL.position.set(0.4, 0.28, 0.06);
+      dogGroup.add(eyeL);
+      const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 6), eyeMat);
+      eyeR.position.set(0.4, 0.28, -0.06);
+      dogGroup.add(eyeR);
+
+      // Eye highlights
+      const hlL = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), eyeHighlight);
+      hlL.position.set(0.415, 0.285, 0.055);
+      dogGroup.add(hlL);
+      const hlR = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), eyeHighlight);
+      hlR.position.set(0.415, 0.285, -0.055);
+      dogGroup.add(hlR);
+
+      // === FLOPPY EARS (drooping down) ===
+      const earL = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), furMat);
+      earL.scale.set(0.6, 1.2, 0.8);
+      earL.position.set(0.28, 0.2, 0.12);
+      earL.name = 'earL';
+      dogGroup.add(earL);
+
+      const earR = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), furMat);
+      earR.scale.set(0.6, 1.2, 0.8);
+      earR.position.set(0.28, 0.2, -0.12);
+      earR.name = 'earR';
+      dogGroup.add(earR);
+
+      // === TONGUE (small pink piece sticking out) ===
+      const tongue = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.015, 0.03), tongueMat);
+      tongue.position.set(0.48, 0.16, 0.015);
+      tongue.rotation.z = 0.2;
+      tongue.name = 'dogTongue';
+      dogGroup.add(tongue);
+
+      // === TAIL (chain of spheres, will wag) ===
+      const tailSegments = [];
+      const numTailSegs = 8;
+      for (let t = 0; t < numTailSegs; t++) {
+        const segSize = 0.03 - t * 0.002;
+        const seg = new THREE.Mesh(new THREE.SphereGeometry(Math.max(segSize, 0.012), 6, 4), furMat);
+        const progress = t / numTailSegs;
+        seg.position.set(
+          -0.28 - progress * 0.18,
+          0.18 + Math.sin(progress * Math.PI * 0.6) * 0.12,
+          0
+        );
+        seg.name = 'tailSeg' + t;
+        tailSegments.push(seg);
+        dogGroup.add(seg);
+      }
+
+      // === LEGS (lying down / tucked) ===
+      // Front legs - stretched forward
+      const frontLegR = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.025, 0.18, 8), furMat);
+      frontLegR.position.set(0.15, 0.06, 0.1);
+      frontLegR.rotation.z = Math.PI / 2 - 0.3;
+      dogGroup.add(frontLegR);
+      const frontLegL = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.025, 0.18, 8), furMat);
+      frontLegL.position.set(0.15, 0.06, -0.1);
+      frontLegL.rotation.z = Math.PI / 2 - 0.3;
+      dogGroup.add(frontLegL);
+
+      // Front paws
+      const pawFR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), lightFurMat);
+      pawFR.scale.set(1.0, 0.5, 1.2);
+      pawFR.position.set(0.25, 0.02, 0.1);
+      dogGroup.add(pawFR);
+      const pawFL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), lightFurMat);
+      pawFL.scale.set(1.0, 0.5, 1.2);
+      pawFL.position.set(0.25, 0.02, -0.1);
+      dogGroup.add(pawFL);
+
+      // Back legs - tucked under body
+      const backLegR = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.15, 8), furMat);
+      backLegR.position.set(-0.15, 0.07, 0.12);
+      backLegR.rotation.x = -0.3;
+      dogGroup.add(backLegR);
+      const backLegL = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.15, 8), furMat);
+      backLegL.position.set(-0.15, 0.07, -0.12);
+      backLegL.rotation.x = 0.3;
+      dogGroup.add(backLegL);
+
+      // Back paws
+      const pawBR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), lightFurMat);
+      pawBR.scale.set(1.0, 0.5, 1.2);
+      pawBR.position.set(-0.2, 0.02, 0.15);
+      dogGroup.add(pawBR);
+      const pawBL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), lightFurMat);
+      pawBL.scale.set(1.0, 0.5, 1.2);
+      pawBL.position.set(-0.2, 0.02, -0.15);
+      dogGroup.add(pawBL);
+
+      // Position: lying down near the desk
+      dogGroup.position.set(0.8, 0.0, 1.5);
+      dogGroup.rotation.y = -0.8; // Angled toward desk
+
+      dogGroup.userData = {
+        tailSegments: tailSegments,
+        bodyMesh: body,
+        tongue: tongue,
+        breathePhase: Math.random() * Math.PI * 2
+      };
+
+      dog = dogGroup;
+      scene.add(dogGroup);
+    }
+
+    function createRabbits() {
+      const rabbitConfigs = [
+        { color: 0xFFFFFF, x: -2.5, z: 3.2 },
+        { color: 0x999999, x: 1.8, z: 4.0 },
+        { color: 0xD2B48C, x: -1.0, z: 3.8 }
+      ];
+
+      rabbitConfigs.forEach(config => {
+        const rabbitGroup = new THREE.Group();
+        const furMat = new THREE.MeshStandardMaterial({ color: config.color, roughness: 0.85 });
+        const pinkMat = new THREE.MeshStandardMaterial({ color: 0xFFB6C1, roughness: 0.7 });
+        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 });
+        const noseMat = new THREE.MeshStandardMaterial({ color: 0xFF9999, roughness: 0.5 });
+
+        // === BODY (round) ===
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), furMat);
+        body.scale.set(1.2, 1.0, 1.0);
+        body.position.set(0, 0.1, 0);
+        body.name = 'rabbitBody';
+        rabbitGroup.add(body);
+
+        // === HEAD ===
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), furMat);
+        head.position.set(0.12, 0.16, 0);
+        rabbitGroup.add(head);
+
+        // Cheeks
+        const cheekL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), furMat);
+        cheekL.position.set(0.14, 0.13, 0.04);
+        rabbitGroup.add(cheekL);
+        const cheekR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), furMat);
+        cheekR.position.set(0.14, 0.13, -0.04);
+        rabbitGroup.add(cheekR);
+
+        // === EARS (long, upright) ===
+        const earL = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.12, 6), furMat);
+        earL.position.set(0.1, 0.28, 0.025);
+        earL.rotation.z = -0.15;
+        earL.rotation.x = -0.1;
+        rabbitGroup.add(earL);
+        const earLInner = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.015, 0.1, 6), pinkMat);
+        earLInner.position.set(0.1, 0.28, 0.025);
+        earLInner.rotation.z = -0.15;
+        earLInner.rotation.x = -0.1;
+        rabbitGroup.add(earLInner);
+
+        const earR = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.12, 6), furMat);
+        earR.position.set(0.1, 0.28, -0.025);
+        earR.rotation.z = -0.15;
+        earR.rotation.x = 0.1;
+        rabbitGroup.add(earR);
+        const earRInner = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.015, 0.1, 6), pinkMat);
+        earRInner.position.set(0.1, 0.28, -0.025);
+        earRInner.rotation.z = -0.15;
+        earRInner.rotation.x = 0.1;
+        rabbitGroup.add(earRInner);
+
+        // === EYES ===
+        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.015, 6, 4), eyeMat);
+        eyeL.position.set(0.17, 0.18, 0.035);
+        rabbitGroup.add(eyeL);
+        const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.015, 6, 4), eyeMat);
+        eyeR.position.set(0.17, 0.18, -0.035);
+        rabbitGroup.add(eyeR);
+
+        // === NOSE ===
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), noseMat);
+        nose.position.set(0.19, 0.155, 0);
+        rabbitGroup.add(nose);
+
+        // === COTTON TAIL ===
+        const tail = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), furMat);
+        tail.position.set(-0.13, 0.1, 0);
+        tail.name = 'rabbitTail';
+        rabbitGroup.add(tail);
+
+        // === LEGS ===
+        // Front legs (small)
+        const frontLegL = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.015, 0.06, 6), furMat);
+        frontLegL.position.set(0.06, 0.03, 0.04);
+        rabbitGroup.add(frontLegL);
+        const frontLegR = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.015, 0.06, 6), furMat);
+        frontLegR.position.set(0.06, 0.03, -0.04);
+        rabbitGroup.add(frontLegR);
+
+        // Back legs (bigger, for hopping)
+        const backLegL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), furMat);
+        backLegL.scale.set(0.8, 1.2, 1.0);
+        backLegL.position.set(-0.07, 0.04, 0.05);
+        rabbitGroup.add(backLegL);
+        const backLegR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), furMat);
+        backLegR.scale.set(0.8, 1.2, 1.0);
+        backLegR.position.set(-0.07, 0.04, -0.05);
+        rabbitGroup.add(backLegR);
+
+        // Position on grass
+        rabbitGroup.position.set(config.x, 0.0, config.z);
+        rabbitGroup.rotation.y = Math.random() * Math.PI * 2;
+
+        rabbitGroup.userData = {
+          hopTimer: Math.random() * 5,
+          hopInterval: 3 + Math.random() * 4,
+          isHopping: false,
+          hopProgress: 0,
+          hopDirection: Math.random() * Math.PI * 2,
+          baseY: 0.0,
+          baseX: config.x,
+          baseZ: config.z,
+          bodyMesh: body
+        };
+
+        rabbits.push(rabbitGroup);
+        scene.add(rabbitGroup);
+      });
+    }
+
+    function createSquirrels() {
+      const squirrelConfigs = [
+        { x: -4.5, z: -3.5 },
+        { x: 4.0, z: -4.5 }
+      ];
+
+      squirrelConfigs.forEach(config => {
+        const squirrelGroup = new THREE.Group();
+        const furMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.85 });
+        const lightFurMat = new THREE.MeshStandardMaterial({ color: 0xD2691E, roughness: 0.85 });
+        const bellyMat = new THREE.MeshStandardMaterial({ color: 0xF5DEB3, roughness: 0.85 });
+        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 });
+        const noseMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.3 });
+
+        // === BODY ===
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), furMat);
+        body.scale.set(1.3, 1.0, 0.9);
+        body.position.set(0, 0.09, 0);
+        body.name = 'squirrelBody';
+        squirrelGroup.add(body);
+
+        // Belly
+        const belly = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), bellyMat);
+        belly.scale.set(0.9, 0.8, 0.7);
+        belly.position.set(0.03, 0.07, 0);
+        squirrelGroup.add(belly);
+
+        // === HEAD ===
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), furMat);
+        head.position.set(0.1, 0.15, 0);
+        squirrelGroup.add(head);
+
+        // Snout
+        const snout = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 4), lightFurMat);
+        snout.scale.set(1.0, 0.7, 0.7);
+        snout.position.set(0.15, 0.13, 0);
+        squirrelGroup.add(snout);
+
+        // Nose
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), noseMat);
+        nose.position.set(0.175, 0.135, 0);
+        squirrelGroup.add(nose);
+
+        // === EARS (small, rounded) ===
+        const earL = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 4), furMat);
+        earL.scale.set(0.6, 1.0, 0.6);
+        earL.position.set(0.08, 0.2, 0.035);
+        squirrelGroup.add(earL);
+        const earR = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 4), furMat);
+        earR.scale.set(0.6, 1.0, 0.6);
+        earR.position.set(0.08, 0.2, -0.035);
+        squirrelGroup.add(earR);
+
+        // === EYES ===
+        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 4), eyeMat);
+        eyeL.position.set(0.14, 0.165, 0.03);
+        squirrelGroup.add(eyeL);
+        const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 4), eyeMat);
+        eyeR.position.set(0.14, 0.165, -0.03);
+        squirrelGroup.add(eyeR);
+
+        // === BIG BUSHY TAIL (curved upward, chain of spheres) ===
+        const tailSegments = [];
+        const numTailSegs = 10;
+        for (let t = 0; t < numTailSegs; t++) {
+          const progress = t / numTailSegs;
+          const segSize = 0.02 + Math.sin(progress * Math.PI) * 0.03; // Gets fatter in middle
+          const seg = new THREE.Mesh(new THREE.SphereGeometry(segSize, 6, 4), lightFurMat);
+          seg.position.set(
+            -0.08 - progress * 0.08,
+            0.1 + progress * 0.2 + Math.sin(progress * Math.PI) * 0.05,
+            0
+          );
+          seg.name = 'tailSeg' + t;
+          tailSegments.push(seg);
+          squirrelGroup.add(seg);
+        }
+
+        // === LEGS ===
+        // Front legs
+        const frontLegL = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.01, 0.06, 6), furMat);
+        frontLegL.position.set(0.05, 0.03, 0.035);
+        squirrelGroup.add(frontLegL);
+        const frontLegR = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.01, 0.06, 6), furMat);
+        frontLegR.position.set(0.05, 0.03, -0.035);
+        squirrelGroup.add(frontLegR);
+
+        // Back legs (larger)
+        const backLegL = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.012, 0.07, 6), furMat);
+        backLegL.position.set(-0.05, 0.03, 0.04);
+        squirrelGroup.add(backLegL);
+        const backLegR = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.012, 0.07, 6), furMat);
+        backLegR.position.set(-0.05, 0.03, -0.04);
+        squirrelGroup.add(backLegR);
+
+        // Position near trees
+        squirrelGroup.position.set(config.x, 0.0, config.z);
+        squirrelGroup.rotation.y = Math.random() * Math.PI * 2;
+
+        squirrelGroup.userData = {
+          tailSegments: tailSegments,
+          bodyMesh: body,
+          scurryTimer: Math.random() * 6,
+          scurryInterval: 4 + Math.random() * 5,
+          isScurrying: false,
+          scurryProgress: 0,
+          scurryDirection: Math.random() * Math.PI * 2,
+          scurryDistance: 0.5 + Math.random() * 0.5,
+          startX: config.x,
+          startZ: config.z
+        };
+
+        squirrels.push(squirrelGroup);
+        scene.add(squirrelGroup);
       });
     }
 
@@ -2246,6 +2775,148 @@
           // Keep cat in bounds
           if (Math.abs(cat.position.x) > 5) ud.direction = Math.PI - ud.direction;
           if (cat.position.z < 0.5 || cat.position.z > 6) ud.direction = -ud.direction;
+        }
+      });
+
+      // Animate sleeping person (gentle breathing)
+      if (sleepingPerson) {
+        const sp = sleepingPerson.userData;
+        const breathe = Math.sin(time * 1.2 + sp.breathePhase) * 0.005;
+        if (sp.torso) {
+          sp.torso.position.y = 0.72 + breathe;
+        }
+        if (sp.head) {
+          sp.head.position.y = 0.58 + breathe * 0.5;
+        }
+        if (sp.upperBack) {
+          sp.upperBack.position.y = 0.82 + breathe;
+        }
+      }
+
+      // Animate dog (tail wag + gentle breathing)
+      if (dog) {
+        const dd = dog.userData;
+        // Tail wagging (happy, side to side)
+        if (dd.tailSegments) {
+          dd.tailSegments.forEach((seg, t) => {
+            const progress = t / dd.tailSegments.length;
+            seg.position.z = Math.sin(time * 6 + progress * 1.5) * 0.08 * progress;
+            seg.position.y = 0.18 + Math.sin(progress * Math.PI * 0.6) * 0.12 + Math.abs(Math.sin(time * 6)) * 0.02 * progress;
+          });
+        }
+        // Gentle breathing
+        const dogBreathe = Math.sin(time * 1.5 + dd.breathePhase) * 0.004;
+        if (dd.bodyMesh) {
+          dd.bodyMesh.position.y = 0.16 + dogBreathe;
+        }
+        // Tongue slight bob
+        if (dd.tongue) {
+          dd.tongue.position.y = 0.16 + Math.sin(time * 2) * 0.003;
+        }
+      }
+
+      // Animate rabbits (occasional hopping)
+      rabbits.forEach(rabbit => {
+        const rd = rabbit.userData;
+        rd.hopTimer += 0.016;
+
+        if (!rd.isHopping && rd.hopTimer > rd.hopInterval) {
+          rd.isHopping = true;
+          rd.hopProgress = 0;
+          rd.hopTimer = 0;
+          rd.hopDirection = Math.random() * Math.PI * 2;
+          rd.hopInterval = 3 + Math.random() * 4;
+        }
+
+        if (rd.isHopping) {
+          rd.hopProgress += 0.03;
+          // Arc hop: up and forward
+          const hopArc = Math.sin(rd.hopProgress * Math.PI);
+          rabbit.position.y = rd.baseY + hopArc * 0.15;
+          rabbit.position.x += Math.cos(rd.hopDirection) * 0.008;
+          rabbit.position.z += Math.sin(rd.hopDirection) * 0.008;
+
+          // Slight body tilt during hop
+          rabbit.rotation.z = Math.sin(rd.hopProgress * Math.PI) * 0.15;
+
+          if (rd.hopProgress >= 1) {
+            rd.isHopping = false;
+            rabbit.position.y = rd.baseY;
+            rabbit.rotation.z = 0;
+            rd.baseX = rabbit.position.x;
+            rd.baseZ = rabbit.position.z;
+          }
+
+          // Keep rabbits in bounds
+          if (Math.abs(rabbit.position.x) > 5) {
+            rd.hopDirection = Math.PI - rd.hopDirection;
+          }
+          if (rabbit.position.z < 1 || rabbit.position.z > 6) {
+            rd.hopDirection = -rd.hopDirection;
+          }
+        }
+
+        // Face hop direction when hopping
+        if (rd.isHopping) {
+          rabbit.rotation.y = -rd.hopDirection + Math.PI / 2;
+        }
+
+        // Ear twitch and nose wiggle (always)
+        // Subtle ear sway
+      });
+
+      // Animate squirrels (scurrying near trees)
+      squirrels.forEach(sq => {
+        const sd = sq.userData;
+        sd.scurryTimer += 0.016;
+
+        if (!sd.isScurrying && sd.scurryTimer > sd.scurryInterval) {
+          sd.isScurrying = true;
+          sd.scurryProgress = 0;
+          sd.scurryTimer = 0;
+          sd.scurryDirection = Math.random() * Math.PI * 2;
+          sd.scurryDistance = 0.3 + Math.random() * 0.5;
+          sd.scurryInterval = 3 + Math.random() * 5;
+          sd.startX = sq.position.x;
+          sd.startZ = sq.position.z;
+        }
+
+        if (sd.isScurrying) {
+          sd.scurryProgress += 0.025;
+
+          // Fast scurry motion
+          const scurrySpeed = 0.015;
+          sq.position.x += Math.cos(sd.scurryDirection) * scurrySpeed;
+          sq.position.z += Math.sin(sd.scurryDirection) * scurrySpeed;
+
+          // Bobbing while scurrying
+          sq.position.y = Math.abs(Math.sin(sd.scurryProgress * Math.PI * 8)) * 0.03;
+
+          // Face direction
+          sq.rotation.y = -sd.scurryDirection + Math.PI / 2;
+
+          if (sd.scurryProgress >= 1) {
+            sd.isScurrying = false;
+            sq.position.y = 0;
+          }
+
+          // Keep near trees
+          if (Math.abs(sq.position.x) > 7) {
+            sd.scurryDirection = Math.PI - sd.scurryDirection;
+          }
+          if (sq.position.z < -8 || sq.position.z > -1) {
+            sd.scurryDirection = -sd.scurryDirection;
+          }
+        }
+
+        // Tail sway (always)
+        if (sd.tailSegments) {
+          sd.tailSegments.forEach((seg, t) => {
+            const progress = t / sd.tailSegments.length;
+            const swaySpeed = sd.isScurrying ? 8 : 2;
+            const swayAmt = sd.isScurrying ? 0.06 : 0.02;
+            seg.position.z = Math.sin(time * swaySpeed + progress * 2) * swayAmt * progress;
+          });
         }
       });
 
