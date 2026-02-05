@@ -5,133 +5,48 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>3D Pinball for Windows - Space Cadet</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #000;
-      overflow: hidden;
-    }
-
-    #game-container {
-      width: 100%;
-      height: 100vh;
-    }
-
-    canvas.emscripten {
-      border: 0 none;
-      background-color: #000;
-      display: block;
-      width: 100%;
-      height: calc(100vh - 28px);
-    }
-
-    #status {
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .controls-bar {
-      background: linear-gradient(180deg, #1e3a5f 0%, #0d1a2d 100%);
-      color: #fff;
-      padding: 6px 10px;
-      font-size: 10px;
-      height: 28px;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .controls-bar kbd {
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 2px;
-      padding: 1px 4px;
-      font-family: monospace;
-      font-size: 9px;
-      margin: 0 2px;
-    }
-
-    .controls-bar .label {
-      color: #4fc3f7;
-      font-weight: bold;
-      margin-right: 8px;
-    }
-
-    .controls-bar span {
-      margin-right: 10px;
-    }
-
-    .controls-bar .tip {
-      color: #888;
-      font-style: italic;
-      float: right;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; }
+    #status { color: #fff; padding: 20px; text-align: center; }
+    canvas.emscripten { border: 0; background: #000; display: block; }
   </style>
 </head>
 <body>
-  <div id="game-container">
-    <div class="controls-bar">
-      <span class="label">Controls:</span>
-      <span><kbd>Space</kbd> Launch</span>
-      <span><kbd>F2</kbd> New Game</span>
-      <span><kbd>Z</kbd> Left Flipper</span>
-      <span><kbd>/</kbd> Right Flipper</span>
-      <span><kbd>X</kbd> / <kbd>.</kbd> Nudge</span>
-      <span class="tip">Click game first!</span>
-    </div>
-    <div id="status">Loading game...</div>
-    <div>
-      <progress hidden id="progress" max="100" value="0"></progress>
-    </div>
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="0"></canvas>
-  </div>
+  <div id="status">Loading...</div>
+  <progress hidden id="progress" max="100" value="0"></progress>
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="0"></canvas>
 
   <script>
-    // Mute all audio by intercepting AudioContext
+    // Mute all audio
     (function() {
-      const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
-      if (OriginalAudioContext) {
+      const Orig = window.AudioContext || window.webkitAudioContext;
+      if (Orig) {
         window.AudioContext = window.webkitAudioContext = function() {
-          const ctx = new OriginalAudioContext();
-          // Create a gain node set to 0 (muted)
-          const mutedGain = ctx.createGain();
-          mutedGain.gain.value = 0;
-          mutedGain.connect(ctx.destination);
-          // Override destination to route through muted gain
-          Object.defineProperty(ctx, 'destination', {
-            get: function() { return mutedGain; }
-          });
+          const ctx = new Orig();
+          const muted = ctx.createGain();
+          muted.gain.value = 0;
+          muted.connect(ctx.destination);
+          Object.defineProperty(ctx, 'destination', { get: () => muted });
           return ctx;
         };
       }
     })();
 
-    // Auto-focus canvas when loaded
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        const canvas = document.getElementById('canvas');
-        if (canvas) canvas.focus();
-      }, 1500);
-    });
+    // Auto-focus canvas
+    window.addEventListener('load', () => setTimeout(() => {
+      const c = document.getElementById('canvas');
+      if (c) c.focus();
+    }, 1500));
 
-    // Click anywhere to focus canvas
-    document.addEventListener('click', function() {
-      const canvas = document.getElementById('canvas');
-      if (canvas && canvas.style.display !== 'none') {
-        canvas.focus();
-      }
+    document.addEventListener('click', () => {
+      const c = document.getElementById('canvas');
+      if (c && c.style.display !== 'none') c.focus();
     });
   </script>
 
   <script>
     var statusElement = document.getElementById("status");
     var progressElement = document.getElementById("progress");
-
     var Module = {
       preRun: [],
       postRun: [],
@@ -149,7 +64,7 @@
       canvas: function() {
         var e = document.getElementById("canvas");
         return e.addEventListener("webglcontextlost", function(e) {
-          alert("WebGL context lost. You will need to reload the page."),
+          alert("WebGL context lost. Reload the page."),
           e.preventDefault()
         }, !1), e
       }(),
@@ -181,13 +96,10 @@
         Module.setStatus(e ? "Preparing... (" + (this.totalDependencies - e) + "/" + this.totalDependencies + ")" : "All downloads complete.")
       }
     };
-
     Module.setStatus("Loading...");
     window.onerror = function() {
-      Module.setStatus("Exception thrown, see JavaScript console"),
-      Module.setStatus = function(e) {
-        e && Module.printErr("[post-exception status] " + e)
-      }
+      Module.setStatus("Error - see console"),
+      Module.setStatus = function(e) { e && Module.printErr("[post-exception] " + e) }
     }
   </script>
   <script async src="SpaceCadetPinball.js"></script>
