@@ -544,27 +544,35 @@
 
     // Floating clouds array
     let clouds = [];
+    // Butterflies array
+    let butterflies = [];
 
     function createRoom() {
-      // WINDOWS XP BLISS - Rolling green hills
+      // WINDOWS XP BLISS - Authentic rolling green hills
 
-      // Create hilly terrain using a plane with vertex displacement
-      const terrainGeometry = new THREE.PlaneGeometry(40, 40, 64, 64);
+      // Create smooth hilly terrain with higher resolution
+      const terrainGeometry = new THREE.PlaneGeometry(60, 60, 128, 128);
       const vertices = terrainGeometry.attributes.position.array;
 
-      // Create rolling hills effect
+      // Smooth rolling hills - authentic XP Bliss feel
       for (let i = 0; i < vertices.length; i += 3) {
         const x = vertices[i];
         const y = vertices[i + 1];
-        // Gentle rolling hills formula
-        vertices[i + 2] = Math.sin(x * 0.3) * 0.5 + Math.sin(y * 0.2) * 0.3 + Math.cos(x * 0.1 + y * 0.1) * 0.4;
+        // Multiple sine waves for natural rolling hills
+        const hill1 = Math.sin(x * 0.15) * Math.cos(y * 0.1) * 0.8;
+        const hill2 = Math.sin(x * 0.08 + 0.5) * Math.sin(y * 0.12) * 0.5;
+        const hill3 = Math.cos(x * 0.05 + y * 0.05) * 0.6;
+        const micro = Math.sin(x * 0.5) * Math.cos(y * 0.5) * 0.05; // Subtle micro detail
+        vertices[i + 2] = hill1 + hill2 + hill3 + micro;
       }
       terrainGeometry.computeVertexNormals();
 
+      // Grass green with subtle vertex colors for variation
       const terrainMaterial = new THREE.MeshStandardMaterial({
-        color: 0x4ADE54, // Windows XP Bliss green
-        roughness: 0.8,
-        metalness: 0
+        color: 0x3CB043, // Authentic XP Bliss green
+        roughness: 0.85,
+        metalness: 0,
+        flatShading: false
       });
       const terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
       terrain.rotation.x = -Math.PI / 2;
@@ -572,38 +580,69 @@
       terrain.receiveShadow = true;
       scene.add(terrain);
 
-      // Windows XP Bliss sky - deep blue at top, lighter at horizon
+      // Add grass tufts for texture
+      createGrassTufts();
+
+      // Add wildflowers
+      createWildflowers();
+
+      // === WINDOWS XP BLISS SKY ===
       scene.background = null;
-      const skyGeometry = new THREE.SphereGeometry(50, 32, 32);
+      const skyGeometry = new THREE.SphereGeometry(80, 64, 64);
       const skyCanvas = document.createElement('canvas');
-      skyCanvas.width = 512;
-      skyCanvas.height = 512;
+      skyCanvas.width = 2048;
+      skyCanvas.height = 1024;
       const skyCtx = skyCanvas.getContext('2d');
 
-      // Classic XP Bliss sky gradient
+      // Authentic XP Bliss sky gradient
       const skyGrad = skyCtx.createLinearGradient(0, 0, 0, skyCanvas.height);
-      skyGrad.addColorStop(0, '#1E90FF');    // Deep sky blue at top
-      skyGrad.addColorStop(0.3, '#4AA8FF');  // Medium blue
-      skyGrad.addColorStop(0.5, '#87CEEB');  // Sky blue
-      skyGrad.addColorStop(0.7, '#B0E0E6');  // Powder blue near horizon
-      skyGrad.addColorStop(1, '#E0F4FF');    // Very light blue at horizon
+      skyGrad.addColorStop(0, '#1565C0');     // Deep blue at zenith
+      skyGrad.addColorStop(0.15, '#1E88E5');  // Rich blue
+      skyGrad.addColorStop(0.3, '#42A5F5');   // Medium blue
+      skyGrad.addColorStop(0.45, '#64B5F6');  // Lighter blue
+      skyGrad.addColorStop(0.6, '#90CAF9');   // Light blue
+      skyGrad.addColorStop(0.75, '#BBDEFB');  // Very light blue
+      skyGrad.addColorStop(0.9, '#E3F2FD');   // Near white at horizon
+      skyGrad.addColorStop(1, '#F5F9FF');     // White horizon
       skyCtx.fillStyle = skyGrad;
       skyCtx.fillRect(0, 0, skyCanvas.width, skyCanvas.height);
 
-      // Add fluffy white clouds to the sky texture
-      skyCtx.fillStyle = 'rgba(255,255,255,0.9)';
-      const cloudPositions = [[100, 80], [250, 120], [400, 90], [150, 200], [350, 180]];
-      cloudPositions.forEach(([cx, cy]) => {
-        // Draw fluffy cloud
-        skyCtx.beginPath();
-        skyCtx.arc(cx, cy, 30, 0, Math.PI * 2);
-        skyCtx.arc(cx + 25, cy - 10, 25, 0, Math.PI * 2);
-        skyCtx.arc(cx + 50, cy, 28, 0, Math.PI * 2);
-        skyCtx.arc(cx + 25, cy + 10, 22, 0, Math.PI * 2);
-        skyCtx.fill();
-      });
+      // Draw fluffy cumulus clouds on sky texture
+      function drawCloud(ctx, x, y, scale) {
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        const s = scale;
+        // Multiple overlapping circles for fluffy appearance
+        ctx.beginPath();
+        ctx.arc(x, y, 35*s, 0, Math.PI * 2);
+        ctx.arc(x + 30*s, y - 15*s, 30*s, 0, Math.PI * 2);
+        ctx.arc(x + 55*s, y - 5*s, 32*s, 0, Math.PI * 2);
+        ctx.arc(x + 80*s, y, 28*s, 0, Math.PI * 2);
+        ctx.arc(x + 25*s, y + 12*s, 25*s, 0, Math.PI * 2);
+        ctx.arc(x + 55*s, y + 15*s, 27*s, 0, Math.PI * 2);
+        ctx.arc(x + 40*s, y - 8*s, 28*s, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Subtle shadow on bottom of cloud
+        ctx.fillStyle = 'rgba(200,210,220,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(x + 40*s, y + 20*s, 50*s, 12*s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Scattered clouds across the sky
+      drawCloud(skyCtx, 150, 200, 1.2);
+      drawCloud(skyCtx, 500, 150, 1.5);
+      drawCloud(skyCtx, 900, 220, 1.1);
+      drawCloud(skyCtx, 1300, 180, 1.4);
+      drawCloud(skyCtx, 1700, 160, 1.3);
+      drawCloud(skyCtx, 300, 350, 0.9);
+      drawCloud(skyCtx, 750, 380, 1.0);
+      drawCloud(skyCtx, 1150, 340, 1.1);
+      drawCloud(skyCtx, 1550, 370, 0.95);
+      drawCloud(skyCtx, 1900, 320, 1.2);
 
       const skyTexture = new THREE.CanvasTexture(skyCanvas);
+      skyTexture.minFilter = THREE.LinearFilter;
       const skyMaterial = new THREE.MeshBasicMaterial({
         map: skyTexture,
         side: THREE.BackSide
@@ -611,38 +650,189 @@
       const sky = new THREE.Mesh(skyGeometry, skyMaterial);
       scene.add(sky);
 
-      // Create 3D floating clouds
+      // === 3D FLOATING CLOUDS ===
       const cloudMaterial = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.95,
         roughness: 1,
         metalness: 0
       });
 
-      for (let i = 0; i < 8; i++) {
+      // Create more realistic puffy clouds
+      for (let i = 0; i < 12; i++) {
         const cloudGroup = new THREE.Group();
-        // Create puffy cloud from multiple spheres
-        const sizes = [0.5, 0.4, 0.45, 0.35];
-        const offsets = [[0, 0, 0], [0.4, 0.1, 0], [-0.3, 0.05, 0.1], [0.2, -0.1, -0.1]];
-        sizes.forEach((size, j) => {
-          const puff = new THREE.Mesh(new THREE.SphereGeometry(size, 8, 8), cloudMaterial);
-          puff.position.set(offsets[j][0], offsets[j][1], offsets[j][2]);
+        // Randomized cloud shapes
+        const numPuffs = 5 + Math.floor(Math.random() * 4);
+        for (let j = 0; j < numPuffs; j++) {
+          const size = 0.3 + Math.random() * 0.4;
+          const puff = new THREE.Mesh(new THREE.SphereGeometry(size, 12, 12), cloudMaterial);
+          puff.position.set(
+            (j - numPuffs/2) * 0.35 + Math.random() * 0.2,
+            Math.random() * 0.2,
+            Math.random() * 0.3 - 0.15
+          );
+          puff.scale.y = 0.6 + Math.random() * 0.3; // Flatten slightly
           cloudGroup.add(puff);
-        });
+        }
         cloudGroup.position.set(
-          (Math.random() - 0.5) * 20,
-          3 + Math.random() * 4,
-          -10 - Math.random() * 10
+          (Math.random() - 0.5) * 30,
+          4 + Math.random() * 5,
+          -12 - Math.random() * 15
         );
         cloudGroup.userData = {
-          speed: 0.005 + Math.random() * 0.01,
+          speed: 0.003 + Math.random() * 0.007,
           startX: cloudGroup.position.x
         };
         clouds.push(cloudGroup);
         scene.add(cloudGroup);
       }
 
+      // Create butterflies
+      createButterflies();
+    }
+
+    function createGrassTufts() {
+      // Scattered grass tufts for texture
+      const grassMaterial = new THREE.MeshStandardMaterial({
+        color: 0x2E7D32,
+        roughness: 0.9,
+        side: THREE.DoubleSide
+      });
+
+      for (let i = 0; i < 100; i++) {
+        const tuft = new THREE.Group();
+        // Each tuft has 3-5 blades
+        const numBlades = 3 + Math.floor(Math.random() * 3);
+        for (let j = 0; j < numBlades; j++) {
+          const blade = new THREE.Mesh(
+            new THREE.ConeGeometry(0.015, 0.1 + Math.random() * 0.05, 4),
+            grassMaterial
+          );
+          blade.position.set(
+            (Math.random() - 0.5) * 0.05,
+            0.04,
+            (Math.random() - 0.5) * 0.05
+          );
+          blade.rotation.x = (Math.random() - 0.5) * 0.3;
+          blade.rotation.z = (Math.random() - 0.5) * 0.3;
+          tuft.add(blade);
+        }
+        tuft.position.set(
+          (Math.random() - 0.5) * 15,
+          -0.45,
+          (Math.random() - 0.5) * 15
+        );
+        scene.add(tuft);
+      }
+    }
+
+    function createWildflowers() {
+      // Scattered wildflowers like in Windows XP Bliss
+      const flowerColors = [0xFFEB3B, 0xFFFFFF, 0xFF7043, 0xE91E63, 0x9C27B0]; // Yellow, white, orange, pink, purple
+
+      for (let i = 0; i < 50; i++) {
+        const flower = new THREE.Group();
+        const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+
+        // Stem
+        const stem = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.005, 0.005, 0.08 + Math.random() * 0.04, 6),
+          new THREE.MeshStandardMaterial({ color: 0x33691E })
+        );
+        stem.position.y = 0.04;
+        flower.add(stem);
+
+        // Petals (simple)
+        const petalMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.8 });
+        for (let p = 0; p < 5; p++) {
+          const petal = new THREE.Mesh(
+            new THREE.SphereGeometry(0.015, 6, 6),
+            petalMat
+          );
+          const angle = (p / 5) * Math.PI * 2;
+          petal.position.set(
+            Math.cos(angle) * 0.02,
+            0.085,
+            Math.sin(angle) * 0.02
+          );
+          petal.scale.y = 0.5;
+          flower.add(petal);
+        }
+
+        // Center
+        const center = new THREE.Mesh(
+          new THREE.SphereGeometry(0.01, 6, 6),
+          new THREE.MeshStandardMaterial({ color: 0xFFC107 })
+        );
+        center.position.y = 0.085;
+        flower.add(center);
+
+        flower.position.set(
+          (Math.random() - 0.5) * 12,
+          -0.48,
+          (Math.random() - 0.5) * 12
+        );
+        scene.add(flower);
+      }
+    }
+
+    function createButterflies() {
+      // Animated butterflies floating around
+      const butterflyColors = [0xFF9800, 0x2196F3, 0xFFEB3B, 0xE91E63];
+
+      for (let i = 0; i < 6; i++) {
+        const butterfly = new THREE.Group();
+        const color = butterflyColors[Math.floor(Math.random() * butterflyColors.length)];
+        const wingMat = new THREE.MeshStandardMaterial({
+          color: color,
+          roughness: 0.7,
+          side: THREE.DoubleSide
+        });
+
+        // Wings (simple triangular shapes)
+        const wingShape = new THREE.Shape();
+        wingShape.moveTo(0, 0);
+        wingShape.lineTo(0.03, 0.02);
+        wingShape.lineTo(0.025, -0.02);
+        wingShape.lineTo(0, 0);
+
+        const wingGeo = new THREE.ShapeGeometry(wingShape);
+
+        const leftWing = new THREE.Mesh(wingGeo, wingMat);
+        leftWing.position.x = 0.005;
+        butterfly.add(leftWing);
+
+        const rightWing = new THREE.Mesh(wingGeo, wingMat);
+        rightWing.scale.x = -1;
+        rightWing.position.x = -0.005;
+        butterfly.add(rightWing);
+
+        // Body
+        const body = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.003, 0.002, 0.025, 6),
+          new THREE.MeshStandardMaterial({ color: 0x333333 })
+        );
+        body.rotation.x = Math.PI / 2;
+        butterfly.add(body);
+
+        butterfly.position.set(
+          (Math.random() - 0.5) * 6,
+          0.5 + Math.random() * 1.5,
+          (Math.random() - 0.5) * 6
+        );
+
+        butterfly.userData = {
+          baseY: butterfly.position.y,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.5 + Math.random() * 0.5,
+          radius: 0.5 + Math.random() * 1,
+          wingPhase: Math.random() * Math.PI * 2
+        };
+
+        butterflies.push(butterfly);
+        scene.add(butterfly);
+      }
     }
 
     // Cats array
@@ -734,116 +924,270 @@
     }
 
     function createMonitor() {
-      const monitorColor = 0xD4C5A9;
-      const bodyMaterial = new THREE.MeshStandardMaterial({ color: monitorColor, roughness: 0.6 });
+      // Classic CRT monitor - improved quality
+      const monitorColor = 0xD4C5A9; // Beige/off-white classic color
+      const bodyMaterial = new THREE.MeshStandardMaterial({ color: monitorColor, roughness: 0.6, metalness: 0.05 });
+      const darkPlastic = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.4 });
 
-      // Main monitor body (CRT bulk)
-      const bodyGeometry = new THREE.BoxGeometry(1.2, 1, 1);
+      // Main monitor body (CRT bulk with beveled appearance)
+      const monitorGroup = new THREE.Group();
+
+      // Main body
+      const bodyGeometry = new THREE.BoxGeometry(1.15, 0.95, 0.95);
       const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-      body.position.set(0, 1.1, -0.2);
+      body.position.set(0, 0, 0);
       body.castShadow = true;
-      scene.add(body);
+      monitorGroup.add(body);
 
-      // Screen bezel (dark frame)
-      const bezelGeometry = new THREE.BoxGeometry(1.0, 0.8, 0.05);
-      const bezelMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3 });
-      const bezel = new THREE.Mesh(bezelGeometry, bezelMaterial);
-      bezel.position.set(0, 1.15, 0.33);
-      scene.add(bezel);
+      // Front face panel (slightly inset)
+      const frontPanel = new THREE.Mesh(
+        new THREE.BoxGeometry(1.1, 0.9, 0.05),
+        bodyMaterial
+      );
+      frontPanel.position.set(0, 0.02, 0.48);
+      monitorGroup.add(frontPanel);
 
-      // Screen - THE CLICKABLE PART
-      const screenGeometry = new THREE.PlaneGeometry(0.9, 0.68);
+      // Screen bezel (dark frame around screen)
+      const bezelOuter = new THREE.Mesh(
+        new THREE.BoxGeometry(0.95, 0.75, 0.03),
+        darkPlastic
+      );
+      bezelOuter.position.set(0, 0.05, 0.52);
+      monitorGroup.add(bezelOuter);
 
-      // Create XP desktop texture
+      // Inner bezel lip (slight depth)
+      const bezelInner = new THREE.Mesh(
+        new THREE.BoxGeometry(0.88, 0.68, 0.02),
+        new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.2 })
+      );
+      bezelInner.position.set(0, 0.05, 0.535);
+      monitorGroup.add(bezelInner);
+
+      // Ventilation slots on sides
+      const ventMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.8 });
+      for (let i = 0; i < 6; i++) {
+        const vent = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.08, 0.4), ventMat);
+        vent.position.set(0.58, 0.25 - i * 0.1, 0);
+        monitorGroup.add(vent);
+        const vent2 = vent.clone();
+        vent2.position.x = -0.58;
+        monitorGroup.add(vent2);
+      }
+
+      // Bottom control panel area
+      const controlPanel = new THREE.Mesh(
+        new THREE.BoxGeometry(0.6, 0.08, 0.05),
+        new THREE.MeshStandardMaterial({ color: 0xc0b8a0, roughness: 0.5 })
+      );
+      controlPanel.position.set(0, -0.35, 0.52);
+      monitorGroup.add(controlPanel);
+
+      // Control buttons
+      const buttonMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3 });
+      for (let i = 0; i < 4; i++) {
+        const btn = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.02, 8), buttonMat);
+        btn.rotation.x = Math.PI / 2;
+        btn.position.set(-0.15 + i * 0.08, -0.35, 0.54);
+        monitorGroup.add(btn);
+      }
+
+      // Power LED
+      const ledMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff44 });
+      const led = new THREE.Mesh(new THREE.CircleGeometry(0.012, 12), ledMaterial);
+      led.position.set(0.22, -0.35, 0.545);
+      monitorGroup.add(led);
+
+      // Brand logo area (subtle indent)
+      const logoArea = new THREE.Mesh(
+        new THREE.BoxGeometry(0.15, 0.025, 0.01),
+        new THREE.MeshStandardMaterial({ color: 0xb8b0a0, roughness: 0.3 })
+      );
+      logoArea.position.set(0, -0.42, 0.52);
+      monitorGroup.add(logoArea);
+
+      monitorGroup.position.set(0, 1.1, -0.18);
+      scene.add(monitorGroup);
+
+      // === SCREEN with scan lines effect ===
+      const screenGeometry = new THREE.PlaneGeometry(0.82, 0.62);
+
+      // Create XP desktop texture with scan lines
       const canvas = document.createElement('canvas');
       canvas.width = 1024;
       canvas.height = 768;
       const ctx = canvas.getContext('2d');
 
-      // XP Bliss background
+      // XP Bliss background - authentic colors
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#245EDC');
-      gradient.addColorStop(0.4, '#3A7BD5');
-      gradient.addColorStop(1, '#87CEEB');
+      gradient.addColorStop(0, '#1E5BC6');    // Deep blue
+      gradient.addColorStop(0.3, '#3A7BD5');
+      gradient.addColorStop(0.6, '#5A9BD5');
+      gradient.addColorStop(1, '#8ECAE6');    // Light blue at horizon
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Green rolling hills
+      // Rolling hills - multiple layers for depth
+      // Back hill
+      ctx.fillStyle = '#2D8F38';
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height);
+      ctx.bezierCurveTo(200, 450, 400, 350, 600, 420);
+      ctx.bezierCurveTo(800, 490, 900, 380, 1024, 450);
+      ctx.lineTo(1024, canvas.height);
+      ctx.fill();
+
+      // Middle hill
       ctx.fillStyle = '#3CB043';
       ctx.beginPath();
       ctx.moveTo(0, canvas.height);
-      ctx.quadraticCurveTo(canvas.width * 0.3, canvas.height * 0.5, canvas.width * 0.5, canvas.height * 0.6);
-      ctx.quadraticCurveTo(canvas.width * 0.7, canvas.height * 0.7, canvas.width, canvas.height * 0.5);
-      ctx.lineTo(canvas.width, canvas.height);
+      ctx.bezierCurveTo(150, 480, 350, 400, 512, 470);
+      ctx.bezierCurveTo(700, 540, 850, 420, 1024, 500);
+      ctx.lineTo(1024, canvas.height);
       ctx.fill();
 
-      // Lighter hill in front
-      ctx.fillStyle = '#4AE054';
+      // Front hill - brightest
+      ctx.fillStyle = '#4ADE54';
       ctx.beginPath();
       ctx.moveTo(0, canvas.height);
-      ctx.quadraticCurveTo(canvas.width * 0.5, canvas.height * 0.65, canvas.width, canvas.height);
+      ctx.bezierCurveTo(256, 580, 512, 520, 768, 580);
+      ctx.bezierCurveTo(900, 620, 1000, 550, 1024, canvas.height - 100);
+      ctx.lineTo(1024, canvas.height);
       ctx.fill();
 
-      // Clouds
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      [[150, 120, 50], [400, 80, 60], [700, 140, 45], [900, 100, 55]].forEach(([x, y, r]) => {
+      // Fluffy clouds
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      const cloudPositions = [
+        [120, 100, 45], [280, 140, 55], [450, 90, 50],
+        [620, 130, 48], [780, 100, 52], [920, 150, 45]
+      ];
+      cloudPositions.forEach(([x, y, r]) => {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.arc(x + r*0.7, y - r*0.3, r*0.8, 0, Math.PI * 2);
-        ctx.arc(x + r*1.3, y, r*0.9, 0, Math.PI * 2);
+        ctx.arc(x + r*0.6, y - r*0.35, r*0.75, 0, Math.PI * 2);
+        ctx.arc(x + r*1.1, y - r*0.1, r*0.85, 0, Math.PI * 2);
+        ctx.arc(x + r*1.5, y + r*0.1, r*0.7, 0, Math.PI * 2);
+        ctx.arc(x + r*0.3, y + r*0.25, r*0.6, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Desktop icons (simplified)
+      // Scan lines effect (subtle)
+      ctx.fillStyle = 'rgba(0,0,0,0.03)';
+      for (let y = 0; y < canvas.height; y += 2) {
+        ctx.fillRect(0, y, canvas.width, 1);
+      }
+
+      // Slight screen curvature vignette
+      const vignetteGrad = ctx.createRadialGradient(
+        canvas.width/2, canvas.height/2, canvas.width * 0.3,
+        canvas.width/2, canvas.height/2, canvas.width * 0.7
+      );
+      vignetteGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      vignetteGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
+      ctx.fillStyle = vignetteGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Desktop icons
       ctx.fillStyle = '#fff';
-      ctx.font = '14px Tahoma';
-      const icons = ['My Computer', 'Recycle Bin', 'My Documents'];
-      icons.forEach((name, i) => {
-        ctx.fillRect(30, 30 + i * 80, 48, 48);
-        ctx.fillStyle = '#000';
-        ctx.fillText(name, 25, 95 + i * 80);
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 2;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+
+      const icons = [
+        { name: 'My Computer', y: 50 },
+        { name: 'Recycle Bin', y: 130 },
+        { name: 'My Documents', y: 210 }
+      ];
+      icons.forEach(icon => {
+        // Icon box
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillRect(30, icon.y, 48, 48);
+        // Icon text
         ctx.fillStyle = '#fff';
+        ctx.font = '11px Tahoma';
+        ctx.textAlign = 'center';
+        ctx.fillText(icon.name, 54, icon.y + 65);
       });
+      ctx.textAlign = 'left';
+      ctx.shadowBlur = 0;
 
       // Taskbar
-      ctx.fillStyle = '#245EDC';
+      const taskbarGrad = ctx.createLinearGradient(0, canvas.height - 40, 0, canvas.height);
+      taskbarGrad.addColorStop(0, '#245ED8');
+      taskbarGrad.addColorStop(0.1, '#3168DC');
+      taskbarGrad.addColorStop(0.9, '#1941A5');
+      taskbarGrad.addColorStop(1, '#1941A5');
+      ctx.fillStyle = taskbarGrad;
       ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
 
-      // Start button
-      ctx.fillStyle = '#3CB043';
-      ctx.fillRect(5, canvas.height - 35, 80, 30);
+      // Start button with gradient
+      const startGrad = ctx.createLinearGradient(2, canvas.height - 38, 2, canvas.height - 6);
+      startGrad.addColorStop(0, '#3C9C3C');
+      startGrad.addColorStop(0.5, '#2D8F2D');
+      startGrad.addColorStop(1, '#1E6B1E');
+      ctx.fillStyle = startGrad;
+      ctx.beginPath();
+      ctx.roundRect(2, canvas.height - 38, 100, 32, 5);
+      ctx.fill();
+
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 14px Tahoma';
-      ctx.fillText('start', 25, canvas.height - 15);
+      ctx.font = 'bold italic 16px Tahoma';
+      ctx.fillText('start', 35, canvas.height - 17);
+
+      // Clock in system tray
+      ctx.fillStyle = '#fff';
+      ctx.font = '11px Tahoma';
+      ctx.textAlign = 'right';
+      ctx.fillText('4:20 PM', canvas.width - 10, canvas.height - 15);
 
       const screenTexture = new THREE.CanvasTexture(canvas);
-      const screenMaterial = new THREE.MeshBasicMaterial({ map: screenTexture });
+      screenTexture.minFilter = THREE.LinearFilter;
+
+      const screenMaterial = new THREE.MeshBasicMaterial({
+        map: screenTexture,
+        transparent: false
+      });
 
       screenMesh = new THREE.Mesh(screenGeometry, screenMaterial);
-      screenMesh.position.set(0, 1.15, 0.36);
+      screenMesh.position.set(0, 1.15, 0.365);
       screenMesh.name = 'screen';
       scene.add(screenMesh);
 
-      // Monitor stand
-      const standGeometry = new THREE.BoxGeometry(0.4, 0.15, 0.5);
-      const stand = new THREE.Mesh(standGeometry, bodyMaterial);
-      stand.position.set(0, 0.58, -0.2);
-      stand.castShadow = true;
-      scene.add(stand);
+      // Screen glass reflection overlay (subtle)
+      const glassGeometry = new THREE.PlaneGeometry(0.82, 0.62);
+      const glassMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.03
+      });
+      const glass = new THREE.Mesh(glassGeometry, glassMaterial);
+      glass.position.set(0, 1.15, 0.367);
+      scene.add(glass);
 
-      // Monitor base
-      const baseGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.4);
+      // Monitor stand (neck)
+      const standNeck = new THREE.Mesh(
+        new THREE.BoxGeometry(0.35, 0.12, 0.45),
+        bodyMaterial
+      );
+      standNeck.position.set(0, 0.58, -0.15);
+      standNeck.castShadow = true;
+      scene.add(standNeck);
+
+      // Monitor base (wider foot)
+      const baseGeometry = new THREE.BoxGeometry(0.55, 0.04, 0.35);
       const base = new THREE.Mesh(baseGeometry, bodyMaterial);
-      base.position.set(0, 0.52, -0.1);
+      base.position.set(0, 0.52, -0.08);
       base.castShadow = true;
       scene.add(base);
 
-      // Power LED
-      const ledGeometry = new THREE.CircleGeometry(0.015, 16);
-      const ledMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-      const led = new THREE.Mesh(ledGeometry, ledMaterial);
-      led.position.set(0.4, 0.75, 0.31);
-      scene.add(led);
+      // Tilt adjustment mechanism
+      const tiltMech = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.06, 0.06, 0.02, 16),
+        new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.3 })
+      );
+      tiltMech.rotation.x = Math.PI / 2;
+      tiltMech.position.set(0, 0.64, -0.2);
+      scene.add(tiltMech);
     }
 
     function createKeyboard() {
@@ -919,153 +1263,216 @@
       coffee.position.set(1.1, 0.63, 0.3);
       scene.add(coffee);
 
-      // Add sleeping Kyle
-      createSleepingKyle();
+      // Add workspace details (gaming chair, headphones, energy drinks, etc.)
+      createWorkspaceDetails();
     }
 
-    // Zzz meshes for animation
-    let zzzMeshes = [];
+    function createWorkspaceDetails() {
+      // Developer workspace accessories that look great in low-poly style
 
-    function createSleepingKyle() {
-      // Stylized sleeping figure - viewed mostly from behind
-      // Clean cartoon style without problematic features
+      // === GAMING CHAIR (empty, slightly pushed back) ===
+      const chairGroup = new THREE.Group();
+      const chairMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3 });
+      const chairRed = new THREE.MeshStandardMaterial({ color: 0xcc2222, roughness: 0.4 }); // Red accent
+      const metalMat = new THREE.MeshStandardMaterial({ color: 0x666666, metalness: 0.6, roughness: 0.3 });
 
-      const hoodieMaterial = new THREE.MeshStandardMaterial({ color: 0x2d3436, roughness: 0.7 }); // Dark hoodie
-      const hoodieAccent = new THREE.MeshStandardMaterial({ color: 0x636e72, roughness: 0.6 }); // Hood lining
+      // Seat cushion
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.08, 0.45), chairMat);
+      seat.position.y = 0.35;
+      chairGroup.add(seat);
 
-      // Gaming/Office Chair - more detailed
-      const chairMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4 });
-      const chairAccent = new THREE.MeshStandardMaterial({ color: 0x2d3436, roughness: 0.5 });
+      // Seat side bolsters
+      const seatBolster = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.4), chairRed);
+      seatBolster.position.set(-0.22, 0.38, 0);
+      chairGroup.add(seatBolster);
+      const seatBolster2 = seatBolster.clone();
+      seatBolster2.position.x = 0.22;
+      chairGroup.add(seatBolster2);
 
-      // Chair seat
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), chairMat);
-      seat.position.set(0, -0.12, 1);
-      scene.add(seat);
+      // Back rest
+      const backRest = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.08), chairMat);
+      backRest.position.set(0, 0.65, -0.22);
+      backRest.rotation.x = 0.1;
+      chairGroup.add(backRest);
 
-      // Chair back (curved gaming chair style)
-      const backRest = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.6, 0.1), chairMat);
-      backRest.position.set(0, 0.15, 1.22);
-      scene.add(backRest);
+      // Back bolsters (racing style)
+      const backBolster = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.45, 0.1), chairRed);
+      backBolster.position.set(-0.2, 0.62, -0.2);
+      backBolster.rotation.x = 0.1;
+      chairGroup.add(backBolster);
+      const backBolster2 = backBolster.clone();
+      backBolster2.position.x = 0.2;
+      chairGroup.add(backBolster2);
 
-      // Chair side bolsters
-      const bolsterGeo = new THREE.BoxGeometry(0.08, 0.4, 0.1);
-      const leftBolster = new THREE.Mesh(bolsterGeo, chairAccent);
-      leftBolster.position.set(-0.22, 0.1, 1.2);
-      scene.add(leftBolster);
-      const rightBolster = new THREE.Mesh(bolsterGeo, chairAccent);
-      rightBolster.position.set(0.22, 0.1, 1.2);
-      scene.add(rightBolster);
+      // Headrest
+      const headrest = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.12, 0.08), chairMat);
+      headrest.position.set(0, 0.98, -0.22);
+      chairGroup.add(headrest);
 
-      // Chair pole and base
-      const chairPole = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.04, 0.04, 0.35),
-        new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.5 })
-      );
-      chairPole.position.set(0, -0.35, 1);
-      scene.add(chairPole);
+      // Armrests
+      const armrestBase = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.15, 0.04), metalMat);
+      armrestBase.position.set(-0.28, 0.42, 0.05);
+      chairGroup.add(armrestBase);
+      const armrestTop = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.03, 0.2), chairMat);
+      armrestTop.position.set(-0.28, 0.5, 0.05);
+      chairGroup.add(armrestTop);
+      const armrestBase2 = armrestBase.clone();
+      armrestBase2.position.x = 0.28;
+      chairGroup.add(armrestBase2);
+      const armrestTop2 = armrestTop.clone();
+      armrestTop2.position.x = 0.28;
+      chairGroup.add(armrestTop2);
 
-      // Chair wheels base (star shape)
+      // Gas cylinder
+      const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.25, 12), metalMat);
+      cylinder.position.set(0, 0.15, 0);
+      chairGroup.add(cylinder);
+
+      // 5-star base
       for (let i = 0; i < 5; i++) {
-        const wheelArm = new THREE.Mesh(
-          new THREE.BoxGeometry(0.04, 0.03, 0.2),
-          new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.3 })
-        );
-        wheelArm.position.set(0, -0.52, 1);
-        wheelArm.rotation.y = (i / 5) * Math.PI * 2;
-        wheelArm.position.x += Math.sin(wheelArm.rotation.y) * 0.1;
-        wheelArm.position.z += Math.cos(wheelArm.rotation.y) * 0.1;
-        scene.add(wheelArm);
+        const angle = (i / 5) * Math.PI * 2;
+        const arm = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.025, 0.28), metalMat);
+        arm.position.set(Math.sin(angle) * 0.14, 0.02, Math.cos(angle) * 0.14);
+        arm.rotation.y = angle;
+        chairGroup.add(arm);
+
+        // Wheel
+        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 8), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+        wheel.rotation.z = Math.PI / 2;
+        wheel.position.set(Math.sin(angle) * 0.28, 0.02, Math.cos(angle) * 0.28);
+        chairGroup.add(wheel);
       }
 
-      // === SLEEPING FIGURE - Stylized silhouette ===
+      chairGroup.position.set(0, -0.52, 1.1); // Pushed back from desk
+      chairGroup.rotation.y = 0.15; // Slightly angled
+      scene.add(chairGroup);
 
-      // Upper body/hoodie - leaning forward on desk
-      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.45, 0.22), hoodieMaterial);
-      torso.position.set(0, 0.28, 0.72);
-      torso.rotation.x = 0.9; // Leaning forward
-      scene.add(torso);
+      // === HEADPHONES on desk ===
+      const headphonesMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.3 });
+      const headphonesAccent = new THREE.MeshStandardMaterial({ color: 0x00aaff, roughness: 0.4 }); // RGB accent
 
-      // Hood (up, covering head from behind) - makes it look cozy/anonymous
-      const hood = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), hoodieMaterial);
-      hood.scale.set(1.1, 0.95, 1);
-      hood.position.set(0, 0.62, 0.58);
-      scene.add(hood);
+      const hpGroup = new THREE.Group();
+      // Headband
+      const headband = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.012, 8, 16, Math.PI), headphonesMat);
+      headband.rotation.x = Math.PI / 2;
+      headband.position.y = 0.04;
+      hpGroup.add(headband);
 
-      // Hood opening/shadow (dark interior)
-      const hoodInterior = new THREE.Mesh(
-        new THREE.SphereGeometry(0.12, 12, 12),
-        new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 1 })
-      );
-      hoodInterior.position.set(0, 0.60, 0.50);
-      hoodInterior.scale.set(1, 0.8, 0.5);
-      scene.add(hoodInterior);
+      // Ear cups
+      const earCup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.03, 12), headphonesMat);
+      earCup.rotation.z = Math.PI / 2;
+      earCup.position.set(-0.08, 0, 0);
+      hpGroup.add(earCup);
+      const earCup2 = earCup.clone();
+      earCup2.position.x = 0.08;
+      hpGroup.add(earCup2);
 
-      // Shoulders (rounded)
-      const shoulderGeo = new THREE.SphereGeometry(0.1, 12, 12);
-      const leftShoulder = new THREE.Mesh(shoulderGeo, hoodieMaterial);
-      leftShoulder.position.set(-0.2, 0.42, 0.65);
-      leftShoulder.scale.set(1, 0.8, 1);
-      scene.add(leftShoulder);
-      const rightShoulder = new THREE.Mesh(shoulderGeo, hoodieMaterial);
-      rightShoulder.position.set(0.2, 0.42, 0.65);
-      rightShoulder.scale.set(1, 0.8, 1);
-      scene.add(rightShoulder);
+      // RGB ring on cups
+      const rgbRing = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.005, 8, 16), headphonesAccent);
+      rgbRing.rotation.y = Math.PI / 2;
+      rgbRing.position.set(-0.095, 0, 0);
+      hpGroup.add(rgbRing);
+      const rgbRing2 = rgbRing.clone();
+      rgbRing2.position.x = 0.095;
+      hpGroup.add(rgbRing2);
 
-      // Arms (hoodie sleeves) resting on desk, crossed under head
-      const sleeveGeo = new THREE.BoxGeometry(0.12, 0.08, 0.28);
-      const leftSleeve = new THREE.Mesh(sleeveGeo, hoodieMaterial);
-      leftSleeve.position.set(-0.12, 0.56, 0.48);
-      leftSleeve.rotation.y = 0.3;
-      scene.add(leftSleeve);
-      const rightSleeve = new THREE.Mesh(sleeveGeo, hoodieMaterial);
-      rightSleeve.position.set(0.12, 0.56, 0.48);
-      rightSleeve.rotation.y = -0.3;
-      scene.add(rightSleeve);
+      hpGroup.position.set(0.7, 0.58, 0.2);
+      hpGroup.rotation.y = -0.5;
+      hpGroup.rotation.x = Math.PI / 2; // Laying flat
+      scene.add(hpGroup);
 
-      // Hoodie pocket pouch (front detail visible from side)
-      const pocket = new THREE.Mesh(
-        new THREE.BoxGeometry(0.3, 0.12, 0.05),
-        hoodieAccent
-      );
-      pocket.position.set(0, 0.15, 0.82);
-      pocket.rotation.x = 0.5;
-      scene.add(pocket);
+      // === ENERGY DRINK CANS ===
+      const canMat1 = new THREE.MeshStandardMaterial({ color: 0x00ff88, metalness: 0.4, roughness: 0.3 }); // Monster green
+      const canMat2 = new THREE.MeshStandardMaterial({ color: 0x0066ff, metalness: 0.4, roughness: 0.3 }); // Blue
+      const canTop = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.6, roughness: 0.2 });
 
-      // Hoodie strings (dangling)
-      const stringMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
-      const string1 = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.15, 8), stringMat);
-      string1.position.set(-0.06, 0.5, 0.52);
-      string1.rotation.x = 0.4;
-      string1.rotation.z = 0.1;
-      scene.add(string1);
-      const string2 = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.15, 8), stringMat);
-      string2.position.set(0.06, 0.5, 0.52);
-      string2.rotation.x = 0.4;
-      string2.rotation.z = -0.1;
-      scene.add(string2);
+      // Can 1 (standing)
+      const can1 = new THREE.Group();
+      const canBody1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.1, 12), canMat1);
+      can1.add(canBody1);
+      const canTop1 = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.025, 0.01, 12), canTop);
+      canTop1.position.y = 0.05;
+      can1.add(canTop1);
+      can1.position.set(-0.85, 0.59, 0.35);
+      scene.add(can1);
 
-      // Zzz floating - the main indicator this person is sleeping
-      createZzz();
-    }
+      // Can 2 (tipped over, empty)
+      const can2 = new THREE.Group();
+      const canBody2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.1, 12), canMat2);
+      can2.add(canBody2);
+      const canTop2 = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.025, 0.01, 12), canTop);
+      canTop2.position.y = 0.05;
+      can2.add(canTop2);
+      can2.position.set(-0.75, 0.555, 0.45);
+      can2.rotation.z = Math.PI / 2;
+      can2.rotation.y = 0.3;
+      scene.add(can2);
 
-    function createZzz() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 64;
-      canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 50px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Z', 32, 50);
-      const texture = new THREE.CanvasTexture(canvas);
+      // === STICKY NOTES ===
+      const stickyYellow = new THREE.MeshStandardMaterial({ color: 0xffee55, roughness: 0.9 });
+      const stickyPink = new THREE.MeshStandardMaterial({ color: 0xff88aa, roughness: 0.9 });
+      const stickyBlue = new THREE.MeshStandardMaterial({ color: 0x55ccff, roughness: 0.9 });
 
-      for (let i = 0; i < 3; i++) {
-        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.7 }));
-        sprite.scale.set(0.12 + i * 0.06, 0.12 + i * 0.06, 1);
-        sprite.position.set(0.4 + i * 0.12, 0.9 + i * 0.18, 0.55);
-        sprite.userData = { baseY: 0.9 + i * 0.18, offset: i * 0.7, index: i };
-        zzzMeshes.push(sprite);
-        scene.add(sprite);
+      // Sticky note stack
+      const sticky1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.005, 0.12), stickyYellow);
+      sticky1.position.set(-1.0, 0.555, -0.2);
+      sticky1.rotation.y = 0.1;
+      scene.add(sticky1);
+
+      const sticky2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.003, 0.1), stickyPink);
+      sticky2.position.set(-1.0, 0.56, -0.18);
+      sticky2.rotation.y = -0.15;
+      scene.add(sticky2);
+
+      // Sticky on monitor
+      const stickyOnMonitor = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 0.002), stickyBlue);
+      stickyOnMonitor.position.set(0.52, 1.35, 0.31);
+      stickyOnMonitor.rotation.y = -0.05;
+      scene.add(stickyOnMonitor);
+
+      // === BOOKS/NOTEBOOKS ===
+      const bookMat1 = new THREE.MeshStandardMaterial({ color: 0x2244aa, roughness: 0.8 });
+      const bookMat2 = new THREE.MeshStandardMaterial({ color: 0x882244, roughness: 0.8 });
+      const pageMat = new THREE.MeshStandardMaterial({ color: 0xffffee, roughness: 0.9 });
+
+      // Book stack
+      const book1 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.03, 0.25), bookMat1);
+      book1.position.set(1.2, 0.555, -0.1);
+      scene.add(book1);
+
+      const book2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.025, 0.22), bookMat2);
+      book2.position.set(1.2, 0.58, -0.1);
+      book2.rotation.y = 0.15;
+      scene.add(book2);
+
+      // === PHONE on desk ===
+      const phoneMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.2 });
+      const phoneScreen = new THREE.MeshStandardMaterial({ color: 0x111122, roughness: 0.1 });
+
+      const phone = new THREE.Group();
+      const phoneBody = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.008, 0.09), phoneMat);
+      phone.add(phoneBody);
+      const phoneScreenMesh = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.002, 0.08), phoneScreen);
+      phoneScreenMesh.position.y = 0.005;
+      phone.add(phoneScreenMesh);
+      phone.position.set(0.35, 0.555, 0.5);
+      phone.rotation.y = 0.8;
+      scene.add(phone);
+
+      // === USB/CABLE mess ===
+      const cableMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
+
+      // Coiled cable
+      for (let i = 0; i < 8; i++) {
+        const segment = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.04, 6), cableMat);
+        segment.position.set(
+          -0.6 + Math.sin(i * 0.8) * 0.03,
+          0.54,
+          0.55 + i * 0.015
+        );
+        segment.rotation.z = Math.PI / 2;
+        segment.rotation.y = i * 0.3;
+        scene.add(segment);
       }
     }
 
@@ -1257,10 +1664,24 @@
         }
       });
 
-      // Animate Zzz floating up
-      zzzMeshes.forEach((z, i) => {
-        z.position.y = z.userData.baseY + Math.sin(time * 2 + z.userData.offset) * 0.1;
-        z.material.opacity = 0.4 + Math.sin(time * 3 + z.userData.offset) * 0.3;
+      // Animate butterflies
+      butterflies.forEach(bf => {
+        const data = bf.userData;
+        // Circular flying pattern
+        bf.position.x += Math.sin(time * data.speed + data.phase) * 0.01;
+        bf.position.z += Math.cos(time * data.speed + data.phase) * 0.01;
+        bf.position.y = data.baseY + Math.sin(time * 2 + data.phase) * 0.15;
+
+        // Face direction of movement
+        bf.rotation.y = time * data.speed + data.phase;
+
+        // Wing flapping
+        if (bf.children[0]) {
+          bf.children[0].rotation.y = Math.sin(time * 15 + data.wingPhase) * 0.5;
+        }
+        if (bf.children[1]) {
+          bf.children[1].rotation.y = -Math.sin(time * 15 + data.wingPhase) * 0.5;
+        }
       });
 
       renderer.render(scene, camera);
@@ -1293,4 +1714,4 @@
   </script>
 </body>
 </html>
-<!-- cache bust 1770287123 -->
+<!-- cache bust 1770288456 -->
