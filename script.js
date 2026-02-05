@@ -152,6 +152,8 @@
               } catch(e) {}
             }
           }, 500);
+          // Also open the controls helper window
+          openWindow('pinball-controls');
         }
       }
     }
@@ -162,10 +164,16 @@
         playWindowClose();
         win.classList.add('closing');
 
-        // Unload pinball to stop audio
+        // Unload pinball to stop audio and close controls window
         if (id === 'pinball') {
           const frame = document.getElementById('pinball-frame');
           if (frame) frame.src = '';
+          // Also close the controls helper
+          const controlsWin = document.getElementById('window-pinball-controls');
+          if (controlsWin) {
+            controlsWin.classList.remove('active');
+            openWindows.delete('pinball-controls');
+          }
         }
 
         setTimeout(() => {

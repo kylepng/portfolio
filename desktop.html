@@ -434,6 +434,31 @@
       </div>
     </div>
 
+    <!-- Pinball Controls Helper Window -->
+    <div class="window" id="window-pinball-controls" style="top: 80px; left: 750px; width: 220px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-pinball-controls')">
+        <img src="https://win98icons.alexmeub.com/icons/png/joystick-0.png" style="width:16px;height:16px;">
+        <span class="window-title">Controls</span>
+        <div class="window-controls">
+          <button class="window-btn close" onclick="closeWindow('pinball-controls')">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="display: block; padding: 12px; min-height: auto; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); color: #fff; font-size: 12px;">
+        <div style="color: #4fc3f7; font-weight: bold; margin-bottom: 10px; font-size: 13px;">🎮 Pinball Controls</div>
+        <div style="display: grid; grid-template-columns: 60px 1fr; gap: 6px 10px; line-height: 1.6;">
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">Space</kbd><span>Launch Ball</span>
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">Z</kbd><span>Left Flipper</span>
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">/</kbd><span>Right Flipper</span>
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">X</kbd><span>Nudge Left</span>
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">.</kbd><span>Nudge Right</span>
+          <kbd style="background:#333; padding:2px 8px; border-radius:3px; text-align:center; font-family:monospace;">F2</kbd><span>New Game</span>
+        </div>
+        <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333; color: #888; font-size: 11px; font-style: italic;">
+          Click game window first to focus!
+        </div>
+      </div>
+    </div>
+
     <!-- Taskbar -->
     <div class="taskbar">
       <button class="start-button" id="start-btn" onclick="toggleStartMenu(); playStartSound();">
