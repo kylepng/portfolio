@@ -1136,6 +1136,8 @@
 
       const screenTexture = new THREE.CanvasTexture(canvas);
       screenTexture.minFilter = THREE.LinearFilter;
+      screenTexture.magFilter = THREE.LinearFilter;
+      screenTexture.anisotropy = 4;
 
       const screenMaterial = new THREE.MeshBasicMaterial({
         map: screenTexture,
@@ -1708,4 +1710,4 @@
   </script>
 </body>
 </html>
-<!-- cache bust 1770290555 -->
+<!-- v2.1.0 - clean screen -->
