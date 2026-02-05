@@ -276,6 +276,16 @@
           openWindow('pinball-controls');
         }
 
+        // Lazy-load game iframes (Snake, Tetris, 2048, Breakout)
+        const gameFrameIds = {snake: 'snake-frame', tetris: 'tetris-frame', game2048: 'game2048-frame', breakout: 'breakout-frame'};
+        if (gameFrameIds[id]) {
+          const frame = document.getElementById(gameFrameIds[id]);
+          if (frame && frame.dataset.src) {
+            frame.src = frame.dataset.src;
+          }
+          setTimeout(() => { if (frame) frame.focus(); }, 300);
+        }
+
         // Initialize resize handles for this window
         initResizeHandles();
 
@@ -304,6 +314,13 @@
           }
           // Restore music to normal (un-muffle)
           muffleMusic(false);
+        }
+
+        // Unload game iframes on close
+        const gameCloseFrames = {snake: 'snake-frame', tetris: 'tetris-frame', game2048: 'game2048-frame', breakout: 'breakout-frame'};
+        if (gameCloseFrames[id]) {
+          const frame = document.getElementById(gameCloseFrames[id]);
+          if (frame) frame.src = '';
         }
 
         // Destroy app if applicable

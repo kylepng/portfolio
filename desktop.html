@@ -149,6 +149,22 @@
         <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png">
         <span>Minesweeper</span>
       </div>
+      <div class="desktop-icon" data-window="snake" ondblclick="openWindow('snake')" onclick="selectIcon(this); playClick();">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='4' fill='%23111'/%3E%3Cpath d='M8 36 L8 24 L16 24 L16 16 L24 16 L24 8 L32 8 L32 16 L40 16 L40 24' stroke='%230f0' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='42' cy='22' r='2' fill='%23f00'/%3E%3Ccircle cx='10' cy='38' r='3' fill='%23f44'/%3E%3C/svg%3E">
+        <span>Snake</span>
+      </div>
+      <div class="desktop-icon" data-window="tetris" ondblclick="openWindow('tetris')" onclick="selectIcon(this); playClick();">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='4' fill='%23222'/%3E%3Crect x='8' y='28' width='10' height='10' rx='1' fill='%230ff'/%3E%3Crect x='18' y='28' width='10' height='10' rx='1' fill='%230ff'/%3E%3Crect x='28' y='28' width='10' height='10' rx='1' fill='%230ff'/%3E%3Crect x='18' y='18' width='10' height='10' rx='1' fill='%230ff'/%3E%3Crect x='8' y='8' width='10' height='10' rx='1' fill='%23f00'/%3E%3Crect x='18' y='8' width='10' height='10' rx='1' fill='%23f00'/%3E%3Crect x='28' y='8' width='10' height='10' rx='1' fill='%23ff0'/%3E%3Crect x='28' y='18' width='10' height='10' rx='1' fill='%23ff0'/%3E%3C/svg%3E">
+        <span>Tetris</span>
+      </div>
+      <div class="desktop-icon" data-window="game2048" ondblclick="openWindow('game2048')" onclick="selectIcon(this); playClick();">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='6' fill='%23bbada0'/%3E%3Crect x='4' y='4' width='18' height='18' rx='3' fill='%23edc22e'/%3E%3Crect x='26' y='4' width='18' height='18' rx='3' fill='%23ede0c8'/%3E%3Crect x='4' y='26' width='18' height='18' rx='3' fill='%23f2b179'/%3E%3Crect x='26' y='26' width='18' height='18' rx='3' fill='%23eee4da'/%3E%3Ctext x='13' y='17' text-anchor='middle' fill='%23f9f6f2' font-size='10' font-weight='bold' font-family='Arial'%3E2048%3C/text%3E%3Ctext x='35' y='17' text-anchor='middle' fill='%23776e65' font-size='11' font-weight='bold' font-family='Arial'%3E4%3C/text%3E%3Ctext x='13' y='39' text-anchor='middle' fill='%23f9f6f2' font-size='10' font-weight='bold' font-family='Arial'%3E128%3C/text%3E%3Ctext x='35' y='39' text-anchor='middle' fill='%23776e65' font-size='11' font-weight='bold' font-family='Arial'%3E2%3C/text%3E%3C/svg%3E">
+        <span>2048</span>
+      </div>
+      <div class="desktop-icon" data-window="breakout" ondblclick="openWindow('breakout')" onclick="selectIcon(this); playClick();">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='4' fill='%23111'/%3E%3Crect x='4' y='6' width='12' height='5' rx='1' fill='%23f44'/%3E%3Crect x='18' y='6' width='12' height='5' rx='1' fill='%23f90'/%3E%3Crect x='32' y='6' width='12' height='5' rx='1' fill='%23ff0'/%3E%3Crect x='4' y='13' width='12' height='5' rx='1' fill='%230f0'/%3E%3Crect x='18' y='13' width='12' height='5' rx='1' fill='%230af'/%3E%3Crect x='32' y='13' width='12' height='5' rx='1' fill='%23a0f'/%3E%3Ccircle cx='24' cy='30' r='3' fill='%23fff'/%3E%3Crect x='14' y='40' width='20' height='4' rx='2' fill='%23888'/%3E%3C/svg%3E">
+        <span>Breakout</span>
+      </div>
       <div class="desktop-icon" data-window="paint" ondblclick="openWindow('paint')" onclick="selectIcon(this); playClick();">
         <img src="https://win98icons.alexmeub.com/icons/png/paint_file-0.png">
         <span>Paint</span>
@@ -476,6 +492,70 @@
             <a href="https://github.com/ergophobian" target="_blank" class="social-link github">@ergophobian</a>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Snake Window -->
+    <div class="window" id="window-snake" style="top: 30px; left: 150px; width: 460px; height: 520px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-snake')">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23111'/%3E%3Cpath d='M3 12 L3 8 L6 8 L6 5 L9 5 L9 3 L13 3' stroke='%230f0' stroke-width='2' fill='none'/%3E%3C/svg%3E" style="width:16px;height:16px;">
+        <span class="window-title">Snake</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('snake')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('snake')">□</button>
+          <button class="window-btn close" onclick="closeWindow('snake')">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0; height: calc(100% - 28px);">
+        <iframe id="snake-frame" data-src="games/snake.html" style="width: 100%; height: 100%; border: none;" tabindex="0"></iframe>
+      </div>
+    </div>
+
+    <!-- Tetris Window -->
+    <div class="window" id="window-tetris" style="top: 20px; left: 180px; width: 440px; height: 620px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-tetris')">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23222'/%3E%3Crect x='2' y='8' width='4' height='4' fill='%230ff'/%3E%3Crect x='6' y='8' width='4' height='4' fill='%230ff'/%3E%3Crect x='6' y='4' width='4' height='4' fill='%230ff'/%3E%3Crect x='10' y='4' width='4' height='4' fill='%23f00'/%3E%3C/svg%3E" style="width:16px;height:16px;">
+        <span class="window-title">Tetris</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('tetris')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('tetris')">□</button>
+          <button class="window-btn close" onclick="closeWindow('tetris')">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0; height: calc(100% - 28px);">
+        <iframe id="tetris-frame" data-src="games/tetris.html" style="width: 100%; height: 100%; border: none;" tabindex="0"></iframe>
+      </div>
+    </div>
+
+    <!-- 2048 Window -->
+    <div class="window" id="window-game2048" style="top: 40px; left: 200px; width: 420px; height: 500px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-game2048')">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23bbada0'/%3E%3Crect x='1' y='1' width='6' height='6' rx='1' fill='%23edc22e'/%3E%3Crect x='9' y='1' width='6' height='6' rx='1' fill='%23eee4da'/%3E%3Crect x='1' y='9' width='6' height='6' rx='1' fill='%23f2b179'/%3E%3Crect x='9' y='9' width='6' height='6' rx='1' fill='%23ede0c8'/%3E%3C/svg%3E" style="width:16px;height:16px;">
+        <span class="window-title">2048</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('game2048')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('game2048')">□</button>
+          <button class="window-btn close" onclick="closeWindow('game2048')">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0; height: calc(100% - 28px);">
+        <iframe id="game2048-frame" data-src="games/2048.html" style="width: 100%; height: 100%; border: none;" tabindex="0"></iframe>
+      </div>
+    </div>
+
+    <!-- Breakout Window -->
+    <div class="window" id="window-breakout" style="top: 25px; left: 120px; width: 620px; height: 540px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-breakout')">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23111'/%3E%3Crect x='1' y='2' width='4' height='2' fill='%23f44'/%3E%3Crect x='6' y='2' width='4' height='2' fill='%230f0'/%3E%3Crect x='11' y='2' width='4' height='2' fill='%230af'/%3E%3Ccircle cx='8' cy='10' r='2' fill='%23fff'/%3E%3Crect x='4' y='13' width='8' height='2' rx='1' fill='%23888'/%3E%3C/svg%3E" style="width:16px;height:16px;">
+        <span class="window-title">Breakout</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('breakout')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('breakout')">□</button>
+          <button class="window-btn close" onclick="closeWindow('breakout')">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0; height: calc(100% - 28px);">
+        <iframe id="breakout-frame" data-src="games/breakout.html" style="width: 100%; height: 100%; border: none;" tabindex="0"></iframe>
       </div>
     </div>
 

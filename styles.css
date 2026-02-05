@@ -1972,14 +1972,16 @@
   left: 50%;
   transform: translate(-50%, -50%);
   flex-direction: row !important;
-  gap: 40px !important;
+  flex-wrap: wrap !important;
+  gap: 20px 30px !important;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 10;
+  width: 550px;
 }
 
 #games-icons .desktop-icon {
-  width: 90px;
+  width: 80px;
 }
 
 #games-icons .desktop-icon img {

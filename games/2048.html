@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>2048</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #faf8ef; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Arial', sans-serif; }
+  #game { text-align: center; }
+  h1 { font-size: 48px; color: #776e65; margin-bottom: 4px; }
+  #info { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .score-box { background: #bbada0; color: #fff; padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: bold; text-align: center; }
+  .score-box .label { font-size: 10px; opacity: 0.7; }
+  .score-box .val { font-size: 20px; }
+  #board { display: inline-grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #bbada0; padding: 8px; border-radius: 6px; }
+  .tile { width: 80px; height: 80px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 28px; transition: all 0.1s; }
+  .t0    { background: rgba(238,228,218,0.35); }
+  .t2    { background: #eee4da; color: #776e65; }
+  .t4    { background: #ede0c8; color: #776e65; }
+  .t8    { background: #f2b179; color: #f9f6f2; }
+  .t16   { background: #f59563; color: #f9f6f2; }
+  .t32   { background: #f67c5f; color: #f9f6f2; }
+  .t64   { background: #f65e3b; color: #f9f6f2; }
+  .t128  { background: #edcf72; color: #f9f6f2; font-size: 24px; }
+  .t256  { background: #edcc61; color: #f9f6f2; font-size: 24px; }
+  .t512  { background: #edc850; color: #f9f6f2; font-size: 24px; }
+  .t1024 { background: #edc53f; color: #f9f6f2; font-size: 20px; }
+  .t2048 { background: #edc22e; color: #f9f6f2; font-size: 20px; }
+  .tbig  { background: #3c3a32; color: #f9f6f2; font-size: 18px; }
+  #msg { margin-top: 12px; font-size: 14px; color: #776e65; }
+  #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250,248,239,0.7); display: flex; justify-content: center; align-items: center; z-index: 10; }
+  #overlay div { text-align: center; }
+  #overlay h2 { font-size: 36px; color: #776e65; margin-bottom: 8px; }
+  #overlay button { background: #8f7a66; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-size: 16px; cursor: pointer; }
+  #overlay button:hover { background: #9f8b77; }
+</style>
+</head><body>
+<div id="game">
+  <h1>2048</h1>
+  <div id="info">
+    <div class="score-box"><div class="label">SCORE</div><div class="val" id="score">0</div></div>
+    <div class="score-box"><div class="label">BEST</div><div class="val" id="best">0</div></div>
+  </div>
+  <div id="board"></div>
+  <div id="msg">Use arrow keys or swipe to play</div>
+</div>
+<div id="overlay" style="display:none"><div><h2 id="overlay-title">Game Over!</h2><button onclick="startGame()">Try Again</button></div></div>
+<script>
+let grid, score, best = 0, won = false;
+const boardEl = document.getElementById('board');
+
+function startGame() {
+  grid = Array.from({length:4}, () => Array(4).fill(0));
+  score = 0; won = false;
+  document.getElementById('overlay').style.display = 'none';
+  addRandom(); addRandom(); render();
+}
+
+function addRandom() {
+  const empty = [];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) if (!grid[r][c]) empty.push([r,c]);
+  if (!empty.length) return;
+  const [r,c] = empty[Math.floor(Math.random() * empty.length)];
+  grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function render() {
+  boardEl.innerHTML = '';
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    const v = grid[r][c];
+    const tile = document.createElement('div');
+    const cls = v === 0 ? 't0' : v <= 2048 ? 't' + v : 'tbig';
+    tile.className = 'tile ' + cls;
+    tile.textContent = v || '';
+    boardEl.appendChild(tile);
+  }
+  document.getElementById('score').textContent = score;
+  if (score > best) { best = score; document.getElementById('best').textContent = best; }
+}
+
+function slide(row) {
+  let arr = row.filter(v => v);
+  let merged = false;
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] === arr[i+1]) { arr[i] *= 2; score += arr[i]; arr.splice(i+1, 1); merged = true; if (arr[i] === 2048 && !won) { won = true; } }
+  }
+  while (arr.length < 4) arr.push(0);
+  return {row: arr, changed: row.some((v,i) => v !== arr[i])};
+}
+
+function move(dir) {
+  let changed = false;
+  if (dir === 'left') {
+    for (let r = 0; r < 4; r++) { const res = slide(grid[r]); if (res.changed) changed = true; grid[r] = res.row; }
+  } else if (dir === 'right') {
+    for (let r = 0; r < 4; r++) { const res = slide([...grid[r]].reverse()); if (res.changed) changed = true; grid[r] = res.row.reverse(); }
+  } else if (dir === 'up') {
+    for (let c = 0; c < 4; c++) { const col = [grid[0][c],grid[1][c],grid[2][c],grid[3][c]]; const res = slide(col); if (res.changed) changed = true; for (let r = 0; r < 4; r++) grid[r][c] = res.row[r]; }
+  } else if (dir === 'down') {
+    for (let c = 0; c < 4; c++) { const col = [grid[3][c],grid[2][c],grid[1][c],grid[0][c]]; const res = slide(col); if (res.changed) changed = true; for (let r = 0; r < 4; r++) grid[3-r][c] = res.row[r]; }
+  }
+  if (changed) { addRandom(); render(); checkGameOver(); }
+}
+
+function checkGameOver() {
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    if (!grid[r][c]) return;
+    if (c < 3 && grid[r][c] === grid[r][c+1]) return;
+    if (r < 3 && grid[r][c] === grid[r+1][c]) return;
+  }
+  document.getElementById('overlay-title').textContent = 'Game Over!';
+  document.getElementById('overlay').style.display = 'flex';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') move('left');
+  else if (e.key === 'ArrowRight') move('right');
+  else if (e.key === 'ArrowUp') move('up');
+  else if (e.key === 'ArrowDown') move('down');
+  if (e.key.startsWith('Arrow')) e.preventDefault();
+});
+
+let ts = null;
+document.addEventListener('touchstart', e => { ts = {x: e.touches[0].clientX, y: e.touches[0].clientY}; });
+document.addEventListener('touchend', e => {
+  if (!ts) return;
+  const dx = e.changedTouches[0].clientX - ts.x, dy = e.changedTouches[0].clientY - ts.y;
+  if (Math.abs(dx) > Math.abs(dy)) { if (dx > 30) move('right'); else if (dx < -30) move('left'); }
+  else { if (dy > 30) move('down'); else if (dy < -30) move('up'); }
+  ts = null;
+});
+
+startGame();
+</script>
+</body></html>
