@@ -1366,7 +1366,7 @@
       color: #333;
     }
 
-    /* Boot Screen */
+    /* Boot Screen - Video */
     .boot-screen {
       position: fixed;
       top: 0;
@@ -1374,55 +1374,33 @@
       width: 100%;
       height: 100%;
       background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       z-index: 10000;
+      overflow: hidden;
     }
 
     .boot-screen.hidden {
       display: none;
     }
 
-    .boot-logo {
-      margin-bottom: 30px;
-    }
-
-    .boot-logo img {
-      width: 300px;
-    }
-
-    .boot-text {
-      color: white;
+    .skip-boot {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      color: rgba(255,255,255,0.5);
       font-size: 12px;
-      margin-bottom: 20px;
+      font-family: Tahoma, sans-serif;
+      cursor: pointer;
+      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      z-index: 10001;
+      transition: all 0.2s;
     }
 
-    .boot-progress {
-      width: 200px;
-      height: 20px;
-      background: #333;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .boot-progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #0058ee, #3a93ff, #0058ee);
-      background-size: 200% 100%;
-      animation: bootProgress 2s ease-in-out forwards, shimmer 1s linear infinite;
-      width: 0%;
-    }
-
-    @keyframes bootProgress {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    .skip-boot:hover {
+      color: #fff;
+      border-color: #fff;
+      background: rgba(255,255,255,0.1);
     }
 
     /* Screensaver */
@@ -1460,19 +1438,17 @@
   </style>
 </head>
 <body>
-  <!-- Boot Screen -->
+  <!-- Boot Screen - Windows XP Startup Video -->
   <div class="boot-screen" id="boot-screen">
-    <div class="boot-logo">
-      <svg width="300" height="80" viewBox="0 0 300 80">
-        <text x="10" y="50" fill="#fff" font-size="28" font-weight="bold" font-family="Arial">Microsoft</text>
-        <text x="150" y="50" fill="#ff6600" font-size="28" font-style="italic" font-family="Arial">Windows</text>
-        <text x="260" y="35" fill="#ff6600" font-size="14" font-family="Arial">XP</text>
-      </svg>
-    </div>
-    <div class="boot-text">Kyle Portfolio Loading...</div>
-    <div class="boot-progress">
-      <div class="boot-progress-bar" id="boot-progress"></div>
-    </div>
+    <iframe
+      id="boot-video"
+      src="https://www.youtube.com/embed/Ulmw-pwjmU4?autoplay=1&mute=0&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=0&end=38"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      style="position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; transform: translate(-50%, -50%); pointer-events: none;">
+    </iframe>
+    <div class="skip-boot" onclick="skipBoot()">Click to skip</div>
   </div>
 
   <!-- Three.js Background -->
@@ -2551,30 +2527,43 @@
     }
 
     // ========== BOOT SEQUENCE ==========
-    function bootSequence() {
+    let bootCompleted = false;
+
+    function finishBoot() {
+      if (bootCompleted) return;
+      bootCompleted = true;
+
       const bootScreen = document.getElementById('boot-screen');
       const desktop = document.getElementById('desktop');
 
+      bootScreen.classList.add('hidden');
+      desktop.style.display = 'block';
+      initThreeJS();
+
+      // Show welcome notification
       setTimeout(() => {
-        bootScreen.classList.add('hidden');
-        desktop.style.display = 'block';
-        initThreeJS();
-        playStartupSound();
+        showNotification('Welcome!', 'Click Start to explore my portfolio. Try the WiFi icon for a surprise!');
+      }, 1500);
 
-        // Show welcome notification
-        setTimeout(() => {
-          showNotification('Welcome!', 'Click Start to explore my portfolio. Try the WiFi icon for a surprise!');
-        }, 1500);
+      // Auto-start music after boot
+      setTimeout(() => {
+        if (musicInitialized && ytPlayer && !isMusicPlaying) {
+          ytPlayer.playVideo();
+          document.getElementById('music-btn').classList.add('playing');
+          isMusicPlaying = true;
+        }
+      }, 2000);
+    }
 
-        // Auto-start music after boot
-        setTimeout(() => {
-          if (musicInitialized && ytPlayer && !isMusicPlaying) {
-            ytPlayer.playVideo();
-            document.getElementById('music-btn').classList.add('playing');
-            isMusicPlaying = true;
-          }
-        }, 2000);
-      }, 2500);
+    function skipBoot() {
+      finishBoot();
+    }
+
+    function bootSequence() {
+      // Wait for the XP startup video to finish (~38 seconds) then auto-transition
+      setTimeout(() => {
+        finishBoot();
+      }, 38000);
     }
 
     // ========== 3D PINBALL GAME ==========
