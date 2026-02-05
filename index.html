@@ -455,6 +455,11 @@
       createMouse();
       createDecorations();
       createCats();
+      createBirds();
+      createTrees();
+      createRocks();
+      createPond();
+      createFallingLeaves();
 
       // Mouse/click events
       renderer.domElement.addEventListener('click', onMouseClick);
@@ -490,6 +495,15 @@
     let clouds = [];
     // Butterflies array
     let butterflies = [];
+    // Birds array
+    let birds = [];
+    // Trees array
+    let trees = [];
+    // Falling leaves array
+    let fallingLeaves = [];
+    // Pond reference
+    let pond = null;
+    let pondGeometry = null;
 
     function createRoom() {
       // WINDOWS XP BLISS - Authentic rolling green hills
@@ -717,9 +731,10 @@
 
     function createWildflowers() {
       // Scattered wildflowers like in Windows XP Bliss
-      const flowerColors = [0xFFEB3B, 0xFFFFFF, 0xFF7043, 0xE91E63, 0x9C27B0]; // Yellow, white, orange, pink, purple
+      const flowerColors = [0xFFEB3B, 0xFFFFFF, 0xFF7043, 0xE91E63, 0x9C27B0, 0xFF5722, 0xAB47BC];
 
-      for (let i = 0; i < 50; i++) {
+      // Regular wildflowers (80 now)
+      for (let i = 0; i < 80; i++) {
         const flower = new THREE.Group();
         const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
 
@@ -762,6 +777,97 @@
           (Math.random() - 0.5) * 12
         );
         scene.add(flower);
+      }
+
+      // === SUNFLOWERS (3-4 tall ones) ===
+      const sunflowerPositions = [
+        { x: -2.5, z: 2.5 }, { x: 3.5, z: 1.5 }, { x: -4, z: -1.5 }, { x: 5, z: 3 }
+      ];
+      const stemMat = new THREE.MeshStandardMaterial({ color: 0x33691E, roughness: 0.8 });
+      const sunPetalMat = new THREE.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.7 });
+      const sunCenterMat = new THREE.MeshStandardMaterial({ color: 0x5D3A1A, roughness: 0.9 });
+
+      sunflowerPositions.forEach(sp => {
+        const sfGroup = new THREE.Group();
+        const stemH = 0.25 + Math.random() * 0.1;
+
+        // Tall stem
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.01, stemH, 6), stemMat);
+        stem.position.y = stemH / 2;
+        sfGroup.add(stem);
+
+        // Leaf on stem
+        const leafGeo = new THREE.SphereGeometry(0.03, 6, 4);
+        const leafMesh = new THREE.Mesh(leafGeo, stemMat);
+        leafMesh.scale.set(1.5, 0.3, 1.0);
+        leafMesh.position.set(0.02, stemH * 0.5, 0);
+        leafMesh.rotation.z = -0.5;
+        sfGroup.add(leafMesh);
+
+        // Flower head - face disc
+        const faceY = stemH + 0.04;
+
+        // Petals (12 arranged in circle)
+        for (let p = 0; p < 12; p++) {
+          const angle = (p / 12) * Math.PI * 2;
+          const petal = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 4), sunPetalMat);
+          petal.scale.set(0.6, 0.3, 1.5);
+          petal.position.set(Math.cos(angle) * 0.04, faceY, Math.sin(angle) * 0.04);
+          petal.rotation.y = -angle;
+          sfGroup.add(petal);
+        }
+
+        // Brown center
+        const center = new THREE.Mesh(new THREE.SphereGeometry(0.03, 10, 8), sunCenterMat);
+        center.scale.y = 0.5;
+        center.position.y = faceY;
+        sfGroup.add(center);
+
+        sfGroup.position.set(sp.x, -0.1, sp.z);
+        scene.add(sfGroup);
+      });
+
+      // === DANDELIONS (10 white puff balls) ===
+      const puffMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, roughness: 1 });
+      for (let i = 0; i < 10; i++) {
+        const dandelion = new THREE.Group();
+
+        // Thin stem
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.1, 4), stemMat);
+        stem.position.y = 0.05;
+        dandelion.add(stem);
+
+        // Puff ball
+        const puff = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 6), puffMat);
+        puff.position.y = 0.11;
+        dandelion.add(puff);
+
+        dandelion.position.set(
+          (Math.random() - 0.5) * 10,
+          -0.1,
+          (Math.random() - 0.5) * 10
+        );
+        scene.add(dandelion);
+      }
+
+      // === TALLER GRASS PATCHES ===
+      const tallGrassMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32, roughness: 0.9, side: THREE.DoubleSide });
+      for (let i = 0; i < 15; i++) {
+        const patchX = (Math.random() - 0.5) * 12;
+        const patchZ = (Math.random() - 0.5) * 12;
+        const numBlades = 5 + Math.floor(Math.random() * 4);
+        for (let j = 0; j < numBlades; j++) {
+          const bladeH = 0.15 + Math.random() * 0.15;
+          const blade = new THREE.Mesh(new THREE.ConeGeometry(0.01, bladeH, 4), tallGrassMat);
+          blade.position.set(
+            patchX + (Math.random() - 0.5) * 0.1,
+            -0.1 + bladeH / 2,
+            patchZ + (Math.random() - 0.5) * 0.1
+          );
+          blade.rotation.x = (Math.random() - 0.5) * 0.3;
+          blade.rotation.z = (Math.random() - 0.5) * 0.3;
+          scene.add(blade);
+        }
       }
     }
 
@@ -827,63 +933,493 @@
     let cats = [];
 
     function createCats() {
-      const catColors = [0xFFFFFF, 0x333333, 0xFFAA00, 0x888888]; // White, black, orange, gray
+      // 3 cats: orange tabby, tuxedo black/white, gray
+      const catConfigs = [
+        { bodyColor: 0xE8935A, name: 'orange' },
+        { bodyColor: 0x222222, chestColor: 0xFFFFFF, name: 'tuxedo' },
+        { bodyColor: 0x888888, name: 'gray' }
+      ];
 
-      for (let i = 0; i < 3; i++) {
+      catConfigs.forEach((config, i) => {
         const catGroup = new THREE.Group();
-        const catColor = catColors[Math.floor(Math.random() * catColors.length)];
-        const catMaterial = new THREE.MeshStandardMaterial({ color: catColor, roughness: 0.9 });
+        const catMat = new THREE.MeshStandardMaterial({ color: config.bodyColor, roughness: 0.85 });
+        const chestMat = config.chestColor
+          ? new THREE.MeshStandardMaterial({ color: config.chestColor, roughness: 0.85 })
+          : catMat;
+        const pinkMat = new THREE.MeshStandardMaterial({ color: 0xFFB6C1, roughness: 0.7 });
+        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 });
+        const eyeHighlight = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const noseMat = new THREE.MeshStandardMaterial({ color: 0xFF9999, roughness: 0.5 });
+        const whiskerMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.5 });
 
-        // Body (using stretched sphere since CapsuleGeometry not in r128)
-        const body = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), catMaterial);
-        body.scale.set(1.5, 0.8, 0.8);
-        body.position.y = 0.15;
+        // === BODY (multiple spheres for smoother shape) ===
+        // Main body
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 10), catMat);
+        body.scale.set(1.6, 0.9, 1.0);
+        body.position.set(0, 0.14, 0);
+        body.name = 'catBody';
         catGroup.add(body);
 
-        // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 8), catMaterial);
-        head.position.set(0.18, 0.18, 0);
+        // Chest (front of body, slightly lower)
+        const chest = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), chestMat);
+        chest.scale.set(1.0, 0.85, 0.9);
+        chest.position.set(0.1, 0.12, 0);
+        catGroup.add(chest);
+
+        // Haunches (rear, slightly larger)
+        const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), catMat);
+        haunch.scale.set(1.0, 0.9, 1.1);
+        haunch.position.set(-0.1, 0.13, 0);
+        catGroup.add(haunch);
+
+        // === HEAD (sphere + cheek puffs) ===
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 10), catMat);
+        head.position.set(0.22, 0.2, 0);
+        head.name = 'catHead';
         catGroup.add(head);
 
-        // Ears
-        const earGeo = new THREE.ConeGeometry(0.04, 0.08, 4);
-        const ear1 = new THREE.Mesh(earGeo, catMaterial);
-        ear1.position.set(0.22, 0.32, 0.05);
+        // Cheek puffs
+        const cheekL = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), catMat);
+        cheekL.position.set(0.24, 0.17, 0.05);
+        catGroup.add(cheekL);
+        const cheekR = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), catMat);
+        cheekR.position.set(0.24, 0.17, -0.05);
+        catGroup.add(cheekR);
+
+        // Muzzle bump
+        const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), chestMat);
+        muzzle.scale.set(0.7, 0.6, 0.8);
+        muzzle.position.set(0.3, 0.17, 0);
+        catGroup.add(muzzle);
+
+        // === EARS (cones with inner pink) ===
+        const earGeo = new THREE.ConeGeometry(0.035, 0.07, 4);
+        const earInnerGeo = new THREE.ConeGeometry(0.02, 0.045, 4);
+
+        const ear1 = new THREE.Mesh(earGeo, catMat);
+        ear1.position.set(0.24, 0.3, 0.045);
+        ear1.rotation.z = -0.15;
+        ear1.rotation.x = -0.1;
         catGroup.add(ear1);
-        const ear2 = new THREE.Mesh(earGeo, catMaterial);
-        ear2.position.set(0.22, 0.32, -0.05);
+        const ear1Inner = new THREE.Mesh(earInnerGeo, pinkMat);
+        ear1Inner.position.set(0.245, 0.295, 0.045);
+        ear1Inner.rotation.z = -0.15;
+        ear1Inner.rotation.x = -0.1;
+        catGroup.add(ear1Inner);
+
+        const ear2 = new THREE.Mesh(earGeo, catMat);
+        ear2.position.set(0.24, 0.3, -0.045);
+        ear2.rotation.z = -0.15;
+        ear2.rotation.x = 0.1;
         catGroup.add(ear2);
+        const ear2Inner = new THREE.Mesh(earInnerGeo, pinkMat);
+        ear2Inner.position.set(0.245, 0.295, -0.045);
+        ear2Inner.rotation.z = -0.15;
+        ear2Inner.rotation.x = 0.1;
+        catGroup.add(ear2Inner);
 
-        // Tail
-        const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.015, 0.22, 8), catMaterial);
-        tail.position.set(-0.22, 0.22, 0);
-        tail.rotation.z = Math.PI / 4;
-        catGroup.add(tail);
+        // === EYES ===
+        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 6), eyeMat);
+        eyeL.position.set(0.3, 0.22, 0.035);
+        catGroup.add(eyeL);
+        const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 6), eyeMat);
+        eyeR.position.set(0.3, 0.22, -0.035);
+        catGroup.add(eyeR);
 
-        // Legs
-        const legGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.12, 8);
-        [[-0.08, 0.06, 0.06], [-0.08, 0.06, -0.06], [0.08, 0.06, 0.06], [0.08, 0.06, -0.06]].forEach(pos => {
-          const leg = new THREE.Mesh(legGeo, catMaterial);
-          leg.position.set(...pos);
-          catGroup.add(leg);
+        // Eye highlights
+        const hlL = new THREE.Mesh(new THREE.SphereGeometry(0.006, 6, 4), eyeHighlight);
+        hlL.position.set(0.315, 0.225, 0.03);
+        catGroup.add(hlL);
+        const hlR = new THREE.Mesh(new THREE.SphereGeometry(0.006, 6, 4), eyeHighlight);
+        hlR.position.set(0.315, 0.225, -0.03);
+        catGroup.add(hlR);
+
+        // === NOSE ===
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.01, 6, 6), noseMat);
+        nose.scale.set(1.2, 0.8, 1.0);
+        nose.position.set(0.32, 0.19, 0);
+        catGroup.add(nose);
+
+        // === WHISKERS (3 per side) ===
+        for (let w = 0; w < 3; w++) {
+          const whiskerGeo = new THREE.CylinderGeometry(0.002, 0.001, 0.08, 4);
+          const wL = new THREE.Mesh(whiskerGeo, whiskerMat);
+          wL.position.set(0.3, 0.175 + w * 0.012, 0.06);
+          wL.rotation.z = Math.PI / 2;
+          wL.rotation.x = -0.2 + w * 0.2;
+          catGroup.add(wL);
+
+          const wR = new THREE.Mesh(whiskerGeo, whiskerMat);
+          wR.position.set(0.3, 0.175 + w * 0.012, -0.06);
+          wR.rotation.z = Math.PI / 2;
+          wR.rotation.x = 0.2 - w * 0.2;
+          catGroup.add(wR);
+        }
+
+        // === TAIL (8-10 small spheres in curved arc) ===
+        const tailSegments = [];
+        const numTailSegs = 9;
+        for (let t = 0; t < numTailSegs; t++) {
+          const segSize = 0.022 - t * 0.001;
+          const seg = new THREE.Mesh(new THREE.SphereGeometry(Math.max(segSize, 0.01), 6, 4), catMat);
+          const progress = t / numTailSegs;
+          // Arc: goes back and up
+          seg.position.set(
+            -0.15 - progress * 0.15,
+            0.15 + Math.sin(progress * Math.PI * 0.8) * 0.15,
+            0
+          );
+          seg.name = 'tailSeg' + t;
+          tailSegments.push(seg);
+          catGroup.add(seg);
+        }
+
+        // === LEGS (4 legs with cylinder + sphere paw) ===
+        const legPositions = [
+          { x: 0.1, z: 0.06, name: 'frontL' },
+          { x: 0.1, z: -0.06, name: 'frontR' },
+          { x: -0.1, z: 0.06, name: 'backL' },
+          { x: -0.1, z: -0.06, name: 'backR' }
+        ];
+        const legRefs = [];
+        legPositions.forEach(lp => {
+          const legGroup = new THREE.Group();
+          const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.018, 0.1, 8), catMat);
+          leg.position.y = -0.05;
+          legGroup.add(leg);
+          // Paw
+          const paw = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 4), catMat);
+          paw.scale.set(1.0, 0.5, 1.2);
+          paw.position.set(0.005, -0.1, 0);
+          legGroup.add(paw);
+          legGroup.position.set(lp.x, 0.1, lp.z);
+          legGroup.name = lp.name;
+          legRefs.push(legGroup);
+          catGroup.add(legGroup);
         });
 
-        // Position cat on the terrain (raised well above ground)
+        // Position cat
         catGroup.position.set(
-          (Math.random() - 0.5) * 6,
-          0.1,
-          1 + Math.random() * 3
+          -2 + i * 2,
+          0.05,
+          1.5 + Math.random() * 2
         );
 
         catGroup.userData = {
-          speed: 0.005 + Math.random() * 0.01,
+          speed: 0.006 + Math.random() * 0.008,
           direction: Math.random() * Math.PI * 2,
           walkTimer: 0,
-          isWalking: true
+          isWalking: true,
+          sitTimer: 0,
+          isSitting: false,
+          sitDuration: 3 + Math.random() * 4,
+          walkDuration: 5 + Math.random() * 5,
+          legs: legRefs,
+          tailSegments: tailSegments,
+          bodyMesh: body
         };
 
         cats.push(catGroup);
         scene.add(catGroup);
+      });
+    }
+
+    function createBirds() {
+      const birdColors = [0x333333, 0x333333, 0x4488CC, 0x333333, 0x4488CC, 0x333333, 0x4488CC, 0x333333, 0x4488CC, 0x333333];
+
+      for (let i = 0; i < 10; i++) {
+        const birdGroup = new THREE.Group();
+        const color = birdColors[i];
+        const birdMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.7 });
+        const beakMat = new THREE.MeshStandardMaterial({ color: 0xFF8800, roughness: 0.5 });
+
+        // Body
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), birdMat);
+        body.scale.set(1.3, 0.8, 0.8);
+        birdGroup.add(body);
+
+        // Head
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 6), birdMat);
+        head.position.set(0.035, 0.015, 0);
+        birdGroup.add(head);
+
+        // Beak
+        const beak = new THREE.Mesh(new THREE.ConeGeometry(0.006, 0.02, 4), beakMat);
+        beak.rotation.z = -Math.PI / 2;
+        beak.position.set(0.055, 0.012, 0);
+        birdGroup.add(beak);
+
+        // Wings (ShapeGeometry triangles)
+        const wingShape = new THREE.Shape();
+        wingShape.moveTo(0, 0);
+        wingShape.lineTo(-0.03, 0.04);
+        wingShape.lineTo(-0.06, 0.01);
+        wingShape.lineTo(0, 0);
+        const wingGeo = new THREE.ShapeGeometry(wingShape);
+        const wingMat = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, roughness: 0.6 });
+
+        const leftWing = new THREE.Mesh(wingGeo, wingMat);
+        leftWing.position.set(-0.005, 0.01, 0.015);
+        leftWing.rotation.y = Math.PI / 2;
+        leftWing.name = 'leftWing';
+        birdGroup.add(leftWing);
+
+        const rightWing = new THREE.Mesh(wingGeo, wingMat);
+        rightWing.position.set(-0.005, 0.01, -0.015);
+        rightWing.rotation.y = -Math.PI / 2;
+        rightWing.scale.x = -1;
+        rightWing.name = 'rightWing';
+        birdGroup.add(rightWing);
+
+        // Tail feathers
+        const tailShape = new THREE.Shape();
+        tailShape.moveTo(0, 0);
+        tailShape.lineTo(-0.025, 0.008);
+        tailShape.lineTo(-0.03, -0.005);
+        tailShape.lineTo(0, 0);
+        const tailGeo = new THREE.ShapeGeometry(tailShape);
+        const tail = new THREE.Mesh(tailGeo, wingMat);
+        tail.position.set(-0.035, 0.005, 0);
+        birdGroup.add(tail);
+
+        // Eye (tiny white dot)
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.004, 4, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        eye.position.set(0.045, 0.022, 0.012);
+        birdGroup.add(eye);
+
+        // Assign to one of 2 flocks
+        const flock = i < 5 ? 0 : 1;
+        const flockCenterX = flock === 0 ? -3 : 4;
+        const flockCenterZ = flock === 0 ? -4 : -6;
+        const flockY = flock === 0 ? 5 : 6.5;
+
+        birdGroup.position.set(
+          flockCenterX + (Math.random() - 0.5) * 2,
+          flockY + Math.random() * 1.5,
+          flockCenterZ + (Math.random() - 0.5) * 2
+        );
+
+        birdGroup.userData = {
+          flock: flock,
+          flockCenterX: flockCenterX,
+          flockCenterZ: flockCenterZ,
+          flockY: flockY,
+          phase: Math.random() * Math.PI * 2,
+          radius: 1.5 + Math.random() * 1.5,
+          speed: 0.3 + Math.random() * 0.2,
+          wingSpeed: 8 + Math.random() * 4,
+          swoopTimer: Math.random() * 20,
+          isSwooping: false,
+          swoopProgress: 0
+        };
+
+        birds.push(birdGroup);
+        scene.add(birdGroup);
+      }
+    }
+
+    function createTrees() {
+      const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5D3A1A, roughness: 0.9 });
+      const leafColors = [0x2E7D32, 0x388E3C, 0x43A047, 0x2E7D32, 0x388E3C];
+
+      const treeConfigs = [
+        { x: -5, z: -4, trunkH: 1.0, canopyR: 0.6, scale: 1.0 },
+        { x: -3.5, z: -6, trunkH: 0.7, canopyR: 0.45, scale: 0.8 },
+        { x: 4.5, z: -5, trunkH: 1.2, canopyR: 0.7, scale: 1.1 },
+        { x: 3, z: -7, trunkH: 0.8, canopyR: 0.5, scale: 0.9 },
+        { x: -1, z: -6.5, trunkH: 1.1, canopyR: 0.65, scale: 1.0 },
+        { x: 6, z: -3.5, trunkH: 0.6, canopyR: 0.4, scale: 0.7 },
+        { x: -6, z: -7, trunkH: 0.9, canopyR: 0.55, scale: 0.95 }
+      ];
+
+      treeConfigs.forEach(tc => {
+        const treeGroup = new THREE.Group();
+        const canopySpheres = [];
+
+        // Trunk
+        const trunk = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.06 * tc.scale, 0.1 * tc.scale, tc.trunkH, 8),
+          trunkMat
+        );
+        trunk.position.y = tc.trunkH / 2 - 0.5;
+        trunk.castShadow = true;
+        treeGroup.add(trunk);
+
+        // Canopy: cluster of 4-6 overlapping green spheres
+        const numPuffs = 4 + Math.floor(Math.random() * 3);
+        for (let j = 0; j < numPuffs; j++) {
+          const leafColor = leafColors[Math.floor(Math.random() * leafColors.length)];
+          const leafMat = new THREE.MeshStandardMaterial({ color: leafColor, roughness: 0.85 });
+          const puffSize = (tc.canopyR * 0.5 + Math.random() * tc.canopyR * 0.4) * tc.scale;
+          const puff = new THREE.Mesh(new THREE.SphereGeometry(puffSize, 10, 8), leafMat);
+          puff.position.set(
+            (Math.random() - 0.5) * tc.canopyR * tc.scale * 0.8,
+            tc.trunkH - 0.5 + tc.canopyR * tc.scale * 0.3 + Math.random() * tc.canopyR * tc.scale * 0.5,
+            (Math.random() - 0.5) * tc.canopyR * tc.scale * 0.8
+          );
+          puff.castShadow = true;
+          puff.userData.origX = puff.position.x;
+          puff.userData.origZ = puff.position.z;
+          canopySpheres.push(puff);
+          treeGroup.add(puff);
+        }
+
+        treeGroup.position.set(tc.x, 0, tc.z);
+        treeGroup.userData = {
+          canopySpheres: canopySpheres,
+          swayPhase: Math.random() * Math.PI * 2,
+          swaySpeed: 0.5 + Math.random() * 0.5,
+          swayAmount: 0.02 + Math.random() * 0.02
+        };
+
+        trees.push(treeGroup);
+        scene.add(treeGroup);
+      });
+    }
+
+    function createRocks() {
+      const rockColors = [0x666666, 0x888888, 0x777777, 0x5a5a5a, 0x999999];
+
+      const rockConfigs = [
+        // Near desk
+        { x: 1.8, z: 0.5, s: 0.08 }, { x: -1.8, z: 0.8, s: 0.06 },
+        { x: 2.2, z: -0.3, s: 0.12 },
+        // Scattered in field
+        { x: 3, z: 2, s: 0.15 }, { x: -3.5, z: 1.5, s: 0.2 },
+        { x: 4, z: -2, s: 0.1 }, { x: -2, z: 3, s: 0.07 },
+        { x: 1, z: 3.5, s: 0.05 }, { x: -4, z: -1, s: 0.18 },
+        { x: 5, z: 1, s: 0.04 }, { x: -1, z: 4, s: 0.03 },
+        { x: 3.5, z: -4.5, s: 0.14 }, { x: -5.5, z: -2, s: 0.09 },
+        { x: 0.5, z: 5, s: 0.06 }, { x: -3, z: -3, s: 0.11 }
+      ];
+
+      rockConfigs.forEach(rc => {
+        const color = rockColors[Math.floor(Math.random() * rockColors.length)];
+        const rockMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.8 + Math.random() * 0.2, metalness: 0.05 });
+
+        // Use dodecahedron or icosahedron randomly for variety
+        const geo = Math.random() > 0.5
+          ? new THREE.DodecahedronGeometry(rc.s, 0)
+          : new THREE.IcosahedronGeometry(rc.s, 0);
+
+        // Displace vertices slightly for organic look
+        const positions = geo.attributes.position.array;
+        for (let i = 0; i < positions.length; i += 3) {
+          positions[i] += (Math.random() - 0.5) * rc.s * 0.3;
+          positions[i + 1] += (Math.random() - 0.5) * rc.s * 0.25;
+          positions[i + 2] += (Math.random() - 0.5) * rc.s * 0.3;
+        }
+        geo.computeVertexNormals();
+
+        const rock = new THREE.Mesh(geo, rockMat);
+        rock.position.set(rc.x, -0.45 + rc.s * 0.3, rc.z);
+        rock.rotation.set(Math.random() * 0.5, Math.random() * Math.PI, Math.random() * 0.5);
+        rock.scale.y = 0.6 + Math.random() * 0.4; // Flatten some
+        rock.castShadow = true;
+        rock.receiveShadow = true;
+        scene.add(rock);
+      });
+    }
+
+    function createPond() {
+      // Circular reflective pond
+      pondGeometry = new THREE.CircleGeometry(1.5, 48);
+      const pondMat = new THREE.MeshStandardMaterial({
+        color: 0x2288AA,
+        transparent: true,
+        opacity: 0.7,
+        metalness: 0.9,
+        roughness: 0.1,
+        side: THREE.DoubleSide
+      });
+      pond = new THREE.Mesh(pondGeometry, pondMat);
+      pond.rotation.x = -Math.PI / 2;
+      pond.position.set(4, -0.48, -3);
+      pond.receiveShadow = true;
+      scene.add(pond);
+
+      // Store original vertex positions for ripple animation
+      const posArray = pondGeometry.attributes.position.array;
+      pond.userData.originalPositions = new Float32Array(posArray.length);
+      for (let i = 0; i < posArray.length; i++) {
+        pond.userData.originalPositions[i] = posArray[i];
+      }
+
+      // Lily pads
+      const lilyMat = new THREE.MeshStandardMaterial({ color: 0x228B22, roughness: 0.8, side: THREE.DoubleSide });
+      const lilyPositions = [
+        { x: 4.3, z: -3.2, r: 0.15 },
+        { x: 3.6, z: -2.6, r: 0.12 },
+        { x: 4.7, z: -2.8, r: 0.1 },
+        { x: 3.9, z: -3.6, r: 0.13 }
+      ];
+      lilyPositions.forEach(lp => {
+        const lily = new THREE.Mesh(new THREE.CircleGeometry(lp.r, 12), lilyMat);
+        lily.rotation.x = -Math.PI / 2;
+        lily.position.set(lp.x, -0.46, lp.z);
+        scene.add(lily);
+
+        // Small pink flower on some lily pads
+        if (Math.random() > 0.5) {
+          const flowerMat = new THREE.MeshStandardMaterial({ color: 0xFF69B4, roughness: 0.6 });
+          for (let p = 0; p < 5; p++) {
+            const petal = new THREE.Mesh(new THREE.SphereGeometry(0.015, 6, 4), flowerMat);
+            const angle = (p / 5) * Math.PI * 2;
+            petal.position.set(lp.x + Math.cos(angle) * 0.025, -0.43, lp.z + Math.sin(angle) * 0.025);
+            petal.scale.y = 0.4;
+            scene.add(petal);
+          }
+          const center = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 4), new THREE.MeshStandardMaterial({ color: 0xFFEB3B }));
+          center.position.set(lp.x, -0.42, lp.z);
+          scene.add(center);
+        }
+      });
+
+      // Edge rocks around pond
+      const edgeRockMat = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.85 });
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.3;
+        const dist = 1.45 + Math.random() * 0.2;
+        const rockSize = 0.06 + Math.random() * 0.08;
+        const geo = new THREE.DodecahedronGeometry(rockSize, 0);
+        const rock = new THREE.Mesh(geo, edgeRockMat);
+        rock.position.set(
+          4 + Math.cos(angle) * dist,
+          -0.48 + rockSize * 0.3,
+          -3 + Math.sin(angle) * dist
+        );
+        rock.rotation.set(Math.random(), Math.random(), Math.random());
+        rock.scale.y = 0.6;
+        scene.add(rock);
+      }
+    }
+
+    function createFallingLeaves() {
+      const leafColors = [0x4CAF50, 0x8BC34A, 0xFF9800, 0xFFC107, 0xF44336, 0x66BB6A];
+
+      for (let i = 0; i < 18; i++) {
+        const color = leafColors[Math.floor(Math.random() * leafColors.length)];
+        const leafMat = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, roughness: 0.8 });
+        const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.025, 0.018), leafMat);
+
+        leaf.position.set(
+          (Math.random() - 0.5) * 12,
+          2 + Math.random() * 6,
+          (Math.random() - 0.5) * 12
+        );
+
+        leaf.userData = {
+          fallSpeed: 0.003 + Math.random() * 0.004,
+          swaySpeed: 1 + Math.random() * 2,
+          swayAmount: 0.3 + Math.random() * 0.5,
+          spinSpeed: 1 + Math.random() * 3,
+          phase: Math.random() * Math.PI * 2,
+          startX: leaf.position.x,
+          startZ: leaf.position.z
+        };
+
+        fallingLeaves.push(leaf);
+        scene.add(leaf);
       }
     }
 
@@ -1627,30 +2163,166 @@
         }
       });
 
-      // Animate cats walking
+      // Animate cats with improved walk cycle
       cats.forEach(cat => {
-        cat.userData.walkTimer += 0.016;
+        const ud = cat.userData;
+        ud.walkTimer += 0.016;
 
-        // Change direction occasionally
-        if (Math.random() < 0.005) {
-          cat.userData.direction += (Math.random() - 0.5) * Math.PI;
-          cat.userData.isWalking = Math.random() > 0.3;
-        }
+        // Switch between sitting and walking
+        if (ud.isSitting) {
+          ud.sitTimer += 0.016;
+          if (ud.sitTimer > ud.sitDuration) {
+            ud.isSitting = false;
+            ud.sitTimer = 0;
+            ud.walkDuration = 5 + Math.random() * 5;
+            ud.isWalking = true;
+          }
+          // Sitting pose: legs tucked, body lower, tail relaxed
+          if (ud.bodyMesh) ud.bodyMesh.position.y = 0.1;
+          cat.position.y = 0.02;
+          // Tail gentle sway while sitting
+          if (ud.tailSegments) {
+            ud.tailSegments.forEach((seg, t) => {
+              const progress = t / ud.tailSegments.length;
+              seg.position.z = Math.sin(time * 1.5 + progress * 2) * 0.03 * progress;
+            });
+          }
+          // Tuck legs
+          if (ud.legs) {
+            ud.legs.forEach(leg => {
+              leg.rotation.x = 0;
+              leg.position.y = 0.05;
+            });
+          }
+        } else {
+          // Walking state
+          ud.sitTimer += 0.016;
+          if (ud.sitTimer > ud.walkDuration) {
+            ud.isSitting = true;
+            ud.sitTimer = 0;
+            ud.sitDuration = 2 + Math.random() * 4;
+          }
 
-        if (cat.userData.isWalking) {
+          // Change direction occasionally
+          if (Math.random() < 0.005) {
+            ud.direction += (Math.random() - 0.5) * Math.PI;
+          }
+
           // Move cat
-          cat.position.x += Math.cos(cat.userData.direction) * cat.userData.speed;
-          cat.position.z += Math.sin(cat.userData.direction) * cat.userData.speed;
+          cat.position.x += Math.cos(ud.direction) * ud.speed;
+          cat.position.z += Math.sin(ud.direction) * ud.speed;
 
           // Face walking direction
-          cat.rotation.y = -cat.userData.direction + Math.PI / 2;
+          cat.rotation.y = -ud.direction + Math.PI / 2;
 
-          // Bobbing animation while walking
-          cat.position.y = 0.1 + Math.sin(time * 10) * 0.015;
+          // Body bob while walking
+          cat.position.y = 0.05 + Math.sin(time * 10) * 0.01;
+          if (ud.bodyMesh) ud.bodyMesh.position.y = 0.14 + Math.sin(time * 10) * 0.005;
+
+          // Leg walk animation (front/back pairs alternate)
+          if (ud.legs) {
+            const walkCycle = time * 8;
+            ud.legs[0].rotation.x = Math.sin(walkCycle) * 0.35;       // front left
+            ud.legs[1].rotation.x = Math.sin(walkCycle + Math.PI) * 0.35; // front right
+            ud.legs[2].rotation.x = Math.sin(walkCycle + Math.PI) * 0.35; // back left
+            ud.legs[3].rotation.x = Math.sin(walkCycle) * 0.35;       // back right
+          }
+
+          // Tail sway side to side while walking
+          if (ud.tailSegments) {
+            ud.tailSegments.forEach((seg, t) => {
+              const progress = t / ud.tailSegments.length;
+              seg.position.z = Math.sin(time * 3 + progress * 2) * 0.05 * progress;
+            });
+          }
 
           // Keep cat in bounds
-          if (Math.abs(cat.position.x) > 5) cat.userData.direction = Math.PI - cat.userData.direction;
-          if (cat.position.z < 0.5 || cat.position.z > 5) cat.userData.direction = -cat.userData.direction;
+          if (Math.abs(cat.position.x) > 5) ud.direction = Math.PI - ud.direction;
+          if (cat.position.z < 0.5 || cat.position.z > 6) ud.direction = -ud.direction;
+        }
+      });
+
+      // Animate birds (flocking + wing flap)
+      birds.forEach(bird => {
+        const bd = bird.userData;
+        const bTime = time * bd.speed + bd.phase;
+
+        // Circular flocking motion
+        bird.position.x = bd.flockCenterX + Math.sin(bTime) * bd.radius;
+        bird.position.z = bd.flockCenterZ + Math.cos(bTime) * bd.radius;
+        bird.position.y = bd.flockY + Math.sin(bTime * 1.5) * 0.5;
+
+        // Occasional swooping
+        bd.swoopTimer += 0.016;
+        if (!bd.isSwooping && bd.swoopTimer > 15 + Math.random() * 10) {
+          bd.isSwooping = true;
+          bd.swoopProgress = 0;
+          bd.swoopTimer = 0;
+        }
+        if (bd.isSwooping) {
+          bd.swoopProgress += 0.02;
+          bird.position.y -= Math.sin(bd.swoopProgress * Math.PI) * 2;
+          if (bd.swoopProgress >= 1) {
+            bd.isSwooping = false;
+          }
+        }
+
+        // Face direction of movement (tangent to circle)
+        bird.rotation.y = -bTime + Math.PI / 2;
+
+        // Bank/tilt when turning
+        bird.rotation.z = Math.cos(bTime) * 0.3;
+
+        // Wing flapping
+        const wingFlap = Math.sin(time * bd.wingSpeed) * 0.7;
+        bird.children.forEach(child => {
+          if (child.name === 'leftWing') {
+            child.rotation.x = wingFlap;
+          } else if (child.name === 'rightWing') {
+            child.rotation.x = -wingFlap;
+          }
+        });
+      });
+
+      // Animate trees (subtle canopy sway using absolute offsets)
+      trees.forEach(tree => {
+        const td = tree.userData;
+        td.canopySpheres.forEach((puff, idx) => {
+          puff.position.x = puff.userData.origX + Math.sin(time * td.swaySpeed + td.swayPhase + idx * 0.5) * td.swayAmount;
+          puff.position.z = puff.userData.origZ + Math.cos(time * td.swaySpeed * 0.7 + td.swayPhase + idx * 0.3) * td.swayAmount * 0.7;
+        });
+      });
+
+      // Animate pond ripples
+      if (pond && pondGeometry) {
+        const posArray = pondGeometry.attributes.position.array;
+        const orig = pond.userData.originalPositions;
+        for (let i = 0; i < posArray.length; i += 3) {
+          const ox = orig[i];
+          const oy = orig[i + 1];
+          const dist = Math.sqrt(ox * ox + oy * oy);
+          // Gentle ripple effect on the Z axis (which is Y in world space since it's rotated)
+          posArray[i + 2] = Math.sin(dist * 4 - time * 2) * 0.015 * (1 - dist / 1.5);
+        }
+        pondGeometry.attributes.position.needsUpdate = true;
+      }
+
+      // Animate falling leaves
+      fallingLeaves.forEach(leaf => {
+        const ld = leaf.userData;
+        leaf.position.y -= ld.fallSpeed;
+        leaf.position.x = ld.startX + Math.sin(time * ld.swaySpeed + ld.phase) * ld.swayAmount;
+        leaf.position.z = ld.startZ + Math.cos(time * ld.swaySpeed * 0.7 + ld.phase) * ld.swayAmount * 0.5;
+        leaf.rotation.y += ld.spinSpeed * 0.016;
+        leaf.rotation.x = Math.sin(time * ld.swaySpeed + ld.phase) * 0.5;
+
+        // Respawn at top when reaching ground
+        if (leaf.position.y < -0.3) {
+          leaf.position.y = 4 + Math.random() * 4;
+          ld.startX = (Math.random() - 0.5) * 12;
+          ld.startZ = (Math.random() - 0.5) * 12;
+          leaf.position.x = ld.startX;
+          leaf.position.z = ld.startZ;
         }
       });
 
