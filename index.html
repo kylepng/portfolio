@@ -2554,6 +2554,15 @@
         setTimeout(() => {
           showNotification('Welcome!', 'Click Start to explore my portfolio. Try the WiFi icon for a surprise!');
         }, 1500);
+
+        // Auto-start music after boot
+        setTimeout(() => {
+          if (musicInitialized && ytPlayer && !isMusicPlaying) {
+            ytPlayer.playVideo();
+            document.getElementById('music-btn').classList.add('playing');
+            isMusicPlaying = true;
+          }
+        }, 2000);
       }, 2500);
     }
 
