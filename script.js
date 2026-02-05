@@ -139,7 +139,8 @@
         // Load pinball only when opened (lazy load) and focus it
         if (id === 'pinball') {
           const frame = document.getElementById('pinball-frame');
-          if (frame && !frame.src && frame.dataset.src) {
+          if (frame && frame.dataset.src) {
+            // Always reload pinball src (fixes black screen on reopen)
             frame.src = frame.dataset.src;
           }
           // Focus the iframe after a short delay to allow loading
@@ -154,7 +155,7 @@
           }, 500);
           // Lower music volume while pinball is playing
           if (ytPlayer && ytPlayer.setVolume) {
-            ytPlayer.setVolume(25);
+            ytPlayer.setVolume(15);
           }
           // Also open the controls helper window
           openWindow('pinball-controls');

@@ -884,6 +884,15 @@ button {
     rgba(0, 0, 0, 0.08) 8px,
     rgba(0, 0, 0, 0.08) 10px
   );
+  min-width: 2px;
+}
+
+.skill-percent {
+  flex: 0 0 32px;
+  font-size: 10px;
+  color: #555;
+  text-align: right;
+  font-weight: 600;
 }
 
 /* ====================================================== */
@@ -1015,8 +1024,13 @@ button {
   }
 
   .skill-name {
-    flex: 0 0 100px;
+    flex: 0 0 90px;
     font-size: 10px;
+  }
+
+  .skill-percent {
+    flex: 0 0 28px;
+    font-size: 9px;
   }
 
   .start-menu {
