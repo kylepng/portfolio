@@ -567,10 +567,42 @@
       }
       terrainGeometry.computeVertexNormals();
 
-      // Grass green with subtle vertex colors for variation
+      // Create grass texture procedurally
+      const grassCanvas = document.createElement('canvas');
+      grassCanvas.width = 512;
+      grassCanvas.height = 512;
+      const grassCtx = grassCanvas.getContext('2d');
+
+      // Base grass color
+      grassCtx.fillStyle = '#3CB043';
+      grassCtx.fillRect(0, 0, 512, 512);
+
+      // Add grass blade details
+      for (let i = 0; i < 3000; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const shade = Math.random() * 0.3;
+        const green = Math.floor(160 + Math.random() * 60);
+        grassCtx.fillStyle = `rgb(${30 + shade * 30}, ${green}, ${30 + shade * 20})`;
+        grassCtx.fillRect(x, y, 2, 4 + Math.random() * 4);
+      }
+
+      // Add lighter highlights
+      for (let i = 0; i < 500; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        grassCtx.fillStyle = 'rgba(100, 200, 100, 0.3)';
+        grassCtx.fillRect(x, y, 3, 3);
+      }
+
+      const grassTexture = new THREE.CanvasTexture(grassCanvas);
+      grassTexture.wrapS = THREE.RepeatWrapping;
+      grassTexture.wrapT = THREE.RepeatWrapping;
+      grassTexture.repeat.set(20, 20);
+
       const terrainMaterial = new THREE.MeshStandardMaterial({
-        color: 0x3CB043, // Authentic XP Bliss green
-        roughness: 0.85,
+        map: grassTexture,
+        roughness: 0.9,
         metalness: 0,
         flatShading: false
       });
@@ -650,43 +682,55 @@
       const sky = new THREE.Mesh(skyGeometry, skyMaterial);
       scene.add(sky);
 
-      // === 3D FLOATING CLOUDS ===
+      // === 3D FLOATING CLOUDS - Big and prominent ===
       const cloudMaterial = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.95,
+        opacity: 0.98,
         roughness: 1,
-        metalness: 0
+        metalness: 0,
+        emissive: 0xffffff,
+        emissiveIntensity: 0.1
       });
 
-      // Create more realistic puffy clouds
-      for (let i = 0; i < 12; i++) {
+      // Create big fluffy clouds - closer and more visible
+      const cloudConfigs = [
+        { x: -8, y: 6, z: -5, scale: 2.5 },
+        { x: 8, y: 7, z: -8, scale: 3 },
+        { x: 0, y: 8, z: -12, scale: 4 },
+        { x: -15, y: 5, z: -6, scale: 2 },
+        { x: 15, y: 6, z: -10, scale: 2.5 },
+        { x: -5, y: 9, z: -15, scale: 3 },
+        { x: 12, y: 8, z: -18, scale: 3.5 },
+        { x: -12, y: 7, z: -20, scale: 3 },
+        { x: 5, y: 10, z: -25, scale: 4 },
+        { x: -8, y: 11, z: -22, scale: 3.5 },
+      ];
+
+      cloudConfigs.forEach((config, i) => {
         const cloudGroup = new THREE.Group();
-        // Randomized cloud shapes
-        const numPuffs = 5 + Math.floor(Math.random() * 4);
+        const numPuffs = 6 + Math.floor(Math.random() * 5);
+
         for (let j = 0; j < numPuffs; j++) {
-          const size = 0.3 + Math.random() * 0.4;
-          const puff = new THREE.Mesh(new THREE.SphereGeometry(size, 12, 12), cloudMaterial);
+          const size = (0.4 + Math.random() * 0.5) * config.scale * 0.3;
+          const puff = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 16), cloudMaterial);
           puff.position.set(
-            (j - numPuffs/2) * 0.35 + Math.random() * 0.2,
-            Math.random() * 0.2,
-            Math.random() * 0.3 - 0.15
+            (j - numPuffs/2) * 0.4 * config.scale * 0.3 + Math.random() * 0.3,
+            Math.random() * 0.3 * config.scale * 0.3,
+            Math.random() * 0.4 * config.scale * 0.3 - 0.2
           );
-          puff.scale.y = 0.6 + Math.random() * 0.3; // Flatten slightly
+          puff.scale.y = 0.5 + Math.random() * 0.3;
           cloudGroup.add(puff);
         }
-        cloudGroup.position.set(
-          (Math.random() - 0.5) * 30,
-          4 + Math.random() * 5,
-          -12 - Math.random() * 15
-        );
+
+        cloudGroup.position.set(config.x, config.y, config.z);
         cloudGroup.userData = {
-          speed: 0.003 + Math.random() * 0.007,
-          startX: cloudGroup.position.x
+          speed: 0.002 + Math.random() * 0.005,
+          startX: config.x
         };
         clouds.push(cloudGroup);
         scene.add(cloudGroup);
-      }
+      });
 
       // Create butterflies
       createButterflies();
@@ -883,7 +927,7 @@
         // Position cat on the terrain
         catGroup.position.set(
           (Math.random() - 0.5) * 6,
-          -0.35,
+          -0.42,
           1 + Math.random() * 3
         );
 
@@ -1339,7 +1383,7 @@
         chairGroup.add(wheel);
       }
 
-      chairGroup.position.set(0, -0.35, 1.1); // Pushed back from desk
+      chairGroup.position.set(0, -0.15, 1.1); // Pushed back from desk, raised up
       chairGroup.rotation.y = 0.15; // Slightly angled
       scene.add(chairGroup);
 
@@ -1652,7 +1696,7 @@
           cat.rotation.y = -cat.userData.direction + Math.PI / 2;
 
           // Bobbing animation while walking
-          cat.position.y = -0.35 + Math.sin(time * 10) * 0.01;
+          cat.position.y = -0.42 + Math.sin(time * 10) * 0.01;
 
           // Keep cat in bounds
           if (Math.abs(cat.position.x) > 5) cat.userData.direction = Math.PI - cat.userData.direction;
@@ -1710,4 +1754,4 @@
   </script>
 </body>
 </html>
-<!-- v2.1.0 - clean screen -->
+<!-- v2.2.0 - better grass and clouds -->
