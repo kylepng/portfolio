@@ -186,96 +186,103 @@
   <script>
     // ============ SATISFYING SOUNDS ============
     let audioCtx = null;
+    let hissNode = null;
+    let hissGain = null;
 
     function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     }
 
-    // Creamy thock keyboard sound
+    // Preload sounds
+    const sounds = {
+      keypress: new Audio('sounds/keypress.mp3'),
+      enter: new Audio('sounds/enter.ogg'),
+      click: new Audio('sounds/open-window.ogg')
+    };
+
+    // Set volumes
+    sounds.keypress.volume = 0.4;
+    sounds.enter.volume = 0.5;
+    sounds.click.volume = 0.3;
+
+    // Mechanical keyboard sound
     function playKeySound() {
       try {
-        const ctx = getAudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-
-        // Low thock frequency
-        osc.frequency.setValueAtTime(80 + Math.random() * 40, ctx.currentTime);
-        osc.type = 'sine';
-
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(800, ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.08);
-
-        // Add a click layer
-        const click = ctx.createOscillator();
-        const clickGain = ctx.createGain();
-        click.connect(clickGain);
-        clickGain.connect(ctx.destination);
-        click.frequency.setValueAtTime(2000 + Math.random() * 500, ctx.currentTime);
-        click.type = 'sine';
-        clickGain.gain.setValueAtTime(0.03, ctx.currentTime);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
-        click.start(ctx.currentTime);
-        click.stop(ctx.currentTime + 0.02);
+        const sound = sounds.keypress.cloneNode();
+        sound.volume = 0.3 + Math.random() * 0.2;
+        sound.playbackRate = 0.95 + Math.random() * 0.1;
+        sound.play().catch(() => {});
       } catch(e) {}
     }
 
-    // Satisfying pop click sound
+    // Click sound
     function playClickSound() {
       try {
-        const ctx = getAudioCtx();
-
-        // Pop sound
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.frequency.setValueAtTime(400, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.1);
-        osc.type = 'sine';
-
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.15);
-
-        // Add bubble layer
-        const bubble = ctx.createOscillator();
-        const bubbleGain = ctx.createGain();
-        bubble.connect(bubbleGain);
-        bubbleGain.connect(ctx.destination);
-        bubble.frequency.setValueAtTime(800, ctx.currentTime);
-        bubble.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
-        bubble.type = 'sine';
-        bubbleGain.gain.setValueAtTime(0.08, ctx.currentTime);
-        bubbleGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-        bubble.start(ctx.currentTime);
-        bubble.stop(ctx.currentTime + 0.05);
+        const sound = sounds.click.cloneNode();
+        sound.volume = 0.3;
+        sound.play().catch(() => {});
       } catch(e) {}
     }
 
-    // Keyboard listener for creamy sounds
+    // Enter/confirmation sound
+    function playEnterSound() {
+      try {
+        sounds.enter.currentTime = 0;
+        sounds.enter.play().catch(() => {});
+      } catch(e) {}
+    }
+
+    // Background hiss (CRT static)
+    function startBackgroundHiss() {
+      try {
+        const ctx = getAudioCtx();
+        const bufferSize = 2 * ctx.sampleRate;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+
+        hissNode = ctx.createBufferSource();
+        hissNode.buffer = noiseBuffer;
+        hissNode.loop = true;
+
+        // Filter to make it a softer hiss
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1000;
+
+        hissGain = ctx.createGain();
+        hissGain.gain.value = 0.015; // Very quiet
+
+        hissNode.connect(filter);
+        filter.connect(hissGain);
+        hissGain.connect(ctx.destination);
+
+        hissNode.start();
+      } catch(e) {}
+    }
+
+    // Keyboard listener for mechanical sounds
     document.addEventListener('keydown', (e) => {
       if (!e.repeat) playKeySound();
     });
 
-    // Click listener for satisfying pops
+    // Click listener
     document.addEventListener('click', () => {
       playClickSound();
     });
+
+    // Start hiss on first interaction
+    let hissStarted = false;
+    document.addEventListener('click', () => {
+      if (!hissStarted) {
+        hissStarted = true;
+        startBackgroundHiss();
+      }
+    }, { once: true });
 
     // Three.js Scene
     let scene, camera, renderer, controls;
@@ -723,6 +730,7 @@
     function zoomIntoScreen() {
       isZooming = true;
       controls.enabled = false;
+      playEnterSound(); // Play enter sound
 
       // Hide UI
       document.getElementById('click-hint').classList.remove('visible');

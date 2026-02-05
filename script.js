@@ -138,11 +138,6 @@
       }
     }
 
-    // Launch 3D Pinball in new window
-    function launchPinball() {
-      window.open('https://alula.github.io/SpaceCadetPinball/', '_blank', 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no');
-    }
-
     function closeWindow(id) {
       const win = document.getElementById('window-' + id);
       if (win) {

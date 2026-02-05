@@ -560,92 +560,15 @@
         <span class="menu-item" onclick="playClick()">Help</span>
       </div>
       <div class="window-content" style="padding: 0; background: #000; min-height: 480px; position: relative;">
-        <!-- Pinball Preview/Launch Screen -->
-        <div id="pinball-launcher" style="
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          z-index: 10;
-        ">
-          <!-- Pinball Table Art -->
-          <div style="
-            width: 200px;
-            height: 300px;
-            background: linear-gradient(180deg, #2d1b4e 0%, #1a0f2e 100%);
-            border: 4px solid #8b5cf6;
-            border-radius: 100px 100px 10px 10px;
-            position: relative;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), inset 0 0 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-          ">
-            <!-- Bumpers -->
-            <div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px;">
-              <div style="width: 30px; height: 30px; background: radial-gradient(circle, #ff6b6b 0%, #c0392b 100%); border-radius: 50%; box-shadow: 0 0 10px #ff6b6b;"></div>
-              <div style="width: 30px; height: 30px; background: radial-gradient(circle, #4ecdc4 0%, #1abc9c 100%); border-radius: 50%; box-shadow: 0 0 10px #4ecdc4;"></div>
-              <div style="width: 30px; height: 30px; background: radial-gradient(circle, #f39c12 0%, #d68910 100%); border-radius: 50%; box-shadow: 0 0 10px #f39c12;"></div>
-            </div>
-            <!-- Score Display -->
-            <div style="
-              position: absolute;
-              top: 15px;
-              left: 50%;
-              transform: translateX(-50%);
-              background: #000;
-              padding: 5px 15px;
-              border: 2px solid #333;
-              font-family: 'Courier New', monospace;
-              color: #ff0;
-              font-size: 14px;
-              text-shadow: 0 0 5px #ff0;
-            ">00000000</div>
-            <!-- Ball -->
-            <div style="
-              position: absolute;
-              bottom: 80px;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 20px;
-              height: 20px;
-              background: radial-gradient(circle at 30% 30%, #fff 0%, #ccc 50%, #888 100%);
-              border-radius: 50%;
-              box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            "></div>
-            <!-- Flippers -->
-            <div style="position: absolute; bottom: 40px; left: 30px; width: 50px; height: 12px; background: linear-gradient(90deg, #e74c3c, #c0392b); border-radius: 6px; transform: rotate(-30deg);"></div>
-            <div style="position: absolute; bottom: 40px; right: 30px; width: 50px; height: 12px; background: linear-gradient(90deg, #c0392b, #e74c3c); border-radius: 6px; transform: rotate(30deg);"></div>
-            <!-- Plunger -->
-            <div style="position: absolute; bottom: 20px; right: -10px; width: 15px; height: 60px; background: linear-gradient(90deg, #888, #ccc, #888); border-radius: 3px;"></div>
-          </div>
-          <div style="color: #fff; font-family: 'Tahoma', sans-serif; text-align: center; margin-bottom: 15px;">
-            <div style="font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #8b5cf6;">3D PINBALL</div>
-            <div style="font-size: 14px; color: #888; margin-top: 5px;">Space Cadet</div>
-          </div>
-          <button onclick="launchPinball(); playClick();" style="
-            background: linear-gradient(180deg, #5b8def 0%, #3a6bc5 50%, #2d5aa8 100%);
-            color: #fff;
-            border: 2px solid #1a3a6e;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 'Tahoma', sans-serif;
-            cursor: pointer;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
-          " onmouseover="this.style.background='linear-gradient(180deg, #6b9dff 0%, #4a7bd5 50%, #3d6ab8 100%)'" onmouseout="this.style.background='linear-gradient(180deg, #5b8def 0%, #3a6bc5 50%, #2d5aa8 100%)'">
-            ▶ LAUNCH GAME
-          </button>
-          <div style="color: #666; font-size: 11px; margin-top: 15px; font-family: 'Tahoma', sans-serif;">
-            Opens in new window • Use Z/M for flippers, Space to launch
-          </div>
-        </div>
+        <iframe
+          src="https://alula.github.io/SpaceCadetPinball/"
+          width="100%"
+          height="480"
+          style="border: none; display: block;"
+          title="3D Pinball Space Cadet"
+          allow="autoplay; fullscreen"
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
 
