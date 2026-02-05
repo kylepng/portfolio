@@ -864,19 +864,6 @@
       coffee.position.set(1.1, 0.63, 0.3);
       scene.add(coffee);
 
-      // Picture frame on wall
-      const frameGeometry = new THREE.BoxGeometry(0.5, 0.4, 0.02);
-      const frameMaterial = new THREE.MeshStandardMaterial({ color: 0x4a3728 });
-      const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-      frame.position.set(-0.8, 2, -4.98);
-      scene.add(frame);
-
-      // Photo inside frame
-      const photoGeometry = new THREE.PlaneGeometry(0.4, 0.3);
-      const photoMaterial = new THREE.MeshBasicMaterial({ color: 0x87CEEB });
-      const photo = new THREE.Mesh(photoGeometry, photoMaterial);
-      photo.position.set(-0.8, 2, -4.96);
-      scene.add(photo);
     }
 
     // Mouse move - check if hovering screen
