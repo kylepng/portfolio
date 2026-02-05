@@ -1967,7 +1967,7 @@
     }
 
     // Initialize
-    init();
+    try { init(); } catch(e) { document.getElementById('controls-hint').innerHTML = '<div style="color:red;font-size:16px;">ERROR: ' + e.message + '<br>' + e.stack + '</div>'; console.error(e); }
   </script>
 </body>
 </html>
