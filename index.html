@@ -1351,7 +1351,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg, #5a7edc 0%, #4a6fd4 30%, #3d5fc9 60%, #2d4eb8 100%);
+      background: linear-gradient(180deg, #5168ca 0%, #4a5fc4 50%, #3c4faa 100%);
       z-index: 10000;
       display: flex;
       flex-direction: column;
@@ -1364,62 +1364,85 @@
       display: none;
     }
 
-    .xp-logo {
-      margin-bottom: 60px;
+    .xp-flag {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 80px;
     }
 
-    .xp-logo img {
-      width: 320px;
-      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    .xp-title {
+      font-family: 'Franklin Gothic Medium', 'Trebuchet MS', Arial, sans-serif;
+      font-size: 32px;
+      color: #fff;
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .xp-title sup {
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      vertical-align: super;
     }
 
     .welcome-text {
       font-family: 'Franklin Gothic Medium', 'Trebuchet MS', Arial, sans-serif;
-      font-size: 72px;
-      font-weight: normal;
+      font-size: 80px;
+      font-weight: 300;
       font-style: italic;
       color: #fff;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
-      letter-spacing: 2px;
-      margin-bottom: 50px;
-      animation: welcomeFade 2s ease-in-out;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+      letter-spacing: 4px;
+      margin-bottom: 60px;
     }
 
-    @keyframes welcomeFade {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .xp-loader-container {
+      width: 200px;
+      height: 24px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .xp-loader {
+    .xp-loader-track {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .xp-loader-blocks {
       display: flex;
-      gap: 8px;
-      margin-top: 20px;
+      gap: 4px;
+      position: absolute;
+      animation: xpSlide 2s linear infinite;
     }
 
-    .xp-loader-block {
+    .xp-block {
       width: 12px;
-      height: 20px;
-      background: linear-gradient(180deg, #fff 0%, #b8d4f8 50%, #7eb4ea 100%);
+      height: 22px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.9) 0%,
+        rgba(180,200,255,0.8) 30%,
+        rgba(100,130,200,0.6) 70%,
+        rgba(60,80,150,0.4) 100%
+      );
       border-radius: 2px;
-      animation: loaderPulse 1.5s ease-in-out infinite;
-      box-shadow: 0 0 8px rgba(255,255,255,0.5);
     }
 
-    .xp-loader-block:nth-child(1) { animation-delay: 0s; }
-    .xp-loader-block:nth-child(2) { animation-delay: 0.15s; }
-    .xp-loader-block:nth-child(3) { animation-delay: 0.3s; }
-
-    @keyframes loaderPulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
-      50% { opacity: 1; transform: scaleY(1); }
+    @keyframes xpSlide {
+      0% { left: -50px; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { left: 200px; opacity: 0; }
     }
 
     .boot-footer {
       position: absolute;
-      bottom: 30px;
-      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
-      font-size: 11px;
-      color: rgba(255,255,255,0.7);
+      bottom: 40px;
+      font-family: 'Franklin Gothic Medium', Tahoma, Arial, sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.5px;
     }
 
     /* Screensaver */
@@ -1459,14 +1482,24 @@
 <body>
   <!-- Boot Screen - Authentic Windows XP -->
   <div class="boot-screen" id="boot-screen">
-    <div class="xp-logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Windows_logo_-_2002.svg/320px-Windows_logo_-_2002.svg.png" alt="Windows XP">
+    <div class="xp-flag">
+      <svg width="50" height="50" viewBox="0 0 88 88">
+        <path d="M0 12.4L35.7 7.3V42.5H0V12.4Z" fill="#F25022"/>
+        <path d="M40 6.7L87.3 0V42.5H40V6.7Z" fill="#7FBA00"/>
+        <path d="M0 47.5H35.7V82.7L0 77.6V47.5Z" fill="#00A4EF"/>
+        <path d="M40 47.5H87.3V88L40 81.3V47.5Z" fill="#FFB900"/>
+      </svg>
+      <span class="xp-title">Windows<sup>XP</sup></span>
     </div>
     <div class="welcome-text">welcome</div>
-    <div class="xp-loader">
-      <div class="xp-loader-block"></div>
-      <div class="xp-loader-block"></div>
-      <div class="xp-loader-block"></div>
+    <div class="xp-loader-container">
+      <div class="xp-loader-track">
+        <div class="xp-loader-blocks">
+          <div class="xp-block"></div>
+          <div class="xp-block"></div>
+          <div class="xp-block"></div>
+        </div>
+      </div>
     </div>
     <div class="boot-footer">Copyright © Microsoft Corporation</div>
   </div>
