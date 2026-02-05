@@ -44,14 +44,36 @@
       pointer-events: none;
     }
 
-    /* Windows XP Bliss Wallpaper - Animated */
+    /* Windows XP Bliss Wallpaper - Video Background */
     .desktop {
       width: 100vw;
       height: 100vh;
-      background: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHJxMnRhbmxoY3Fvbjc1bXgyNjZhazFsMWRpaTZrcnpncjh4cnNxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3q2SH4Cmhh8F40jS/giphy.gif') center center;
-      background-size: cover;
+      background: #3a6ea5;
       position: relative;
       overflow: hidden;
+    }
+
+    .video-background {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .video-background iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180vw;
+      height: 180vh;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
 
     /* CRT Scanline Effect */
@@ -1460,6 +1482,11 @@
   <div class="crt-overlay"></div>
 
   <div class="desktop" id="desktop" style="display: none;">
+    <!-- Animated Bliss Video Background -->
+    <div class="video-background">
+      <iframe src="https://www.youtube.com/embed/NrdN8nAsccI?autoplay=1&mute=1&loop=1&playlist=NrdN8nAsccI&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
     <!-- Desktop Icons - Authentic XP Style -->
     <div class="icons-container">
       <div class="desktop-icon" data-window="pepmaxx" ondblclick="openWindow('pepmaxx')" onclick="selectIcon(this); playClick();">
@@ -1500,6 +1527,11 @@
       <div class="desktop-icon" data-window="socials" ondblclick="openWindow('socials')" onclick="selectIcon(this); playClick();">
         <img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png">
         <span>My Socials</span>
+      </div>
+
+      <div class="desktop-icon" data-window="pinball" ondblclick="openWindow('pinball')" onclick="selectIcon(this); playClick();">
+        <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png">
+        <span>3D Pinball</span>
       </div>
     </div>
 
@@ -1931,6 +1963,34 @@
           <div style="display: flex; flex-wrap: wrap; gap: 6px;">
             <a href="https://github.com/kylepng" target="_blank" class="social-link github">@kylepng</a>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D Pinball Window -->
+    <div class="window" id="window-pinball" style="top: 30px; left: 150px; width: 650px;">
+      <div class="window-titlebar" onmousedown="startDrag(event, 'window-pinball')">
+        <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png" style="width:16px;height:16px;">
+        <span class="window-title">3D Pinball for Windows - Space Cadet</span>
+        <div class="window-controls">
+          <button class="window-btn minimize" onclick="minimizeWindow('pinball')">_</button>
+          <button class="window-btn maximize" onclick="maximizeWindow('pinball')">□</button>
+          <button class="window-btn close" onclick="closeWindow('pinball'); stopPinball();">✕</button>
+        </div>
+      </div>
+      <div class="window-menubar">
+        <span class="menu-item">Game</span>
+        <span class="menu-item">Options</span>
+        <span class="menu-item">Help</span>
+      </div>
+      <div class="window-content" style="padding: 0; background: #1a1a2e; display: flex; flex-direction: column; align-items: center;">
+        <div style="background: linear-gradient(180deg, #16213e 0%, #0f0f23 100%); padding: 10px; width: 100%; text-align: center; border-bottom: 2px solid #e94560;">
+          <span style="color: #e94560; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold;">SCORE: <span id="pinball-score">0</span></span>
+          <span style="color: #ffd93d; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; margin-left: 30px;">BALL: <span id="pinball-balls">3</span></span>
+        </div>
+        <canvas id="pinball-canvas" width="600" height="400" style="border: 2px solid #e94560; margin: 10px; border-radius: 4px;"></canvas>
+        <div style="color: #aaa; font-size: 11px; padding: 8px; text-align: center; font-family: Tahoma, sans-serif;">
+          Press <span style="color: #ffd93d; font-weight: bold;">SPACE</span> to launch | <span style="color: #e94560; font-weight: bold;">←</span> <span style="color: #e94560; font-weight: bold;">→</span> Flippers | <span style="color: #ffd93d; font-weight: bold;">R</span> to Reset
         </div>
       </div>
     </div>
@@ -2516,6 +2576,233 @@
         }, 2000);
       }, 2500);
     }
+
+    // ========== 3D PINBALL GAME ==========
+    let pinballGame = null;
+
+    function initPinball() {
+      const canvas = document.getElementById('pinball-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let ball = { x: 550, y: 350, vx: 0, vy: 0, radius: 8, launched: false };
+      let score = 0;
+      let balls = 3;
+      let leftFlipper = 0;
+      let rightFlipper = 0;
+      let gameRunning = true;
+
+      const bumpers = [
+        { x: 150, y: 100, r: 25 },
+        { x: 300, y: 80, r: 25 },
+        { x: 450, y: 100, r: 25 },
+        { x: 200, y: 180, r: 20 },
+        { x: 400, y: 180, r: 20 },
+        { x: 300, y: 150, r: 30 }
+      ];
+
+      function draw() {
+        // Background
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, 600, 400);
+
+        // Play area border
+        ctx.strokeStyle = '#e94560';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(10, 10, 520, 380);
+
+        // Launch tube
+        ctx.fillStyle = '#16213e';
+        ctx.fillRect(540, 50, 50, 340);
+        ctx.strokeStyle = '#e94560';
+        ctx.strokeRect(540, 50, 50, 340);
+
+        // Bumpers
+        bumpers.forEach((b, i) => {
+          const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+          gradient.addColorStop(0, '#ff6b6b');
+          gradient.addColorStop(0.7, '#e94560');
+          gradient.addColorStop(1, '#c23a4a');
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fillStyle = gradient;
+          ctx.fill();
+          ctx.strokeStyle = '#ffd93d';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText((i + 1) * 100, b.x, b.y + 4);
+        });
+
+        // Left flipper
+        ctx.save();
+        ctx.translate(120, 360);
+        ctx.rotate(leftFlipper * -0.5);
+        ctx.fillStyle = '#ffd93d';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(80, -10);
+        ctx.lineTo(80, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Right flipper
+        ctx.save();
+        ctx.translate(420, 360);
+        ctx.rotate(rightFlipper * 0.5);
+        ctx.fillStyle = '#ffd93d';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-80, -10);
+        ctx.lineTo(-80, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Ball
+        const ballGradient = ctx.createRadialGradient(ball.x - 2, ball.y - 2, 0, ball.x, ball.y, ball.radius);
+        ballGradient.addColorStop(0, '#fff');
+        ballGradient.addColorStop(0.3, '#c0c0c0');
+        ballGradient.addColorStop(1, '#808080');
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ballGradient;
+        ctx.fill();
+
+        // Plunger
+        if (!ball.launched) {
+          ctx.fillStyle = '#e94560';
+          ctx.fillRect(555, 360, 20, 30);
+          ctx.fillStyle = '#ffd93d';
+          ctx.font = '10px Arial';
+          ctx.fillText('SPACE', 565, 355);
+        }
+      }
+
+      function update() {
+        if (!gameRunning) return;
+
+        if (ball.launched) {
+          ball.vy += 0.15; // gravity
+          ball.x += ball.vx;
+          ball.y += ball.vy;
+
+          // Wall collisions
+          if (ball.x < 20) { ball.x = 20; ball.vx *= -0.8; }
+          if (ball.x > 530) { ball.x = 530; ball.vx *= -0.8; }
+          if (ball.y < 20) { ball.y = 20; ball.vy *= -0.8; }
+
+          // Bumper collisions
+          bumpers.forEach((b, i) => {
+            const dx = ball.x - b.x;
+            const dy = ball.y - b.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < b.r + ball.radius) {
+              const angle = Math.atan2(dy, dx);
+              ball.vx = Math.cos(angle) * 8;
+              ball.vy = Math.sin(angle) * 8;
+              score += (i + 1) * 100;
+              document.getElementById('pinball-score').textContent = score;
+              playClick();
+            }
+          });
+
+          // Flipper collisions
+          if (ball.y > 350 && ball.y < 375) {
+            if (ball.x > 120 && ball.x < 200 && leftFlipper > 0) {
+              ball.vy = -10;
+              ball.vx = (ball.x - 160) * 0.2;
+            }
+            if (ball.x > 340 && ball.x < 420 && rightFlipper > 0) {
+              ball.vy = -10;
+              ball.vx = (ball.x - 380) * 0.2;
+            }
+          }
+
+          // Ball lost
+          if (ball.y > 410) {
+            balls--;
+            document.getElementById('pinball-balls').textContent = balls;
+            if (balls <= 0) {
+              gameRunning = false;
+              ctx.fillStyle = 'rgba(0,0,0,0.7)';
+              ctx.fillRect(0, 0, 600, 400);
+              ctx.fillStyle = '#e94560';
+              ctx.font = 'bold 30px Arial';
+              ctx.textAlign = 'center';
+              ctx.fillText('GAME OVER', 300, 180);
+              ctx.fillStyle = '#ffd93d';
+              ctx.font = '20px Arial';
+              ctx.fillText('Final Score: ' + score, 300, 220);
+              ctx.fillStyle = '#fff';
+              ctx.font = '14px Arial';
+              ctx.fillText('Press R to restart', 300, 260);
+              return;
+            }
+            resetBall();
+          }
+        }
+
+        // Flipper decay
+        leftFlipper *= 0.8;
+        rightFlipper *= 0.8;
+      }
+
+      function resetBall() {
+        ball = { x: 565, y: 350, vx: 0, vy: 0, radius: 8, launched: false };
+      }
+
+      function resetGame() {
+        score = 0;
+        balls = 3;
+        gameRunning = true;
+        document.getElementById('pinball-score').textContent = '0';
+        document.getElementById('pinball-balls').textContent = '3';
+        resetBall();
+      }
+
+      function gameLoop() {
+        update();
+        draw();
+        pinballGame = requestAnimationFrame(gameLoop);
+      }
+
+      document.addEventListener('keydown', (e) => {
+        const pinballWindow = document.getElementById('window-pinball');
+        if (!pinballWindow.classList.contains('active')) return;
+
+        if (e.code === 'Space' && !ball.launched) {
+          ball.launched = true;
+          ball.vy = -12;
+          ball.vx = -2 + Math.random() * -2;
+          playClick();
+        }
+        if (e.code === 'ArrowLeft' || e.code === 'KeyZ') leftFlipper = 1;
+        if (e.code === 'ArrowRight' || e.code === 'Slash') rightFlipper = 1;
+        if (e.code === 'KeyR') resetGame();
+      });
+
+      gameLoop();
+    }
+
+    function stopPinball() {
+      if (pinballGame) {
+        cancelAnimationFrame(pinballGame);
+        pinballGame = null;
+      }
+    }
+
+    // Initialize pinball when window opens
+    const origOpenWindow = openWindow;
+    openWindow = function(id) {
+      origOpenWindow(id);
+      if (id === 'pinball') {
+        setTimeout(initPinball, 100);
+      }
+    };
 
     // Start boot sequence
     window.onload = bootSequence;
