@@ -136,12 +136,22 @@
           setTimeout(() => icon.classList.remove('bounce'), 300);
         }
 
-        // Load pinball only when opened (lazy load)
+        // Load pinball only when opened (lazy load) and focus it
         if (id === 'pinball') {
           const frame = document.getElementById('pinball-frame');
           if (frame && !frame.src && frame.dataset.src) {
             frame.src = frame.dataset.src;
           }
+          // Focus the iframe after a short delay to allow loading
+          setTimeout(() => {
+            if (frame) {
+              frame.focus();
+              // Also try to focus the canvas inside
+              try {
+                frame.contentWindow.document.getElementById('canvas')?.focus();
+              } catch(e) {}
+            }
+          }, 500);
         }
       }
     }

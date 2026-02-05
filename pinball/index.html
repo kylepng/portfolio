@@ -122,52 +122,37 @@
     <div class="emscripten">
       <progress hidden id="progress" max="100" value="0"></progress>
     </div>
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="-1"></canvas>
-    <div class="instructions">
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="0"></canvas>
+    <div class="instructions" id="controls-panel">
       <h4>Controls</h4>
       <div class="controls">
         <div class="control"><kbd>Space</kbd> Launch Ball</div>
-        <div class="control"><kbd>Enter</kbd> New Game</div>
-        <div class="control"><kbd>&larr;</kbd> Left Flipper</div>
-        <div class="control"><kbd>&rarr;</kbd> Right Flipper</div>
+        <div class="control"><kbd>F2</kbd> New Game</div>
+        <div class="control"><kbd>Z</kbd> Left Flipper</div>
+        <div class="control"><kbd>/</kbd> Right Flipper</div>
         <div class="control"><kbd>X</kbd> Nudge Left</div>
         <div class="control"><kbd>.</kbd> Nudge Right</div>
       </div>
-      <div class="tip">Click the game first, then use keyboard to play!</div>
+      <div class="tip">Click the game area to focus, then use keyboard to play!</div>
     </div>
   </div>
 
   <script>
-    // Key remapper: Arrow keys -> Flipper keys
-    document.addEventListener('keydown', function(e) {
-      const canvas = document.getElementById('canvas');
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        // Simulate 'z' key for left flipper
-        canvas.dispatchEvent(new KeyboardEvent('keydown', {
-          key: 'z', code: 'KeyZ', keyCode: 90, which: 90, bubbles: true
-        }));
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        // Simulate '/' key for right flipper
-        canvas.dispatchEvent(new KeyboardEvent('keydown', {
-          key: '/', code: 'Slash', keyCode: 191, which: 191, bubbles: true
-        }));
-      }
+    // Auto-focus canvas when loaded
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+          canvas.focus();
+        }
+      }, 1000);
     });
 
-    document.addEventListener('keyup', function(e) {
+    // Click anywhere to focus canvas
+    document.addEventListener('click', function() {
       const canvas = document.getElementById('canvas');
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        canvas.dispatchEvent(new KeyboardEvent('keyup', {
-          key: 'z', code: 'KeyZ', keyCode: 90, which: 90, bubbles: true
-        }));
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        canvas.dispatchEvent(new KeyboardEvent('keyup', {
-          key: '/', code: 'Slash', keyCode: 191, which: 191, bubbles: true
-        }));
+      if (canvas && canvas.style.display !== 'none') {
+        canvas.focus();
       }
     });
   </script>
