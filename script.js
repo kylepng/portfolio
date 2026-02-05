@@ -152,6 +152,10 @@
               } catch(e) {}
             }
           }, 500);
+          // Lower music volume while pinball is playing
+          if (ytPlayer && ytPlayer.setVolume) {
+            ytPlayer.setVolume(25);
+          }
           // Also open the controls helper window
           openWindow('pinball-controls');
         }
@@ -173,6 +177,10 @@
           if (controlsWin) {
             controlsWin.classList.remove('active');
             openWindows.delete('pinball-controls');
+          }
+          // Restore music volume when pinball closes
+          if (ytPlayer && ytPlayer.setVolume) {
+            ytPlayer.setVolume(50);
           }
         }
 

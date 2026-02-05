@@ -764,7 +764,7 @@
         }
         tuft.position.set(
           (Math.random() - 0.5) * 15,
-          -0.35,
+          -0.1,
           (Math.random() - 0.5) * 15
         );
         scene.add(tuft);
@@ -814,7 +814,7 @@
 
         flower.position.set(
           (Math.random() - 0.5) * 12,
-          -0.38,
+          -0.1,
           (Math.random() - 0.5) * 12
         );
         scene.add(flower);
@@ -891,43 +891,43 @@
         const catMaterial = new THREE.MeshStandardMaterial({ color: catColor, roughness: 0.9 });
 
         // Body (using stretched sphere since CapsuleGeometry not in r128)
-        const body = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), catMaterial);
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), catMaterial);
         body.scale.set(1.5, 0.8, 0.8);
-        body.position.y = 0.1;
+        body.position.y = 0.15;
         catGroup.add(body);
 
         // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), catMaterial);
-        head.position.set(0.12, 0.12, 0);
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 8), catMaterial);
+        head.position.set(0.18, 0.18, 0);
         catGroup.add(head);
 
         // Ears
-        const earGeo = new THREE.ConeGeometry(0.025, 0.05, 4);
+        const earGeo = new THREE.ConeGeometry(0.04, 0.08, 4);
         const ear1 = new THREE.Mesh(earGeo, catMaterial);
-        ear1.position.set(0.14, 0.2, 0.03);
+        ear1.position.set(0.22, 0.32, 0.05);
         catGroup.add(ear1);
         const ear2 = new THREE.Mesh(earGeo, catMaterial);
-        ear2.position.set(0.14, 0.2, -0.03);
+        ear2.position.set(0.22, 0.32, -0.05);
         catGroup.add(ear2);
 
         // Tail
-        const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.01, 0.15, 8), catMaterial);
-        tail.position.set(-0.15, 0.15, 0);
+        const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.015, 0.22, 8), catMaterial);
+        tail.position.set(-0.22, 0.22, 0);
         tail.rotation.z = Math.PI / 4;
         catGroup.add(tail);
 
         // Legs
-        const legGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.08, 8);
-        [[-0.05, 0.04, 0.04], [-0.05, 0.04, -0.04], [0.05, 0.04, 0.04], [0.05, 0.04, -0.04]].forEach(pos => {
+        const legGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.12, 8);
+        [[-0.08, 0.06, 0.06], [-0.08, 0.06, -0.06], [0.08, 0.06, 0.06], [0.08, 0.06, -0.06]].forEach(pos => {
           const leg = new THREE.Mesh(legGeo, catMaterial);
           leg.position.set(...pos);
           catGroup.add(leg);
         });
 
-        // Position cat on the terrain (raised above ground)
+        // Position cat on the terrain (raised well above ground)
         catGroup.position.set(
           (Math.random() - 0.5) * 6,
-          -0.32,
+          0.1,
           1 + Math.random() * 3
         );
 
@@ -1352,7 +1352,7 @@
         chairGroup.add(wheel);
       }
 
-      chairGroup.position.set(0, -0.05, 1.1); // Pushed back from desk, raised up above terrain
+      chairGroup.position.set(0, 0.15, 1.1); // Pushed back from desk, raised well above terrain
       chairGroup.rotation.y = 0.15; // Slightly angled
       scene.add(chairGroup);
 
@@ -1665,7 +1665,7 @@
           cat.rotation.y = -cat.userData.direction + Math.PI / 2;
 
           // Bobbing animation while walking
-          cat.position.y = -0.32 + Math.sin(time * 10) * 0.01;
+          cat.position.y = 0.1 + Math.sin(time * 10) * 0.015;
 
           // Keep cat in bounds
           if (Math.abs(cat.position.x) > 5) cat.userData.direction = Math.PI - cat.userData.direction;

@@ -17,21 +17,6 @@
   <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none" tabindex="0"></canvas>
 
   <script>
-    // Mute all audio
-    (function() {
-      const Orig = window.AudioContext || window.webkitAudioContext;
-      if (Orig) {
-        window.AudioContext = window.webkitAudioContext = function() {
-          const ctx = new Orig();
-          const muted = ctx.createGain();
-          muted.gain.value = 0;
-          muted.connect(ctx.destination);
-          Object.defineProperty(ctx, 'destination', { get: () => muted });
-          return ctx;
-        };
-      }
-    })();
-
     // Auto-focus canvas
     window.addEventListener('load', () => setTimeout(() => {
       const c = document.getElementById('canvas');
