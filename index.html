@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     * {
@@ -564,22 +565,27 @@
       renderer.domElement.addEventListener('click', onMouseClick);
       renderer.domElement.addEventListener('mousemove', onMouseMove);
 
-      // Post-processing pipeline
-      composer = new THREE.EffectComposer(renderer);
-      composer.addPass(new THREE.RenderPass(scene, camera));
+      // Post-processing pipeline (with fallback to basic rendering)
+      try {
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
 
-      const bloomPass = new THREE.UnrealBloomPass(
-        new THREE.Vector2(window.innerWidth, window.innerHeight),
-        0.3,  // strength (subtle)
-        0.4,  // radius
-        0.85  // threshold
-      );
-      composer.addPass(bloomPass);
+        const bloomPass = new THREE.UnrealBloomPass(
+          new THREE.Vector2(window.innerWidth, window.innerHeight),
+          0.3,  // strength (subtle)
+          0.4,  // radius
+          0.85  // threshold
+        );
+        composer.addPass(bloomPass);
 
-      // FXAA anti-aliasing
-      fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-      fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
-      composer.addPass(fxaaPass);
+        // FXAA anti-aliasing
+        fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+        fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+        composer.addPass(fxaaPass);
+      } catch (e) {
+        console.warn('Post-processing failed, using basic renderer:', e);
+        composer = null;
+      }
 
       // Start animation
       animate();
@@ -1922,14 +1928,18 @@
         screenLight.intensity = 0.5 + Math.sin(time * 3) * 0.02 + Math.random() * 0.01;
       }
 
-      composer.render();
+      if (composer) {
+        composer.render();
+      } else {
+        renderer.render(scene, camera);
+      }
     }
 
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      composer.setSize(window.innerWidth, window.innerHeight);
+      if (composer) composer.setSize(window.innerWidth, window.innerHeight);
       if (fxaaPass) {
         fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
       }
