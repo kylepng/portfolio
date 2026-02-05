@@ -1157,9 +1157,12 @@
     }
 
     function createSleepingPerson() {
-      // Chair is at (0, 0.15, 1.1), seat surface at global y≈0.50
-      // Desk surface at y=0.54, desk spans z=-0.75 to z=0.75
-      // Person sits in chair, leans forward, head/arms on desk
+      // GEOMETRY REFERENCE:
+      // Chair: position (0, 0.15, 1.1), seat at global y≈0.50
+      // Desk top: y=0.50, thickness 0.08 → surface at y=0.54
+      // Desk spans x=-1.5 to 1.5, z=-0.75 to 0.75
+      // RULE: anything in desk z-range (z < 0.75) must be y > 0.56
+      //        legs/torso body behind desk (z > 0.75) can be any y
       const personGroup = new THREE.Group();
       const skinMat = new THREE.MeshStandardMaterial({ color: 0xF5CBA7, roughness: 0.8 });
       const hoodieMat = new THREE.MeshStandardMaterial({ color: 0x2C3E50, roughness: 0.85 });
@@ -1167,111 +1170,115 @@
       const hairMat = new THREE.MeshStandardMaterial({ color: 0x3B2507, roughness: 0.9 });
       const shoeMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
 
-      // === TORSO (leaning forward from chair onto desk) ===
-      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.2), hoodieMat);
-      torso.position.set(0, 0.7, -0.25);
-      torso.rotation.x = -0.9; // Leaning forward hard
+      // All positions are relative to group origin.
+      // Group will be at world (0, 0, 0) - NOT offset, direct world coords.
+
+      // === TORSO - stays BEHIND desk edge (z > 0.80) ===
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.30, 0.16), hoodieMat);
+      torso.position.set(0, 0.82, 0.95); // world z=0.95, behind desk edge 0.75
+      torso.rotation.x = -1.1; // Steep forward lean
       torso.name = 'personTorso';
       personGroup.add(torso);
 
-      // Upper back hunch
-      const upperBack = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), hoodieMat);
+      // Upper back / shoulder hunch behind desk
+      const upperBack = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6), hoodieMat);
       upperBack.scale.set(1.0, 0.7, 0.9);
-      upperBack.position.set(0, 0.78, -0.15);
+      upperBack.position.set(0, 0.88, 1.02); // behind desk
       personGroup.add(upperBack);
 
-      // === HEAD (resting on arms on desk surface y=0.54) ===
+      // === HEAD - on desk surface, y=0.58 (above 0.54 desk surface) ===
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), skinMat);
-      head.scale.set(1.0, 0.9, 1.0);
-      head.position.set(0, 0.60, -0.62);
+      head.scale.set(1.0, 0.85, 1.0);
+      head.position.set(0, 0.58, 0.35); // on desk, well above surface
       head.name = 'personHead';
       personGroup.add(head);
 
-      // Hair on top/back of head
+      // Hair
       const hair = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 8), hairMat);
-      hair.scale.set(1.0, 0.7, 1.0);
-      hair.position.set(0, 0.65, -0.58);
+      hair.scale.set(1.0, 0.6, 1.0);
+      hair.position.set(0, 0.63, 0.40);
       personGroup.add(hair);
 
       // Hair fringe
-      const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), hairMat);
+      const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), hairMat);
       fringe.scale.set(1.5, 0.4, 0.8);
-      fringe.position.set(0, 0.64, -0.68);
+      fringe.position.set(0, 0.62, 0.28);
       personGroup.add(fringe);
 
-      // === ARMS (reaching forward onto desk) ===
-      const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), hoodieMat);
-      armR.position.set(0.13, 0.58, -0.45);
-      armR.rotation.z = 0.3;
-      armR.rotation.x = -1.3;
+      // === ARMS - upper arms bridge from behind desk to desk surface ===
+      // Upper arms: center at desk back edge, angled steeply downward-forward
+      const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.4, 8), hoodieMat);
+      armR.position.set(0.13, 0.65, 0.65); // near desk back edge, y above desk
+      armR.rotation.z = 0.25;
+      armR.rotation.x = -1.2;
       personGroup.add(armR);
 
-      const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), hoodieMat);
-      armL.position.set(-0.13, 0.58, -0.45);
-      armL.rotation.z = -0.3;
-      armL.rotation.x = -1.3;
+      const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.4, 8), hoodieMat);
+      armL.position.set(-0.13, 0.65, 0.65);
+      armL.rotation.z = -0.25;
+      armL.rotation.x = -1.2;
       personGroup.add(armL);
 
-      // Forearms (under head as pillow, on desk)
-      const forearmR = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
-      forearmR.position.set(0.08, 0.57, -0.65);
-      forearmR.rotation.x = -0.2;
-      forearmR.rotation.z = 1.3;
+      // Forearms (on desk surface, forming pillow for head)
+      const forearmR = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.025, 0.22, 8), hoodieMat);
+      forearmR.position.set(0.08, 0.57, 0.42); // on desk
+      forearmR.rotation.x = -0.15;
+      forearmR.rotation.z = 1.2;
       personGroup.add(forearmR);
 
-      const forearmL = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.2, 8), hoodieMat);
-      forearmL.position.set(-0.08, 0.57, -0.65);
-      forearmL.rotation.x = -0.2;
-      forearmL.rotation.z = -1.3;
+      const forearmL = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.025, 0.22, 8), hoodieMat);
+      forearmL.position.set(-0.08, 0.57, 0.42);
+      forearmL.rotation.x = -0.15;
+      forearmL.rotation.z = -1.2;
       personGroup.add(forearmL);
 
       // Hands
-      const handR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
-      handR.position.set(0.05, 0.57, -0.72);
+      const handR = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), skinMat);
+      handR.position.set(0.04, 0.57, 0.32);
       personGroup.add(handR);
-      const handL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), skinMat);
-      handL.position.set(-0.05, 0.57, -0.72);
+      const handL = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), skinMat);
+      handL.position.set(-0.04, 0.57, 0.32);
       personGroup.add(handL);
 
-      // === LEGS (in the chair, thighs going forward toward desk) ===
-      const thighR = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
-      thighR.position.set(0.1, 0.48, -0.05);
-      thighR.rotation.x = -1.4;
+      // === LEGS - entirely behind desk (z > 0.75) ===
+      // Thighs on chair seat
+      const thighR = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.3, 8), pantsMat);
+      thighR.position.set(0.1, 0.50, 1.08); // at chair
+      thighR.rotation.x = -1.45; // nearly horizontal
       personGroup.add(thighR);
 
-      const thighL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.35, 8), pantsMat);
-      thighL.position.set(-0.1, 0.48, -0.05);
-      thighL.rotation.x = -1.4;
+      const thighL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.3, 8), pantsMat);
+      thighL.position.set(-0.1, 0.50, 1.08);
+      thighL.rotation.x = -1.45;
       personGroup.add(thighL);
 
-      // Shins going down under desk
-      const shinR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
-      shinR.position.set(0.1, 0.22, -0.25);
+      // Shins - hanging down from chair
+      const shinR = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.32, 8), pantsMat);
+      shinR.position.set(0.1, 0.25, 0.88);
       shinR.rotation.x = 0.15;
       personGroup.add(shinR);
 
-      const shinL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.35, 8), pantsMat);
-      shinL.position.set(-0.1, 0.22, -0.25);
+      const shinL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.32, 8), pantsMat);
+      shinL.position.set(-0.1, 0.25, 0.88);
       shinL.rotation.x = 0.15;
       personGroup.add(shinL);
 
-      // Shoes
+      // Shoes on ground
       const shoeR = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
-      shoeR.position.set(0.1, 0.05, -0.30);
+      shoeR.position.set(0.1, 0.05, 0.82);
       personGroup.add(shoeR);
       const shoeL = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.12), shoeMat);
-      shoeL.position.set(-0.1, 0.05, -0.30);
+      shoeL.position.set(-0.1, 0.05, 0.82);
       personGroup.add(shoeL);
 
-      // Hood bunched up behind head
-      const hood = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), hoodieMat);
-      hood.scale.set(1.3, 0.6, 1.0);
-      hood.position.set(0, 0.72, -0.42);
+      // Hood bunched at nape of neck
+      const hood = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), hoodieMat);
+      hood.scale.set(1.2, 0.5, 1.0);
+      hood.position.set(0, 0.73, 0.55);
       personGroup.add(hood);
 
-      // Position group at the chair (z=1.1), matching chair rotation
-      personGroup.position.set(0, 0.0, 1.1);
-      personGroup.rotation.y = 0.15; // Match chair angle
+      // Group at world origin - all coords are already in world space
+      personGroup.position.set(0, 0.0, 0.0);
 
       personGroup.userData = {
         breathePhase: Math.random() * Math.PI * 2,
@@ -2804,13 +2811,13 @@
         const sp = sleepingPerson.userData;
         const breathe = Math.sin(time * 1.2 + sp.breathePhase) * 0.005;
         if (sp.torso) {
-          sp.torso.position.y = 0.70 + breathe;
+          sp.torso.position.y = 0.82 + breathe;
         }
         if (sp.head) {
-          sp.head.position.y = 0.60 + breathe * 0.5;
+          sp.head.position.y = 0.58 + breathe * 0.5;
         }
         if (sp.upperBack) {
-          sp.upperBack.position.y = 0.78 + breathe;
+          sp.upperBack.position.y = 0.88 + breathe;
         }
       }
 
