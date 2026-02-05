@@ -380,7 +380,22 @@
       // Fade to black
       setTimeout(() => {
         shutdownScreen.style.background = '#000';
-        shutdownScreen.innerHTML = '<div style="color:#ff8c00;font-family:Tahoma,sans-serif;font-size:16px;text-align:center;line-height:1.6;">It is now safe to turn off<br>your computer.</div>';
+        shutdownScreen.innerHTML = `
+          <div style="color:#ff8c00;font-family:Tahoma,sans-serif;font-size:16px;text-align:center;line-height:1.6;">
+            It is now safe to turn off<br>your computer.
+          </div>
+          <button onclick="window.parent.postMessage('exitDesktop', '*'); window.location.reload();" style="
+            margin-top: 40px;
+            background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+            color: #fff;
+            border: 2px solid #666;
+            padding: 12px 30px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: Tahoma, sans-serif;
+          ">Power On</button>
+        `;
       }, 3000);
     }
 

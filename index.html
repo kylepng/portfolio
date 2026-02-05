@@ -863,6 +863,13 @@
       }
     });
 
+    // Listen for messages from iframe (e.g., shutdown -> power on)
+    window.addEventListener('message', (e) => {
+      if (e.data === 'exitDesktop' && isInDesktop) {
+        exitDesktop();
+      }
+    });
+
     // Initialize
     init();
   </script>
