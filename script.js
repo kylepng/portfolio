@@ -79,17 +79,49 @@
       playXPSound(XPSounds.error, 0.4);
     }
 
-    // Keyboard press sound
-    let keyAudio = null;
+    // Satisfying mechanical keyboard sound (synthesized thock)
     function playKeySound() {
       try {
-        if (!keyAudio) {
-          keyAudio = new Audio('sounds/keypress.mp3');
-          keyAudio.volume = 0.08 * globalVolume;
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        const vol = 0.35 * globalVolume;
+
+        // Click component - short noise burst (the snap)
+        const clickLen = Math.floor(audioCtx.sampleRate * 0.008);
+        const clickBuf = audioCtx.createBuffer(1, clickLen, audioCtx.sampleRate);
+        const clickData = clickBuf.getChannelData(0);
+        for (let i = 0; i < clickLen; i++) {
+          clickData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / clickLen, 8);
         }
-        const clone = keyAudio.cloneNode();
-        clone.volume = 0.08 * globalVolume;
-        clone.play().catch(() => {});
+        const clickSrc = audioCtx.createBufferSource();
+        clickSrc.buffer = clickBuf;
+        const clickFilter = audioCtx.createBiquadFilter();
+        clickFilter.type = 'bandpass';
+        clickFilter.frequency.value = 3500 + Math.random() * 1000;
+        clickFilter.Q.value = 1.5;
+        const clickGain = audioCtx.createGain();
+        clickGain.gain.setValueAtTime(vol * 0.6, now);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+        clickSrc.connect(clickFilter);
+        clickFilter.connect(clickGain);
+        clickGain.connect(audioCtx.destination);
+        clickSrc.start(now);
+        clickSrc.stop(now + 0.015);
+
+        // Thock component - low resonant tap
+        const thock = audioCtx.createOscillator();
+        thock.type = 'sine';
+        thock.frequency.setValueAtTime(280 + Math.random() * 80, now);
+        thock.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+        const thockGain = audioCtx.createGain();
+        thockGain.gain.setValueAtTime(vol * 0.4, now);
+        thockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        thock.connect(thockGain);
+        thockGain.connect(audioCtx.destination);
+        thock.start(now);
+        thock.stop(now + 0.04);
       } catch(e) {}
     }
 
@@ -1059,8 +1091,9 @@
     let isMusicPlaying = false;
     let musicInitialized = false;
 
-    window.onYouTubeIframeAPIReady = function() {
+    function initYouTubePlayer() {
       if (musicInitialized) return;
+      if (typeof YT === 'undefined' || !YT.Player) return;
       ytPlayer = new YT.Player('yt-player', {
         height: '0',
         width: '0',
@@ -1088,14 +1121,25 @@
       });
     }
 
+    // Handle YouTube API - it may have already loaded before this script ran
+    window.onYouTubeIframeAPIReady = initYouTubePlayer;
+    // If API already loaded (race condition), init now
+    if (typeof YT !== 'undefined' && YT.loaded) {
+      initYouTubePlayer();
+    }
+    // Fallback: retry after a few seconds if still not initialized
+    setTimeout(function() {
+      if (!musicInitialized) initYouTubePlayer();
+    }, 3000);
+
     function toggleMusic() {
       if (!musicInitialized || !ytPlayer) {
         if (typeof YT !== 'undefined' && YT.Player) {
-          window.onYouTubeIframeAPIReady();
+          initYouTubePlayer();
           showNotification('Music', 'Starting music player...');
           setTimeout(toggleMusic, 2000);
         } else {
-          showNotification('Music', 'Music player unavailable');
+          showNotification('Music', 'Music player is loading, try again in a moment');
         }
         return;
       }
