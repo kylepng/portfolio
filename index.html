@@ -2655,9 +2655,40 @@
       });
 
       // Animate cats with improved walk cycle
-      cats.forEach(cat => {
+      cats.forEach((cat, catIndex) => {
         const ud = cat.userData;
         ud.walkTimer += 0.016;
+
+        // Orange cat (index 0) stays near sleeping person
+        if (catIndex === 0) {
+          // Lounge near person, gentle circling
+          const personX = 1.5, personZ = 2.0;
+          const circleRadius = 0.4;
+          const circleSpeed = 0.3;
+          const targetX = personX + 0.5 + Math.sin(time * circleSpeed) * circleRadius;
+          const targetZ = personZ + 0.3 + Math.cos(time * circleSpeed) * circleRadius;
+          cat.position.x += (targetX - cat.position.x) * 0.02;
+          cat.position.z += (targetZ - cat.position.z) * 0.02;
+          cat.position.y = getTerrainHeight(cat.position.x, cat.position.z);
+          // Face toward person
+          cat.rotation.y = Math.atan2(personX - cat.position.x, personZ - cat.position.z);
+          // Slow gentle leg movement
+          if (ud.legs) {
+            const walkCycle = time * 3;
+            ud.legs[0].rotation.x = Math.sin(walkCycle) * 0.15;
+            ud.legs[1].rotation.x = Math.sin(walkCycle + Math.PI) * 0.15;
+            ud.legs[2].rotation.x = Math.sin(walkCycle + Math.PI) * 0.15;
+            ud.legs[3].rotation.x = Math.sin(walkCycle) * 0.15;
+          }
+          // Relaxed tail
+          if (ud.tailSegments) {
+            ud.tailSegments.forEach((seg, t) => {
+              const progress = t / ud.tailSegments.length;
+              seg.position.z = Math.sin(time * 1.5 + progress * 2) * 0.04 * progress;
+            });
+          }
+          return; // Skip normal cat behavior
+        }
 
         // Switch between sitting and walking
         if (ud.isSitting) {
