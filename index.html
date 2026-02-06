@@ -1184,15 +1184,15 @@
         model.position.set(1.8, groundY, 1.6);
         model.rotation.y = -0.4; // Angled slightly toward camera
 
-        // Play Wave animation
+        // Play Wave animation (names are prefixed with "CharacterArmature|")
         personMixer = new THREE.AnimationMixer(model);
-        const waveClip = gltf.animations.find(a => a.name === 'Wave');
+        const waveClip = gltf.animations.find(a => a.name.includes('Wave'));
         if (waveClip) {
           const action = personMixer.clipAction(waveClip);
           action.play();
         } else if (gltf.animations.length > 0) {
           // Fallback to Idle
-          const idleClip = gltf.animations.find(a => a.name === 'Idle_Neutral' || a.name === 'Idle');
+          const idleClip = gltf.animations.find(a => a.name.includes('Idle_Neutral') || a.name.includes('Idle'));
           if (idleClip) {
             personMixer.clipAction(idleClip).play();
           }
