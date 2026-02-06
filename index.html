@@ -2813,17 +2813,35 @@
         ud.stateTimer += 0.016;
 
         if (ud.charState === 'walking') {
-          // Walk in a gentle path around the desk area
+          // Walk around desk without clipping through it
+          // Desk is at (0, 0) spanning x=-1.5..1.5, z=-0.75..0.75
+          // Path uses waypoints to navigate around the desk
           ud.walkAngle += 0.006;
-          const cx = 0.5, cz = 1.2; // center of walk path
-          const rx = 1.8, rz = 1.5; // oval radius
-          const targetX = cx + Math.cos(ud.walkAngle) * rx;
-          const targetZ = cz + Math.sin(ud.walkAngle) * rz;
+          var angle = ud.walkAngle % (Math.PI * 2);
+          // Rectangular-ish path around the desk with margin
+          var waypoints = [
+            { x: 2.2, z: 0 },    // right side of desk
+            { x: 2.2, z: 1.8 },  // right-back
+            { x: -2.0, z: 1.8 }, // left-back
+            { x: -2.0, z: 0 },   // left side
+            { x: -2.0, z: -1.2 },// left-front
+            { x: 2.2, z: -1.2 }  // right-front
+          ];
+          var progress = (angle / (Math.PI * 2)) * waypoints.length;
+          var idx = Math.floor(progress) % waypoints.length;
+          var nextIdx = (idx + 1) % waypoints.length;
+          var t = progress - Math.floor(progress);
+          var targetX = waypoints[idx].x + (waypoints[nextIdx].x - waypoints[idx].x) * t;
+          var targetZ = waypoints[idx].z + (waypoints[nextIdx].z - waypoints[idx].z) * t;
           sleepingPerson.position.x += (targetX - sleepingPerson.position.x) * 0.03;
           sleepingPerson.position.z += (targetZ - sleepingPerson.position.z) * 0.03;
           sleepingPerson.position.y = getTerrainHeight(sleepingPerson.position.x, sleepingPerson.position.z);
           // Face walking direction
-          sleepingPerson.rotation.y = -ud.walkAngle + Math.PI / 2;
+          var dx = targetX - sleepingPerson.position.x;
+          var dz = targetZ - sleepingPerson.position.z;
+          if (Math.abs(dx) > 0.01 || Math.abs(dz) > 0.01) {
+            sleepingPerson.rotation.y = Math.atan2(dx, dz);
+          }
 
           // After walking a while, stop and wave
           if (ud.stateTimer > ud.walkDuration) {
