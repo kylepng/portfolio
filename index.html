@@ -1163,16 +1163,14 @@
       });
     }
 
+    var blanket; // global ref for blanket animation
+
     function createSleepingPerson() {
       const loader = new THREE.GLTFLoader();
       loader.load('hoodie-character.glb', function(gltf) {
         const model = gltf.scene;
 
-        // Scale to properly fill the chair
         model.scale.set(0.95, 0.95, 0.95);
-
-        // Face the desk (desk is at -z after PI rotation)
-        model.rotation.y = Math.PI;
 
         model.traverse(function(child) {
           if (child.isMesh) {
@@ -1181,39 +1179,73 @@
           }
         });
 
-        // Lying on the ground taking a nap next to the desk
-        // Rotate to lay on back (tip over backward)
-        model.rotation.x = -Math.PI / 2;
+        // Lying on BACK — rotation.x = PI/2 tips backward
+        model.rotation.set(Math.PI / 2, 0, 0.2);
 
-        // Position on the ground beside the desk, behind the chair
-        // Ground level is ~0 in this area, desk at z=0, chair at z=1.1
+        // Position on ground, slightly sunk into grass for natural look
         const groundY = getTerrainHeight(1.5, 2.0);
-        model.position.set(1.5, groundY + 0.25, 2.0);
+        model.position.set(1.5, groundY + 0.08, 2.0);
 
-        // Face along the ground (head toward desk area)
-        model.rotation.z = 0.3;
-
-        // Slight bone tweaks for natural sleeping pose
+        // Bone tweaks for natural sleeping-on-back pose
         const bones = {};
         model.traverse(function(child) {
           if (child.isBone) bones[child.name] = child;
         });
 
-        // Slightly bend one knee (relaxed sleeping)
-        if (bones.UpperLegL) bones.UpperLegL.rotation.x = -0.3;
-        if (bones.LowerLegL) bones.LowerLegL.rotation.x = 0.6;
+        // Relaxed bent knee
+        if (bones.UpperLegL) bones.UpperLegL.rotation.x = 0.4;
+        if (bones.LowerLegL) bones.LowerLegL.rotation.x = 0.7;
+        // Other leg slightly out
+        if (bones.UpperLegR) bones.UpperLegR.rotation.z = -0.15;
 
-        // One arm behind head, one across body
-        if (bones.UpperArmR) bones.UpperArmR.rotation.x = -1.2;
-        if (bones.LowerArmR) bones.LowerArmR.rotation.x = -1.0;
-        if (bones.UpperArmL) bones.UpperArmL.rotation.z = 0.4;
+        // Right arm behind head (pillow pose)
+        if (bones.UpperArmR) bones.UpperArmR.rotation.z = -1.4;
+        if (bones.LowerArmR) bones.LowerArmR.rotation.x = 0.8;
+        // Left arm across stomach
+        if (bones.UpperArmL) bones.UpperArmL.rotation.z = 0.6;
+        if (bones.LowerArmL) bones.LowerArmL.rotation.x = 0.5;
 
         // Head tilted to side (sleeping)
         if (bones.Head) bones.Head.rotation.z = 0.3;
 
         sleepingPerson = model;
         scene.add(model);
+
+        // Create blanket draped over torso
+        createBlanket(groundY);
       });
+    }
+
+    function createBlanket(groundY) {
+      const blanketGeo = new THREE.PlaneGeometry(0.9, 0.7, 12, 10);
+      // Displace vertices for natural wrinkled blanket look
+      const pos = blanketGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        // Gentle waves and wrinkles
+        const z = Math.sin(x * 5) * 0.03 + Math.sin(y * 7) * 0.02 + Math.sin(x * 3 + y * 4) * 0.015;
+        // Drape edges down slightly
+        const edgeDist = Math.max(Math.abs(x) / 0.45, Math.abs(y) / 0.35);
+        const edgeDroop = edgeDist > 0.7 ? (edgeDist - 0.7) * -0.08 : 0;
+        pos.setZ(i, z + edgeDroop);
+      }
+      blanketGeo.computeVertexNormals();
+
+      const blanketMat = new THREE.MeshStandardMaterial({
+        color: 0x4466AA,
+        roughness: 0.95,
+        side: THREE.DoubleSide
+      });
+      blanket = new THREE.Mesh(blanketGeo, blanketMat);
+      blanket.castShadow = true;
+      blanket.receiveShadow = true;
+
+      // Position over the person's torso area
+      blanket.position.set(1.5, groundY + 0.28, 2.0);
+      blanket.rotation.x = -Math.PI / 2 + 0.05;
+      blanket.rotation.z = 0.2; // Match person's body angle
+      scene.add(blanket);
     }
 
     function createDog() {
@@ -2659,33 +2691,72 @@
         const ud = cat.userData;
         ud.walkTimer += 0.016;
 
-        // Orange cat (index 0) stays near sleeping person
+        // Orange cat (index 0) walks around and sits near sleeping person
         if (catIndex === 0) {
-          // Lounge near person, gentle circling
           const personX = 1.5, personZ = 2.0;
-          const circleRadius = 0.4;
-          const circleSpeed = 0.3;
-          const targetX = personX + 0.5 + Math.sin(time * circleSpeed) * circleRadius;
-          const targetZ = personZ + 0.3 + Math.cos(time * circleSpeed) * circleRadius;
-          cat.position.x += (targetX - cat.position.x) * 0.02;
-          cat.position.z += (targetZ - cat.position.z) * 0.02;
-          cat.position.y = getTerrainHeight(cat.position.x, cat.position.z);
-          // Face toward person
-          cat.rotation.y = Math.atan2(personX - cat.position.x, personZ - cat.position.z);
-          // Slow gentle leg movement
-          if (ud.legs) {
-            const walkCycle = time * 3;
-            ud.legs[0].rotation.x = Math.sin(walkCycle) * 0.15;
-            ud.legs[1].rotation.x = Math.sin(walkCycle + Math.PI) * 0.15;
-            ud.legs[2].rotation.x = Math.sin(walkCycle + Math.PI) * 0.15;
-            ud.legs[3].rotation.x = Math.sin(walkCycle) * 0.15;
+          // State machine init
+          if (ud.catState === undefined) {
+            ud.catState = 'walking'; // 'walking' or 'sitting'
+            ud.catStateTimer = 0;
+            ud.catWalkAngle = Math.PI * 0.5;
+            ud.catSitDuration = 4 + Math.random() * 3;
+            ud.catWalkDuration = 6 + Math.random() * 4;
           }
-          // Relaxed tail
-          if (ud.tailSegments) {
-            ud.tailSegments.forEach((seg, t) => {
-              const progress = t / ud.tailSegments.length;
-              seg.position.z = Math.sin(time * 1.5 + progress * 2) * 0.04 * progress;
-            });
+          ud.catStateTimer += 0.016;
+
+          if (ud.catState === 'walking') {
+            // Walk in circle around person
+            ud.catWalkAngle += 0.008;
+            const circR = 0.55 + Math.sin(time * 0.4) * 0.1;
+            const targetX = personX + Math.cos(ud.catWalkAngle) * circR;
+            const targetZ = personZ + Math.sin(ud.catWalkAngle) * circR;
+            cat.position.x += (targetX - cat.position.x) * 0.04;
+            cat.position.z += (targetZ - cat.position.z) * 0.04;
+            cat.position.y = getTerrainHeight(cat.position.x, cat.position.z) + 0.02 + Math.sin(time * 8) * 0.008;
+            // Face walking direction
+            cat.rotation.y = -ud.catWalkAngle + Math.PI / 2;
+            // Leg walk animation
+            if (ud.legs) {
+              const walkCycle = time * 6;
+              ud.legs[0].rotation.x = Math.sin(walkCycle) * 0.3;
+              ud.legs[1].rotation.x = Math.sin(walkCycle + Math.PI) * 0.3;
+              ud.legs[2].rotation.x = Math.sin(walkCycle + Math.PI) * 0.3;
+              ud.legs[3].rotation.x = Math.sin(walkCycle) * 0.3;
+            }
+            // Tail sway while walking
+            if (ud.tailSegments) {
+              ud.tailSegments.forEach((seg, t) => {
+                const progress = t / ud.tailSegments.length;
+                seg.position.z = Math.sin(time * 3 + progress * 2) * 0.05 * progress;
+              });
+            }
+            if (ud.catStateTimer > ud.catWalkDuration) {
+              ud.catState = 'sitting';
+              ud.catStateTimer = 0;
+              ud.catSitDuration = 3 + Math.random() * 4;
+            }
+          } else {
+            // Sitting/curled up near person
+            cat.position.y = getTerrainHeight(cat.position.x, cat.position.z);
+            // Face toward person
+            cat.rotation.y = Math.atan2(personX - cat.position.x, personZ - cat.position.z);
+            // Tuck legs
+            if (ud.legs) {
+              ud.legs.forEach(leg => { leg.rotation.x = 0; leg.position.y = 0.05; });
+            }
+            if (ud.bodyMesh) ud.bodyMesh.position.y = 0.1;
+            // Gentle tail
+            if (ud.tailSegments) {
+              ud.tailSegments.forEach((seg, t) => {
+                const progress = t / ud.tailSegments.length;
+                seg.position.z = Math.sin(time * 1.2 + progress * 2) * 0.03 * progress;
+              });
+            }
+            if (ud.catStateTimer > ud.catSitDuration) {
+              ud.catState = 'walking';
+              ud.catStateTimer = 0;
+              ud.catWalkDuration = 5 + Math.random() * 4;
+            }
           }
           return; // Skip normal cat behavior
         }
@@ -2764,38 +2835,90 @@
         }
       });
 
-      // Animate sleeping person (gentle breathing bob)
+      // Animate sleeping person (gentle breathing) + blanket
       if (sleepingPerson) {
         const breathe = Math.sin(time * 1.2) * 0.004;
-        const baseY = getTerrainHeight(1.5, 2.0) + 0.32;
+        const baseY = getTerrainHeight(1.5, 2.0) + 0.08;
         sleepingPerson.position.y = baseY + breathe;
       }
+      // Blanket breathes with person
+      if (blanket) {
+        const blanketBreathe = Math.sin(time * 1.2) * 0.005;
+        blanket.position.y = getTerrainHeight(1.5, 2.0) + 0.28 + blanketBreathe;
+      }
 
-      // Animate dog (jumping on sleeping person + tail wag)
+      // Animate dog — alternates between jumping on person and walking around
       if (dog) {
         const dd = dog.userData;
-        // Dog bounces/jumps on sleeping person
-        const personGY = getTerrainHeight(1.5, 2.0);
-        const jumpBounce = Math.abs(Math.sin(time * 2.5)) * 0.15;
-        dog.position.y = personGY + 0.45 + jumpBounce;
-        // Slight forward/back wiggle while jumping
-        dog.position.x = 1.5 + Math.sin(time * 1.8) * 0.08;
-        dog.position.z = 1.8 + Math.cos(time * 1.3) * 0.06;
+        const personX = 1.5, personZ = 2.0;
+        const personGY = getTerrainHeight(personX, personZ);
 
-        // Tail wagging (excited, fast)
-        if (dd.tailSegments) {
-          dd.tailSegments.forEach((seg, t) => {
-            const progress = t / dd.tailSegments.length;
-            seg.position.z = Math.sin(time * 8 + progress * 1.5) * 0.1 * progress;
-            seg.position.y = 0.18 + Math.sin(progress * Math.PI * 0.6) * 0.12 + Math.abs(Math.sin(time * 8)) * 0.03 * progress;
-          });
+        // State machine: init once
+        if (dd.dogState === undefined) {
+          dd.dogState = 'jumping'; // 'jumping' or 'walking'
+          dd.stateTimer = 0;
+          dd.jumpDuration = 4 + Math.random() * 3;
+          dd.walkDuration = 5 + Math.random() * 4;
+          dd.walkAngle = 0;
+        }
+        dd.stateTimer += 0.016;
+
+        if (dd.dogState === 'jumping') {
+          // Bounce on the person
+          const jumpBounce = Math.abs(Math.sin(time * 2.5)) * 0.15;
+          dog.position.y = personGY + 0.35 + jumpBounce;
+          dog.position.x = personX + Math.sin(time * 1.8) * 0.1;
+          dog.position.z = personZ + Math.cos(time * 1.3) * 0.08;
+          // Face person
+          dog.rotation.y = Math.sin(time * 2) * 0.4;
+          // Fast excited tail
+          if (dd.tailSegments) {
+            dd.tailSegments.forEach((seg, t) => {
+              const progress = t / dd.tailSegments.length;
+              seg.position.z = Math.sin(time * 8 + progress * 1.5) * 0.1 * progress;
+              seg.position.y = 0.18 + Math.sin(progress * Math.PI * 0.6) * 0.12 + Math.abs(Math.sin(time * 8)) * 0.03 * progress;
+            });
+          }
+          // Switch to walking after duration
+          if (dd.stateTimer > dd.jumpDuration) {
+            dd.dogState = 'walking';
+            dd.stateTimer = 0;
+            dd.walkDuration = 5 + Math.random() * 4;
+            dd.walkAngle = Math.atan2(dog.position.z - personZ, dog.position.x - personX);
+          }
+        } else {
+          // Walk in circle around the person
+          dd.walkAngle += 0.015;
+          const circleR = 0.7 + Math.sin(time * 0.5) * 0.15;
+          const targetX = personX + Math.cos(dd.walkAngle) * circleR;
+          const targetZ = personZ + Math.sin(dd.walkAngle) * circleR;
+          dog.position.x += (targetX - dog.position.x) * 0.05;
+          dog.position.z += (targetZ - dog.position.z) * 0.05;
+          const groundHere = getTerrainHeight(dog.position.x, dog.position.z);
+          dog.position.y = groundHere + 0.02 + Math.sin(time * 6) * 0.01;
+          // Face walking direction
+          dog.rotation.y = -dd.walkAngle + Math.PI / 2;
+          // Happy tail while walking
+          if (dd.tailSegments) {
+            dd.tailSegments.forEach((seg, t) => {
+              const progress = t / dd.tailSegments.length;
+              seg.position.z = Math.sin(time * 5 + progress * 1.5) * 0.08 * progress;
+              seg.position.y = 0.18 + Math.sin(progress * Math.PI * 0.6) * 0.12;
+            });
+          }
+          // Switch back to jumping
+          if (dd.stateTimer > dd.walkDuration) {
+            dd.dogState = 'jumping';
+            dd.stateTimer = 0;
+            dd.jumpDuration = 3 + Math.random() * 3;
+          }
         }
         // Breathing
         const dogBreathe = Math.sin(time * 1.5 + dd.breathePhase) * 0.004;
         if (dd.bodyMesh) {
           dd.bodyMesh.position.y = 0.18 + dogBreathe;
         }
-        // Tongue bob (panting from excitement)
+        // Tongue bob
         if (dd.tongue) {
           dd.tongue.position.y = 0.16 + Math.sin(time * 4) * 0.005;
         }
