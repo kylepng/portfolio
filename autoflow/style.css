@@ -418,6 +418,7 @@ body.sidebar-open .hamburger span:nth-child(3) {
   overflow: hidden;
   border: 1px solid var(--border);
   background: var(--bg-card);
+  max-width: 360px;
 }
 
 .screenshot-img {
@@ -425,11 +426,6 @@ body.sidebar-open .hamburger span:nth-child(3) {
   width: 100%;
   height: auto;
   border-radius: var(--radius);
-}
-
-/* Fallback if image fails to load */
-.screenshot-img[src$=".png"]:not([src=""]) {
-  min-height: 100px;
 }
 
 /* --- Mode Cards --- */
