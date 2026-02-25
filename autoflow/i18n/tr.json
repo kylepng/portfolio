@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "Yükle",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "SSS",
   "nav_tips": "İpuçları ve Kısayollar",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Google Flow üzerinde toplu AI video ve görsel üretimini otomatikleştirin",
   "hero_desc": "Auto Flow, Google Flow'a toplu işleme, kuyruk yönetimi, çoklu çözünürlük indirme ve akıllı galeri sistemi ekleyen bir Chrome uzantısıdır. Birkaç tıkla yüzlerce AI görsel ve video üretin.",
   "hero_install": "Chrome Web Store'dan yükle",
@@ -203,7 +203,7 @@
   "sub_how_desc": "Abonelik bölümündeki magic link ile e-postanızla giriş yapın, ardından Pro'ya yükseltin. Günlük kotalar gece yarısı UTC'de sıfırlanır.",
 
   "faq_title": "SSS",
-  "faq_desc": "Auto Flow Modified hakkında sık sorulan sorular.",
+  "faq_desc": "Auto Flow hakkında sık sorulan sorular.",
   "faq_q1": "İstemlerim neden başarısız oluyor?",
   "faq_a1": "En yaygın neden politika ihlalleridir. Bazı içerik türleri Google Flow'un içerik politikası tarafından kısıtlanmaktadır. İsteminizi, potansiyel olarak işaretlenen terimlerden kaçınacak şekilde yeniden ifade etmeyi deneyin. Ayrıca istemlerinizin karakter limitini aşmadığını kontrol edin.",
   "faq_q2": "Galeri neden boş?",

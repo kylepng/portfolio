@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "Install",
   "header_back": "\u2190 ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "FAQ",
   "nav_tips": "Tips & Shortcuts",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Automate bulk AI video & image generation on Google Flow",
   "hero_desc": "Auto Flow is a Chrome extension that supercharges Google Flow with batch processing, queue management, multi-resolution downloads, and a smart gallery system. Generate hundreds of AI images and videos with just a few clicks.",
   "hero_install": "Install from Chrome Web Store",
@@ -269,7 +269,7 @@
   "sub_how_desc": "Sign in with your email via magic link in the Subscription section, then upgrade to Pro. Daily quotas reset at midnight UTC.",
 
   "faq_title": "FAQ",
-  "faq_desc": "Frequently asked questions about Auto Flow Modified.",
+  "faq_desc": "Frequently asked questions about Auto Flow.",
   "faq_q1": "Why are my prompts failing?",
   "faq_a1": "Policy violations are the most common cause. Some content types are restricted by Google Flow's content policy. Try rephrasing your prompt to avoid potentially flagged terms. Also check that your prompts don't exceed the character limit.",
   "faq_q2": "Why is the gallery empty?",

@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "Installeren",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "FAQ",
   "nav_tips": "Tips & Sneltoetsen",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Automatiseer bulk AI-video- en afbeeldingsgeneratie op Google Flow",
   "hero_desc": "Auto Flow is een Chrome-extensie die Google Flow uitbreidt met batchverwerking, wachtrijbeheer, downloads in meerdere resoluties en een slim galerijsysteem. Genereer honderden AI-afbeeldingen en -video's met slechts een paar klikken.",
   "hero_install": "Installeren vanuit de Chrome Web Store",
@@ -203,7 +203,7 @@
   "sub_how_desc": "Log in met je e-mail via de magic link in het Abonnement-gedeelte en upgrade vervolgens naar Pro. Dagelijkse quota's worden om middernacht UTC gereset.",
 
   "faq_title": "FAQ",
-  "faq_desc": "Veelgestelde vragen over Auto Flow Modified.",
+  "faq_desc": "Veelgestelde vragen over Auto Flow.",
   "faq_q1": "Waarom mislukken mijn prompts?",
   "faq_a1": "Beleidsschendingen zijn de meest voorkomende oorzaak. Sommige inhoudstypen worden beperkt door het contentbeleid van Google Flow. Probeer je prompt te herformuleren om mogelijk gemarkeerde termen te vermijden. Controleer ook of je prompts de tekenlimiet niet overschrijden.",
   "faq_q2": "Waarom is de galerij leeg?",

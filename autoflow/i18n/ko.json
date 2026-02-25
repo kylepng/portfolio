@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "설치",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "자주 묻는 질문",
   "nav_tips": "팁 & 단축키",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Google Flow에서 대량 AI 영상 및 이미지 생성을 자동화",
   "hero_desc": "Auto Flow는 Google Flow에 일괄 처리, 큐 관리, 다중 해상도 다운로드, 스마트 갤러리 시스템을 추가하는 Chrome 확장 프로그램입니다. 클릭 몇 번으로 수백 개의 AI 이미지와 영상을 생성하세요.",
   "hero_install": "Chrome Web Store에서 설치",
@@ -203,7 +203,7 @@
   "sub_how_desc": "구독 섹션에서 매직 링크를 통해 이메일로 로그인한 후 Pro로 업그레이드하세요. 일일 할당량은 매일 UTC 자정에 초기화됩니다.",
 
   "faq_title": "자주 묻는 질문",
-  "faq_desc": "Auto Flow Modified에 대해 자주 묻는 질문입니다.",
+  "faq_desc": "Auto Flow에 대해 자주 묻는 질문입니다.",
   "faq_q1": "프롬프트가 실패하는 이유는 무엇인가요?",
   "faq_a1": "정책 위반이 가장 흔한 원인입니다. Google Flow의 콘텐츠 정책에 의해 일부 콘텐츠 유형이 제한됩니다. 차단될 수 있는 표현을 피해 프롬프트를 다시 작성해 보세요. 또한 글자 수 제한을 초과하지 않았는지 확인하세요.",
   "faq_q2": "갤러리가 비어 있는 이유는 무엇인가요?",

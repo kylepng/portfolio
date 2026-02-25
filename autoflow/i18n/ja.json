@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "インストール",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "よくある質問",
   "nav_tips": "ヒントとショートカット",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Google Flowでの一括AI動画・画像生成を自動化",
   "hero_desc": "Auto FlowはGoogle Flowにバッチ処理、キュー管理、マルチ解像度ダウンロード、スマートギャラリーシステムを追加するChrome拡張機能です。数クリックで何百ものAI画像や動画を生成できます。",
   "hero_install": "Chrome Web Storeからインストール",
@@ -203,7 +203,7 @@
   "sub_how_desc": "サブスクリプションセクションでマジックリンクを使ってメールアドレスでサインインし、Proにアップグレードしてください。日次クォータはUTC午前0時にリセットされます。",
 
   "faq_title": "よくある質問",
-  "faq_desc": "Auto Flow Modifiedに関するよくある質問です。",
+  "faq_desc": "Auto Flowに関するよくある質問です。",
   "faq_q1": "プロンプトが失敗するのはなぜですか？",
   "faq_a1": "ポリシー違反が最も一般的な原因です。Google Flowのコンテンツポリシーにより、一部のコンテンツタイプが制限されています。フラグされる可能性のある表現を避けてプロンプトを言い換えてみてください。また、文字数制限を超えていないかも確認してください。",
   "faq_q2": "ギャラリーが空なのはなぜですか？",

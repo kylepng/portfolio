@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "Installieren",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "FAQ",
   "nav_tips": "Tipps & Tastenkürzel",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Automatisiere die Massen-Generierung von KI-Videos und -Bildern auf Google Flow",
   "hero_desc": "Auto Flow ist eine Chrome-Erweiterung, die Google Flow mit Stapelverarbeitung, Warteschlangenverwaltung, Multi-Auflösungs-Downloads und einem intelligenten Galeriesystem aufwertet. Generiere Hunderte von KI-Bildern und -Videos mit nur wenigen Klicks.",
   "hero_install": "Aus dem Chrome Web Store installieren",
@@ -203,7 +203,7 @@
   "sub_how_desc": "Melde dich mit deiner E-Mail über einen Magic Link im Abonnement-Bereich an und upgrade dann auf Pro. Tägliche Kontingente werden um Mitternacht UTC zurückgesetzt.",
 
   "faq_title": "FAQ",
-  "faq_desc": "Häufig gestellte Fragen zu Auto Flow Modified.",
+  "faq_desc": "Häufig gestellte Fragen zu Auto Flow.",
   "faq_q1": "Warum schlagen meine Prompts fehl?",
   "faq_a1": "Richtlinienverstöße sind die häufigste Ursache. Bestimmte Inhaltstypen sind durch die Inhaltsrichtlinie von Google Flow eingeschränkt. Versuche, deinen Prompt umzuformulieren, um potenziell markierte Begriffe zu vermeiden. Prüfe auch, ob deine Prompts das Zeichenlimit nicht überschreiten.",
   "faq_q2": "Warum ist die Galerie leer?",

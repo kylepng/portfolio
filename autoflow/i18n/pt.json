@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "Instalar",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "FAQ",
   "nav_tips": "Dicas e Atalhos",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "Automatize a geração em massa de vídeos e imagens com IA no Google Flow",
   "hero_desc": "Auto Flow é uma extensão do Chrome que turbina o Google Flow com processamento em lote, gerenciamento de filas, downloads em múltiplas resoluções e um sistema de galeria inteligente. Gere centenas de imagens e vídeos com IA em poucos cliques.",
   "hero_install": "Instalar da Chrome Web Store",
@@ -203,7 +203,7 @@
   "sub_how_desc": "Faça login com seu email via link mágico na seção de Assinatura e então faça upgrade para Pro. As cotas diárias são reiniciadas à meia-noite UTC.",
 
   "faq_title": "FAQ",
-  "faq_desc": "Perguntas frequentes sobre o Auto Flow Modified.",
+  "faq_desc": "Perguntas frequentes sobre o Auto Flow.",
   "faq_q1": "Por que meus prompts estão falhando?",
   "faq_a1": "Violações de política são a causa mais comum. Alguns tipos de conteúdo são restritos pela política de conteúdo do Google Flow. Tente reformular seu prompt para evitar termos potencialmente marcados. Verifique também se seus prompts não excedem o limite de caracteres.",
   "faq_q2": "Por que a galeria está vazia?",

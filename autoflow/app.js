@@ -1,5 +1,5 @@
 /* ============================================
-   Auto Flow Modified - User Guide Scripts
+   Auto Flow - User Guide Scripts
    ============================================ */
 
 (function () {

@@ -269,7 +269,7 @@
   "sub_how_desc": "Đăng nhập bằng email qua liên kết ma thuật trong phần Gói đăng ký, sau đó nâng cấp lên Pro. Hạn ngạch hàng ngày được đặt lại vào nửa đêm UTC.",
 
   "faq_title": "Câu hỏi thường gặp",
-  "faq_desc": "Các câu hỏi thường gặp về Auto Flow Modified.",
+  "faq_desc": "Các câu hỏi thường gặp về Auto Flow.",
   "faq_q1": "Tại sao câu lệnh của tôi bị thất bại?",
   "faq_a1": "Vi phạm chính sách là nguyên nhân phổ biến nhất. Một số loại nội dung bị hạn chế bởi chính sách nội dung của Google Flow. Hãy thử diễn đạt lại câu lệnh để tránh các thuật ngữ có thể bị đánh dấu. Cũng kiểm tra xem câu lệnh có vượt quá giới hạn ký tự không.",
   "faq_q2": "Tại sao thư viện trống?",

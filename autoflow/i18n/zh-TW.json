@@ -1,5 +1,5 @@
 {
-  "header_title": "Auto Flow Modified",
+  "header_title": "Auto Flow",
   "header_install": "安裝",
   "header_back": "← ergophobia.info",
 
@@ -17,7 +17,7 @@
   "nav_faq": "常見問題",
   "nav_tips": "技巧與快捷鍵",
 
-  "hero_title": "Auto Flow Modified",
+  "hero_title": "Auto Flow",
   "hero_subtitle": "在 Google Flow 上自動化批量 AI 影片與圖片生成",
   "hero_desc": "Auto Flow 是一款 Chrome 擴充功能，為 Google Flow 加入批次處理、佇列管理、多解析度下載和智慧圖庫系統。只需幾次點擊，即可生成數百張 AI 圖片和影片。",
   "hero_install": "從 Chrome Web Store 安裝",
@@ -203,7 +203,7 @@
   "sub_how_desc": "在訂閱區塊透過魔法連結用電子郵件登入，然後升級到 Pro。每日配額在 UTC 午夜重設。",
 
   "faq_title": "常見問題",
-  "faq_desc": "關於 Auto Flow Modified 的常見問題。",
+  "faq_desc": "關於 Auto Flow 的常見問題。",
   "faq_q1": "為什麼我的提示詞會失敗？",
   "faq_a1": "違反內容政策是最常見的原因。某些內容類型受到 Google Flow 內容政策的限制。請嘗試修改提示詞，避免可能被標記的用語。另外請檢查提示詞是否超出了字元限制。",
   "faq_q2": "為什麼圖庫是空的？",
