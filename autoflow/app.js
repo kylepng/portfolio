@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var CURRENT_VERSION = '10.7.34';
+  var CURRENT_VERSION = '10.7.35';
   var LS_KEY = 'af_changelog_seen';
 
   // --- Changelog Modal ---
@@ -28,7 +28,7 @@
   }
 
   // Show modal if user hasn't seen this version
-  // Extension can trigger with ?changelog or ?v=10.7.34
+  // Extension can trigger with ?changelog or ?v=10.7.35
   var params = new URLSearchParams(window.location.search);
   var forceShow = params.has('changelog') || params.has('v');
   var seenVersion = null;
