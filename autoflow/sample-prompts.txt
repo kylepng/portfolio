@@ -1,0 +1,25 @@
+========================================
+FULL IMAGE -> VIDEO EXAMPLE
+(2 videos, 5 scenes each)
+
+Use format:
+[V#-S#] image prompt ||| [V#-S#] video prompt
+========================================
+
+========================================
+VIDEO 1
+========================================
+[V1-S1] Neon city skyline in rain, reflective rooftops, dramatic clouds ||| [V1-S1] Cinematic tilt from skyline to street with rainfall streaking across lens.
+[V1-S2] Courier under glowing signage, wet jacket, intense expression ||| [V1-S2] Slow dolly-in while steam drifts and signs pulse.
+[V1-S3] Close-up data chip in gloved hand, water droplets, amber glow ||| [V1-S3] Macro rack-focus from droplets to glowing chip core.
+[V1-S4] Narrow alley with hologram ads and mist, long perspective lines ||| [V1-S4] Handheld forward move through alley with subtle parallax.
+[V1-S5] Rooftop dawn reveal, storm clearing over city skyline ||| [V1-S5] Crane-up shot as sunlight breaks through clouds.
+
+========================================
+VIDEO 2
+========================================
+[V2-S1] Desert outpost at sunset, dust haze, long warm shadows ||| [V2-S1] Slow panorama establishing outpost and surrounding dunes.
+[V2-S2] Pilot inspecting drone wing by hangar, toolkit on ground ||| [V2-S2] Medium orbit around pilot with drifting dust particles.
+[V2-S3] Cracked visor close-up reflecting lightning from distant storm ||| [V2-S3] Push-in close-up with subtle head turn and light flicker.
+[V2-S4] Convoy vehicles driving into dunes, headlights cutting dust ||| [V2-S4] Side tracking shot matching convoy speed with motion blur.
+[V2-S5] Night camp under stars, blue emergency lamps, quiet atmosphere ||| [V2-S5] Slow pullback to wide aerial while camp lights dim.

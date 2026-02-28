@@ -1,864 +1,794 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="darkreader-lock">
-  <title>Auto Flow - User Guide</title>
-  <meta name="description" content="Complete user guide for Auto Flow Chrome extension. Automate bulk AI video and image generation on Google Flow.">
-  <meta property="og:title" content="Auto Flow - User Guide">
-  <meta property="og:description" content="Automate bulk AI video & image generation on Google Flow. 5 modes, smart gallery, queue system, 14+ languages.">
+  <title>Auto Flow — Bulk AI Video & Image Generation</title>
+  <meta name="description" content="Automate bulk AI video and image generation on Google Flow. 4 generation modes, smart gallery, queue system, 14+ languages.">
+  <meta property="og:title" content="Auto Flow — Bulk AI Video & Image Generation">
+  <meta property="og:description" content="Automate bulk AI video & image generation on Google Flow.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ergophobia.info/autoflow">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Auto Flow - User Guide">
-  <meta name="twitter:description" content="Automate bulk AI video & image generation on Google Flow.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ==================== HEADER ==================== -->
-  <header class="header" id="header">
-    <div class="header-left">
-      <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <div class="header-brand">
-        <svg class="duck-logo" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
-          <circle cx="20" cy="20" r="18" fill="#f59e0b"/>
-          <ellipse cx="20" cy="22" rx="13" ry="11" fill="#fbbf24"/>
-          <circle cx="15" cy="16" r="2.5" fill="#1a1a2e"/>
-          <circle cx="25" cy="16" r="2.5" fill="#1a1a2e"/>
-          <ellipse cx="20" cy="21" rx="5" ry="3" fill="#f97316"/>
-          <circle cx="14" cy="15" r="0.8" fill="#fff"/>
-          <circle cx="24" cy="15" r="0.8" fill="#fff"/>
-        </svg>
-        <div class="header-title-group">
-          <h1 class="header-title" data-i18n="header_title">Auto Flow</h1>
-          <span class="version-badge">v10.6.89</span>
-        </div>
+  <!-- ====== CHANGELOG MODAL ====== -->
+  <div class="modal-overlay" id="changelogModal">
+    <div class="modal-card">
+      <div class="modal-glow"></div>
+      <div class="modal-header">
+        <div class="modal-version-badge">v10.7.32</div>
+        <span class="modal-date">Feb 28, 2026</span>
+      </div>
+      <h2 class="modal-title">What's New</h2>
+      <ul class="modal-changelog">
+        <li><span class="tag tag-new">New</span> Per-prompt reference mapping — assign specific images to individual prompts</li>
+        <li><span class="tag tag-new">New</span> Task progress table with live status (Waiting, Generating, Done, Error)</li>
+        <li><span class="tag tag-improved">Improved</span> Queue management — cleaner UI, auto-start next job toggle</li>
+        <li><span class="tag tag-improved">Improved</span> Auto-download reliability for images and videos</li>
+        <li><span class="tag tag-improved">Improved</span> Gallery scanner accuracy across all modes</li>
+        <li><span class="tag tag-fixed">Fixed</span> Frame-to-Video bulk mode consistency</li>
+        <li><span class="tag tag-fixed">Fixed</span> Language selector persistence across sessions</li>
+      </ul>
+      <div class="modal-actions">
+        <a href="https://discord.gg/WK2qVXCrHE" target="_blank" class="btn btn-discord">
+          <svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 5 59.6 59.6 0 00.4 45a.3.3 0 00.1.2A58.9 58.9 0 0018.1 55a.2.2 0 00.3-.1 42.1 42.1 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4c.4-.3.7-.6 1.1-.8a.2.2 0 01.3 0 42 42 0 0035.8 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .3 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.4 47.2 47.2 0 003.6 5.8.2.2 0 00.3.1A58.7 58.7 0 0071 45.2a.2.2 0 00.1-.2c1.6-16.6-2.7-31-11.4-43.8a.2.2 0 00-.1-.1zM23.7 37c-3.8 0-6.9-3.5-6.9-7.7s3-7.7 6.9-7.7c3.9 0 7 3.5 6.9 7.7 0 4.3-3 7.7-6.9 7.7zm25.5 0c-3.8 0-6.9-3.5-6.9-7.7s3-7.7 6.9-7.7c3.9 0 7 3.5 6.9 7.7 0 4.3-3 7.7-6.9 7.7z"/></svg>
+          Join Discord for help
+        </a>
+        <button class="btn btn-continue" id="dismissChangelog">Continue</button>
       </div>
     </div>
-    <div class="header-right">
-      <select id="lang-select" class="lang-select" aria-label="Select language">
-        <option value="en">English</option>
-        <option value="vi">Ti&#7871;ng Vi&#7879;t</option>
-        <option value="es">Espa&ntilde;ol</option>
-        <option value="fr">Fran&ccedil;ais</option>
-        <option value="de">Deutsch</option>
-        <option value="pt">Portugu&ecirc;s</option>
-        <option value="it">Italiano</option>
-        <option value="ru">&#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</option>
-        <option value="ja">&#26085;&#26412;&#35486;</option>
-        <option value="ko">&#54620;&#44397;&#50612;</option>
-        <option value="zh">&#20013;&#25991;(&#31616;&#20307;)</option>
-        <option value="zh-TW">&#20013;&#25991;(&#32321;&#39636;)</option>
-        <option value="ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</option>
-        <option value="hi">&#2361;&#2367;&#2344;&#2381;&#2342;&#2368;</option>
-        <option value="tr">T&uuml;rk&ccedil;e</option>
-        <option value="nl">Nederlands</option>
-      </select>
-      <a href="#" class="install-btn header-install" data-i18n="header_install">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-          <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5a5.5 5.5 0 110-11 5.5 5.5 0 010 11zM7.25 5v3.44L5.53 6.72l-1.06 1.06L8 11.31l3.53-3.53-1.06-1.06-1.72 1.72V5h-1.5z"/>
-        </svg>
-        Install
+  </div>
+
+  <!-- ====== HEADER ====== -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#hero" class="header-brand">
+        <div class="logo-ring">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23f59e0b'/%3E%3Cellipse cx='20' cy='22' rx='13' ry='11' fill='%23fbbf24'/%3E%3Ccircle cx='15' cy='16' r='2.5' fill='%231a1a2e'/%3E%3Ccircle cx='25' cy='16' r='2.5' fill='%231a1a2e'/%3E%3Cellipse cx='20' cy='21' rx='5' ry='3' fill='%23f97316'/%3E%3Ccircle cx='14' cy='15' r='.8' fill='%23fff'/%3E%3Ccircle cx='24' cy='15' r='.8' fill='%23fff'/%3E%3C/svg%3E" alt="Auto Flow" width="32" height="32">
+        </div>
+        <span class="header-title">Auto Flow</span>
+        <span class="version-pill">v10.7.32</span>
       </a>
-      <a href="https://ergophobia.info" class="back-link" data-i18n="header_back">&larr; ergophobia.info</a>
+      <nav class="header-nav" id="headerNav">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#guide" class="nav-link">Guide</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+      <div class="header-actions">
+        <a href="https://discord.gg/WK2qVXCrHE" target="_blank" class="btn-icon" title="Discord">
+          <svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 5 59.6 59.6 0 00.4 45a.3.3 0 00.1.2A58.9 58.9 0 0018.1 55a.2.2 0 00.3-.1 42.1 42.1 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4c.4-.3.7-.6 1.1-.8a.2.2 0 01.3 0 42 42 0 0035.8 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .3 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.4 47.2 47.2 0 003.6 5.8.2.2 0 00.3.1A58.7 58.7 0 0071 45.2a.2.2 0 00.1-.2c1.6-16.6-2.7-31-11.4-43.8a.2.2 0 00-.1-.1zM23.7 37c-3.8 0-6.9-3.5-6.9-7.7s3-7.7 6.9-7.7c3.9 0 7 3.5 6.9 7.7 0 4.3-3 7.7-6.9 7.7zm25.5 0c-3.8 0-6.9-3.5-6.9-7.7s3-7.7 6.9-7.7c3.9 0 7 3.5 6.9 7.7 0 4.3-3 7.7-6.9 7.7z"/></svg>
+        </a>
+        <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa" target="_blank" class="btn btn-install" id="installBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5a5.5 5.5 0 110-11 5.5 5.5 0 010 11zM7.25 5v3.44L5.53 6.72l-1.06 1.06L8 11.31l3.53-3.53-1.06-1.06-1.72 1.72V5h-1.5z"/></svg>
+          Install Extension
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- ==================== SIDEBAR ==================== -->
-  <div class="sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="sidebar" id="sidebar">
-    <ul class="nav-list">
-      <li><a href="#getting-started" class="nav-link active" data-i18n="nav_getting_started">Getting Started</a></li>
-      <li><a href="#control-panel" class="nav-link" data-i18n="nav_control_panel">Control Panel</a></li>
-      <li><a href="#create-image" class="nav-link" data-i18n="nav_create_image">Create Image</a></li>
-      <li><a href="#text-to-video" class="nav-link" data-i18n="nav_text_to_video">Text-to-Video</a></li>
-      <li><a href="#frame-to-video" class="nav-link" data-i18n="nav_frame_to_video">Frame-to-Video</a></li>
-      <li><a href="#image-to-video-workflow" class="nav-link" data-i18n="nav_i2v_workflow">Image &rarr; Video Workflow</a></li>
-      <li><a href="#ingredients-mode" class="nav-link" data-i18n="nav_ingredients">Ingredients Mode</a></li>
-      <li><a href="#gallery" class="nav-link" data-i18n="nav_gallery">Gallery</a></li>
-      <li><a href="#queue-management" class="nav-link" data-i18n="nav_queue">Queue Management</a></li>
-      <li><a href="#settings" class="nav-link" data-i18n="nav_settings">Settings</a></li>
-      <li><a href="#subscription" class="nav-link" data-i18n="nav_subscription">Subscription</a></li>
-      <li><a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a></li>
-      <li><a href="#tips-shortcuts" class="nav-link" data-i18n="nav_tips">Tips &amp; Shortcuts</a></li>
-    </ul>
-  </nav>
+  <main>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="main-content">
-
-    <!-- ===== 1. GETTING STARTED (Hero) ===== -->
-    <section id="getting-started" class="section">
-      <div class="hero">
-        <h2 class="hero-title" data-i18n="hero_title">Auto Flow</h2>
-        <p class="hero-subtitle" data-i18n="hero_subtitle">Automate bulk AI video &amp; image generation on Google Flow</p>
-        <p class="hero-desc" data-i18n="hero_desc">Auto Flow is a Chrome extension that supercharges Google Flow with batch processing, queue management, multi-resolution downloads, and a smart gallery system. Generate hundreds of AI images and videos with just a few clicks.</p>
-        <a href="#" class="install-btn install-cta" data-i18n="hero_install">
-          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5a5.5 5.5 0 110-11 5.5 5.5 0 010 11zM7.25 5v3.44L5.53 6.72l-1.06 1.06L8 11.31l3.53-3.53-1.06-1.06-1.72 1.72V5h-1.5z"/>
-          </svg>
-          Install from Chrome Web Store
-        </a>
+    <!-- ====== HERO ====== -->
+    <section class="hero" id="hero">
+      <div class="hero-bg">
+        <div class="hero-orb hero-orb--1"></div>
+        <div class="hero-orb hero-orb--2"></div>
+        <div class="hero-orb hero-orb--3"></div>
       </div>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="feature-icon">&#127916;</div>
-          <h3 class="feature-title" data-i18n="feature_modes_title">5 Generation Modes</h3>
-          <p class="feature-desc" data-i18n="feature_modes_desc">Create Image, Text-to-Video, Frame-to-Video, Ingredients, Nano Banana Pro</p>
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-badge">Chrome Extension &middot; 4.27 &#9733;</div>
+          <h1 class="hero-title">Automate bulk AI video & image generation</h1>
+          <p class="hero-subtitle">The most powerful automation tool for Google Flow. Create images, text-to-video, frame-to-video, and ingredients mode — all from a single panel with smart queue management.</p>
+          <div class="hero-stats">
+            <div class="stat"><span class="stat-num">4</span><span class="stat-label">Gen Modes</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">14+</span><span class="stat-label">Languages</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">60K+</span><span class="stat-label">Users</span></div>
+          </div>
+          <div class="hero-ctas">
+            <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa" target="_blank" class="btn btn-primary btn-lg" id="heroCta">Install Free</a>
+            <a href="https://discord.gg/WK2qVXCrHE" target="_blank" class="btn btn-outline btn-lg">Join Discord</a>
+            <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa/reviews" target="_blank" class="btn btn-outline btn-lg btn-review">&#9733; Leave a Review</a>
+          </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128444;&#65039;</div>
-          <h3 class="feature-title" data-i18n="feature_gallery_title">Smart Gallery</h3>
-          <p class="feature-desc" data-i18n="feature_gallery_desc">Auto-populated gallery with 1K/2K/4K downloads</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#128203;</div>
-          <h3 class="feature-title" data-i18n="feature_queue_title">Queue System</h3>
-          <p class="feature-desc" data-i18n="feature_queue_desc">Multi-job queue with retry, reorder, inline settings</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#127760;</div>
-          <h3 class="feature-title" data-i18n="feature_langs_title">14+ Languages</h3>
-          <p class="feature-desc" data-i18n="feature_langs_desc">Full interface in 14 languages</p>
-        </div>
-      </div>
-
-      <p class="hero-credits" data-i18n="hero_credits">Devs: @duckmartians &amp; @ergophobian</p>
-    </section>
-
-    <!-- ===== 2. CONTROL PANEL ===== -->
-    <section id="control-panel" class="section">
-      <h2 class="section-title" data-i18n="cp_title">Control Panel</h2>
-      <p class="section-desc" data-i18n="cp_desc">The control panel is your command center. Four mode buttons let you switch between generation types instantly. Select a mode, enter your prompts, and start generating.</p>
-
-      <div class="screenshot-container">
-        <img src="images/control-panel.png" alt="Auto Flow Control Panel" class="screenshot-img" loading="lazy">
-      </div>
-
-      <div class="mode-cards">
-        <div class="mode-card">
-          <div class="mode-icon">&#127912;</div>
-          <h3 data-i18n="cp_create_image_title">Create Image</h3>
-          <p data-i18n="cp_create_image_desc">Generate AI images using Nano Banana Pro. Supports reference images.</p>
-        </div>
-        <div class="mode-card">
-          <div class="mode-icon">&#127916;</div>
-          <h3 data-i18n="cp_t2v_title">Text-to-Video</h3>
-          <p data-i18n="cp_t2v_desc">Batch generate videos from text prompts using Veo 3.1.</p>
-        </div>
-        <div class="mode-card">
-          <div class="mode-icon">&#128248;</div>
-          <h3 data-i18n="cp_f2v_title">Frame-to-Video</h3>
-          <p data-i18n="cp_f2v_desc">Upload images as first/last frames for video generation.</p>
-        </div>
-        <div class="mode-card">
-          <div class="mode-icon">&#128230;</div>
-          <h3 data-i18n="cp_ingredients_title">Ingredients</h3>
-          <p data-i18n="cp_ingredients_desc">Combine ingredient images with video prompts for product showcases.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 3. CREATE IMAGE ===== -->
-    <section id="create-image" class="section">
-      <h2 class="section-title" data-i18n="ci_title">Create Image</h2>
-      <p class="section-desc" data-i18n="ci_desc">Generate AI images in bulk using Nano Banana Pro. Enter one prompt per line, or separate multi-line prompts with a blank line.</p>
-
-      <h3 class="subsection-title" data-i18n="ci_prompts_title">Entering Prompts</h3>
-      <p data-i18n="ci_prompts_desc">Type or paste your prompts into the text area. Each line is treated as a separate prompt. For multi-line prompts, separate them with a blank line. You can also import prompts from a <code>.txt</code> file.</p>
-
-      <h3 class="subsection-title" data-i18n="ci_ref_title">Reference Images</h3>
-      <ul class="feature-list">
-        <li data-i18n="ci_ref_select"><strong>Select images</strong> &mdash; Persistent reference images used across all jobs. Great for maintaining consistent character styles.</li>
-        <li data-i18n="ci_ref_onetime"><strong>One-time upload</strong> &mdash; Images used only for the current job, then discarded.</li>
-        <li data-i18n="ci_ref_bulk"><strong>Bulk mode toggle</strong> &mdash; When ON, maps one image per prompt in line order. Image 1 pairs with Prompt 1, Image 2 with Prompt 2, etc.</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="ci_example_title">Example Prompt</h3>
-      <div class="code-block">
-        <button class="copy-btn" data-i18n="copy_btn">Copy</button>
-        <pre><code>9:16 portrait mode. pixar 3d animation with subsurface scattering, volumetric lighting, depth of field. A cheerful blue blob character wearing a construction helmet, standing on a microscopic tissue scaffold, arc welding torn muscle fibers back together. no text or labels on image.</code></pre>
-      </div>
-    </section>
-
-    <!-- ===== 4. TEXT-TO-VIDEO ===== -->
-    <section id="text-to-video" class="section">
-      <h2 class="section-title" data-i18n="t2v_title">Text-to-Video</h2>
-      <p class="section-desc" data-i18n="t2v_desc">Generate videos from text prompts in batch. Enter one prompt per line in the text area, select your model and settings, then add to queue.</p>
-
-      <h3 class="subsection-title" data-i18n="t2v_model_title">Model Selection</h3>
-      <div class="info-table-wrap">
-        <table class="info-table">
-          <thead>
-            <tr>
-              <th data-i18n="t2v_model_col">Model</th>
-              <th data-i18n="t2v_speed_col">Speed</th>
-              <th data-i18n="t2v_quality_col">Quality</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td data-i18n="t2v_veo31_fast">Veo 3.1 Fast</td>
-              <td data-i18n="t2v_veo31_fast_speed">Quick</td>
-              <td data-i18n="t2v_veo31_fast_quality">Good</td>
-            </tr>
-            <tr>
-              <td data-i18n="t2v_veo31_quality">Veo 3.1 Quality</td>
-              <td data-i18n="t2v_veo31_quality_speed">Slower</td>
-              <td data-i18n="t2v_veo31_quality_quality">Higher</td>
-            </tr>
-            <tr>
-              <td data-i18n="t2v_veo2">Veo 2</td>
-              <td data-i18n="t2v_veo2_speed">Moderate</td>
-              <td data-i18n="t2v_veo2_quality">Previous gen</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 class="subsection-title" data-i18n="t2v_aspect_title">Aspect Ratio</h3>
-      <p data-i18n="t2v_aspect_desc">Choose between <strong>16:9</strong> (landscape) for YouTube/desktop or <strong>9:16</strong> (portrait) for TikTok/Reels/Shorts.</p>
-
-      <h3 class="subsection-title" data-i18n="t2v_repeat_title">Repeat Count</h3>
-      <p data-i18n="t2v_repeat_desc">Generate N videos per prompt (1&ndash;4). Useful for creating variations and picking the best result.</p>
-
-      <div class="callout callout-tip">
-        <div class="callout-icon">&#128161;</div>
-        <p data-i18n="t2v_tip">Use 9:16 for TikTok/Reels content. Most viral short-form video is in portrait orientation.</p>
-      </div>
-    </section>
-
-    <!-- ===== 5. FRAME-TO-VIDEO ===== -->
-    <section id="frame-to-video" class="section">
-      <h2 class="section-title" data-i18n="f2v_title">Frame-to-Video</h2>
-      <p class="section-desc" data-i18n="f2v_desc">Upload images as starting or ending frames, then Auto Flow animates them into videos using your text prompts. The Frame-to-Video control panel has several input sections.</p>
-
-      <div class="screenshot-container">
-        <img src="images/frame-to-video.png" alt="Frame-to-Video panel with queue images and reference library" class="screenshot-img" loading="lazy">
-      </div>
-
-      <h3 class="subsection-title" data-i18n="f2v_input_title">INPUT Section</h3>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_prompts_title">Prompt List</h4>
-      <ul class="feature-list">
-        <li data-i18n="f2v_prompts_sample"><strong>"Sample .txt file"</strong> link &mdash; Download a sample prompt file for reference</li>
-        <li data-i18n="f2v_prompts_import"><strong>"Import file (.txt)"</strong> button &mdash; Import prompts from a text file</li>
-      </ul>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_queue_images_title">Queue Images</h4>
-      <ul class="feature-list">
-        <li data-i18n="f2v_queue_select"><strong>"Select queue images"</strong> button &mdash; Upload images to the queue (separate from the reference library)</li>
-        <li data-i18n="f2v_queue_onetime"><strong>"One-time queue upload"</strong> button (lightning icon) &mdash; Upload images for a single job, then discard them</li>
-        <li data-i18n="f2v_queue_help"><strong>Help button (?)</strong> &mdash; Tooltip explaining how queue images work</li>
-        <li data-i18n="f2v_queue_bulk"><strong>Bulk queue mode</strong> toggle &mdash; "One image per prompt (line order)." When ON, Image 1 pairs with Prompt 1, Image 2 with Prompt 2, etc.</li>
-        <li data-i18n="f2v_queue_first_prompt"><strong>Use first prompt for all uploaded queue images</strong> toggle &mdash; When ON, all queue images use the same first prompt instead of individual prompts</li>
-      </ul>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_reflib_title">Reference Library</h4>
-      <ul class="feature-list">
-        <li data-i18n="f2v_reflib_add"><strong>"Add to library"</strong> button with expand/collapse chevron &mdash; Add new reference images to your persistent library</li>
-        <li data-i18n="f2v_reflib_hint"><strong>Frame hint</strong> &mdash; "1st image = First Frame, 2nd image = Last Frame (optional)"</li>
-        <li data-i18n="f2v_reflib_grid"><strong>Library thumbnail grid</strong> &mdash; Shows all saved reference images as thumbnails</li>
-        <li data-i18n="f2v_reflib_actions"><strong>Select all / Clear selected / Delete selected refs</strong> buttons &mdash; Manage your reference library in bulk</li>
-        <li data-i18n="f2v_reflib_count"><strong>Selection count</strong> &mdash; Shows how many reference images are currently selected</li>
-      </ul>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_textarea_title">Prompt Textarea</h4>
-      <p data-i18n="f2v_textarea_desc">Enter your prompts in the text area. Each prompt is separated by a blank line. A single prompt can span multiple lines or be a JSON-formatted prompt. Example:</p>
-      <div class="code-block">
-        <button class="copy-btn" data-i18n="copy_btn">Copy</button>
-        <pre><code>First prompt.
-Can span multiple lines or be a JSON prompt.
-
-Second prompt starts after a blank line.
-
-Third prompt is similar...</code></pre>
-      </div>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_map_title">Map References by Prompt</h4>
-      <ul class="feature-list">
-        <li data-i18n="f2v_map_toggle"><strong>Checkbox toggle</strong> &mdash; Enable to assign specific reference images to individual prompts</li>
-        <li data-i18n="f2v_map_stats"><strong>Stats display</strong> &mdash; Shows "N prompts &middot; N refs active &middot; N custom mapped"</li>
-        <li data-i18n="f2v_map_grid"><strong>Mapping grid</strong> &mdash; Paste prompts first to map references. Shows "Paste prompts first to map references." as placeholder.</li>
-        <li data-i18n="f2v_map_count"><strong>Mapped count + Hide</strong> &mdash; Shows number of mapped references with a Hide toggle button</li>
-      </ul>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="f2v_bottom_title">Bottom Buttons</h4>
-      <ul class="feature-list">
-        <li data-i18n="f2v_btn_add"><strong>Add to Queue</strong> &mdash; Large green/teal CTA button. Adds the current prompts and images as a job to the queue.</li>
-        <li data-i18n="f2v_btn_manage"><strong>Manage (N)</strong> &mdash; Opens the queue management modal. Shows the count of queued jobs.</li>
-      </ul>
-
-      <div class="callout callout-warning">
-        <div class="callout-icon">&#9888;&#65039;</div>
-        <p data-i18n="f2v_warning">Make sure the number of images matches the number of prompts when bulk mode is ON. Mismatched counts will cause errors.</p>
-      </div>
-    </section>
-
-    <!-- ===== 6. IMAGE -> VIDEO WORKFLOW ===== -->
-    <section id="image-to-video-workflow" class="section">
-      <h2 class="section-title" data-i18n="i2v_title">Image &rarr; Video Workflow</h2>
-      <p class="section-desc" data-i18n="i2v_desc">The Image &rarr; Video workflow is Auto Flow's most powerful feature. It lets you generate images first, pick the best ones, then animate them into videos &mdash; all in one automated pipeline.</p>
-
-      <!-- Flowchart -->
-      <div class="flowchart">
-        <div class="flow-step">
-          <div class="step-number">1</div>
-          <h4 data-i18n="i2v_step1_title">Write Prompts</h4>
-          <p data-i18n="i2v_step1_desc">Write prompts with [V#-S#] tags and ||| delimiter</p>
-        </div>
-        <div class="flow-arrow" aria-hidden="true"></div>
-        <div class="flow-step">
-          <div class="step-number">2</div>
-          <h4 data-i18n="i2v_step2_title">Generate Images</h4>
-          <p data-i18n="i2v_step2_desc">Run Create Image mode to generate all images</p>
-        </div>
-        <div class="flow-arrow" aria-hidden="true"></div>
-        <div class="flow-step">
-          <div class="step-number">3</div>
-          <h4 data-i18n="i2v_step3_title">Select in Gallery</h4>
-          <p data-i18n="i2v_step3_desc">Browse gallery, pick best images for each scene</p>
-        </div>
-        <div class="flow-arrow" aria-hidden="true"></div>
-        <div class="flow-step">
-          <div class="step-number">4</div>
-          <h4 data-i18n="i2v_step4_title">&rarr; Video / Merge</h4>
-          <p data-i18n="i2v_step4_desc">Send selected images to Frame-to-Video queue</p>
-        </div>
-        <div class="flow-arrow" aria-hidden="true"></div>
-        <div class="flow-step">
-          <div class="step-number">5</div>
-          <h4 data-i18n="i2v_step5_title">Start Queue</h4>
-          <p data-i18n="i2v_step5_desc">Automation uploads images + prompts to Flow</p>
-        </div>
-        <div class="flow-arrow" aria-hidden="true"></div>
-        <div class="flow-step">
-          <div class="step-number">6</div>
-          <h4 data-i18n="i2v_step6_title">Videos Ready</h4>
-          <p data-i18n="i2v_step6_desc">Download finished videos from gallery</p>
-        </div>
-      </div>
-
-      <!-- Prompt Format -->
-      <h3 class="subsection-title" data-i18n="i2v_format_title">Prompt Format</h3>
-      <p data-i18n="i2v_format_desc">Use this format for each scene &mdash; the <code>|||</code> delimiter separates the image prompt from the video prompt:</p>
-
-      <div class="prompt-format-box">
-        <span class="tag">[V#-S#]</span> <span class="img-prompt">image prompt</span> <span class="delim">|||</span> <span class="tag">[V#-S#]</span> <span class="vid-prompt">video prompt</span>
-      </div>
-
-      <div class="format-legend">
-        <span class="legend-item"><span class="legend-swatch tag-swatch"></span> <span data-i18n="i2v_legend_tag">Scene Tag</span></span>
-        <span class="legend-item"><span class="legend-swatch img-swatch"></span> <span data-i18n="i2v_legend_img">Image Prompt</span></span>
-        <span class="legend-item"><span class="legend-swatch delim-swatch"></span> <span data-i18n="i2v_legend_delim">Delimiter</span></span>
-        <span class="legend-item"><span class="legend-swatch vid-swatch"></span> <span data-i18n="i2v_legend_vid">Video Prompt</span></span>
-      </div>
-
-      <!-- Full Example (Expandable) -->
-      <div class="expandable">
-        <button class="expandable-header" aria-expanded="false">
-          <span data-i18n="i2v_example_title">Full Example &mdash; 2 Videos, 6 Scenes</span>
-          <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-        </button>
-        <div class="expandable-content">
-          <div class="code-block code-block-long">
-            <button class="copy-btn" data-i18n="copy_btn">Copy</button>
-            <pre><code><span class="code-comment">&mdash; Video 1 (3 scenes) &mdash;</span>
-[V1-S1] 9:16 portrait. pixar 3d. Blue blob character in construction helmet standing before a torn muscle fiber, dramatic lighting. no text. ||| [V1-S1] Camera slowly pushes in. Blue blob fires up arc welder, sparks fly as it begins repairing the torn tissue. Audio: welding sounds, dramatic score. (no subtitles)
-[V1-S2] 9:16 portrait. pixar 3d. Blue blob carefully welding muscle fibers together, glowing repair seam visible. no text. ||| [V1-S2] Close-up of welding in progress. Muscle fibers knit together with golden glow. Blue blob says: "We build different." Audio: sizzling, upbeat. (no subtitles)
-[V1-S3] 9:16 portrait. pixar 3d. Blue blob standing proudly on fully repaired muscle, flexing. no text. ||| [V1-S3] Camera pulls back to reveal complete repair. Blue blob flexes victoriously. Audio: triumphant music. (no subtitles)
-
-<span class="code-comment">&mdash; Video 2 (3 scenes) &mdash;</span>
-[V2-S1] 9:16 portrait. pixar 3d. Red-orange blob character with mop bucket approaching inflamed joint. no text. ||| [V2-S1] Red-orange blob rolls up sleeves and dunks mop into anti-inflammatory solution. Audio: sloshing water. (no subtitles)
-[V2-S2] 9:16 portrait. pixar 3d. Red-orange blob mopping away red inflammation from joint surface. no text. ||| [V2-S2] Blob mops vigorously. Red inflammation dissolves into clean tissue underneath. Audio: satisfying cleaning sounds. (no subtitles)
-[V2-S3] 9:16 portrait. pixar 3d. Red-orange blob wringing out dirty mop, joint now clean and healthy. no text. ||| [V2-S3] Final squeeze of the mop. Joint gleams. Red-orange blob nods approvingly. Audio: sparkling clean chime. (no subtitles)</code></pre>
+        <div class="hero-visual">
+          <div class="hero-screenshot-wrapper">
+            <img src="images/control-full.png" alt="Auto Flow Control Panel — Full view showing header with mode selection, prompt input, reference library, prompt mapping, and queue controls" class="hero-screenshot" loading="eager">
+            <div class="screenshot-label">Control Panel — Full View</div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Key Rules -->
-      <div class="callout callout-warning">
-        <div class="callout-icon">&#9888;&#65039;</div>
-        <div>
-          <h4 data-i18n="i2v_rules_title">Key Rules</h4>
-          <ul>
-            <li data-i18n="i2v_rule_1">Each VIDEO gets a unique V# (V1, V2, V3...) &mdash; do NOT use V1 for everything</li>
-            <li data-i18n="i2v_rule_2">The [V#-S#] tag must appear on BOTH sides of the ||| delimiter</li>
-            <li data-i18n="i2v_rule_3">Keep one scene per line</li>
-            <li data-i18n="i2v_rule_4">Separate video groups with a blank line for readability</li>
-            <li data-i18n="i2v_rule_5">The image prompt describes what to GENERATE (still image)</li>
-            <li data-i18n="i2v_rule_6">The video prompt describes how to ANIMATE it (motion, audio, dialogue)</li>
+    <!-- ====== GUIDE ====== -->
+    <section class="guide" id="guide">
+      <div class="section-header">
+        <h2 class="section-title">Complete Guide</h2>
+        <p class="section-subtitle">Everything you need to know about Auto Flow.</p>
+      </div>
+
+      <!-- Guide Index -->
+      <nav class="guide-index">
+        <h4 class="guide-index-title">Jump to section</h4>
+        <div class="guide-index-grid">
+          <a href="#feat-control" class="guide-index-item">Control Panel</a>
+          <a href="#feat-gallery" class="guide-index-item">Smart Gallery</a>
+          <a href="#feat-settings" class="guide-index-item">Settings</a>
+          <a href="#feat-queue" class="guide-index-item">Queue &amp; Progress</a>
+          <a href="#exp-uploads" class="guide-index-item">Upload Controls</a>
+          <a href="#exp-mapping" class="guide-index-item">Reference Mapping</a>
+          <a href="#exp-gallery" class="guide-index-item">Gallery Actions</a>
+          <a href="#exp-settings" class="guide-index-item">Settings Panels</a>
+          <a href="#exp-help" class="guide-index-item">Help Center</a>
+        </div>
+      </nav>
+
+      <div class="accordion-list">
+
+        <!-- Create Image -->
+        <details class="accordion" id="guide-create-image" open>
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+            </span>
+            Create Image (Nano Banana)
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <ol>
+              <li>Select <strong>Create Image</strong> mode in the Control tab</li>
+              <li>Paste one prompt per line in the Prompt List, or click <strong>Import file (.txt)</strong></li>
+              <li>Click <strong>Add to Queue</strong></li>
+              <li>Click <strong>Start</strong> — choose New Project or Current Project</li>
+              <li>Monitor progress in the Task Progress table</li>
+              <li>When done, switch to Gallery &rarr; <strong>Scan All</strong> to find your images</li>
+            </ol>
+            <div class="guide-screenshot">
+              <img src="images/input-full.png" alt="Input section showing Prompt List field, Queue Images with Shared Ref Upload and 1:1 Batch Upload buttons, bulk mode and repeat toggles, and Reference Library" loading="lazy">
+              <span class="screenshot-caption">Input Section — Prompt List & Upload Options</span>
+            </div>
+          </div>
+        </details>
+
+        <!-- Text-to-Video -->
+        <details class="accordion" id="guide-text-to-video">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><polygon points="10 8 16 12 10 16"/></svg>
+            </span>
+            Text-to-Video
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <ol>
+              <li>Select <strong>Text-to-Video</strong> mode</li>
+              <li>Paste one prompt per line — each line is one scene with a clear camera direction</li>
+              <li>Click <strong>Add to Queue</strong></li>
+              <li>Click <strong>Start</strong> and choose Create New Project or Run on This Page</li>
+              <li>Watch Task Progress for Waiting &rarr; Generating &rarr; Done status</li>
+            </ol>
+            <p class="guide-tip">Best practices: keep one scene per line, put action + camera movement in the same line, use tags like [V1-S1] for stable sorting.</p>
+          </div>
+        </details>
+
+        <!-- Frame-to-Video -->
+        <details class="accordion" id="guide-frame-to-video">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M14.5 4h5.5v5.5M14 10l7-7M9.5 20H4v-5.5M10 14l-7 7"/></svg>
+            </span>
+            Frame-to-Video (Image-to-Video)
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <ol>
+              <li>Select <strong>Frame-to-Video</strong> mode</li>
+              <li>Upload reference images using <strong>Shared Ref Upload</strong> or <strong>1:1 Batch Upload</strong></li>
+              <li>Write video prompts in the Prompt List</li>
+              <li>Optionally enable <strong>Map references by prompt</strong> to assign specific images to specific prompts</li>
+              <li>Click <strong>Add to Queue</strong> &rarr; <strong>Start</strong></li>
+            </ol>
+            <div class="guide-screenshot">
+              <img src="images/control-lower.png" alt="Lower section of Control panel showing Reference Library, prompt mapping, Add to Queue and Manage buttons" loading="lazy">
+              <span class="screenshot-caption">Reference Library, Prompt Mapping & Queue</span>
+            </div>
+          </div>
+        </details>
+
+        <!-- Ingredients -->
+        <details class="accordion" id="guide-ingredients">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </span>
+            Ingredients Mode
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <ol>
+              <li>Select <strong>Ingredients</strong> mode</li>
+              <li>Upload product/ingredient images</li>
+              <li>Write video prompts describing the product showcase</li>
+              <li>Add to Queue &rarr; Start</li>
+            </ol>
+            <p class="guide-tip">Ingredients mode is designed for product showcase videos where you want to highlight specific visual elements.</p>
+          </div>
+        </details>
+
+        <!-- Upload & References -->
+        <details class="accordion" id="guide-uploads">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </span>
+            Uploads & Reference Library
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>There are three ways to upload images in Auto Flow. Understanding the difference is important — <strong>only Add to Library saves images permanently</strong>.</p>
+
+            <div class="guide-screenshot">
+              <img src="images/input-upload.png" alt="Upload controls showing Shared Ref Upload, 1:1 Batch Upload, bulk mode toggle, and Reference Library" loading="lazy">
+              <span class="screenshot-caption">Upload Controls & Reference Library</span>
+            </div>
+
+            <div class="button-explainer-list">
+              <div class="btn-explain">
+                <strong>Shared Ref Upload</strong>
+                <p>Upload reference images that are <strong>shared across all prompts</strong> in the current job. Every prompt in your list will use these images as visual references when generating.</p>
+                <p class="explain-warning">These images are temporary — they are only used for the current job and are <strong>not saved</strong> to the Reference Library. If you clear the queue or start a new job, they're gone.</p>
+              </div>
+              <div class="btn-explain">
+                <strong>1:1 Batch Upload</strong>
+                <p>Upload images that are <strong>paired 1-to-1 with prompts</strong> by line order. The first uploaded image goes with the first prompt, second image with second prompt, and so on.</p>
+                <p class="explain-warning">Also temporary — these images are <strong>not saved</strong> to the Reference Library. They only apply to the current job.</p>
+              </div>
+              <div class="btn-explain">
+                <strong>Add to Library</strong> <span class="btn-tag blue">Persistent</span>
+                <p>Saves images to your <strong>Reference Library</strong>, which persists across sessions. Images saved here stay until you manually delete them. Use the library for images you reuse frequently — brand assets, character references, style guides, etc.</p>
+                <p>You can then assign library images to specific prompts using <strong>Map references by prompt</strong>.</p>
+              </div>
+            </div>
+
+            <h4 class="guide-subheading">Toggles</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain">
+                <strong>Bulk mode: 1 image per prompt (line order)</strong>
+                <p>When ON, each uploaded image is assigned to exactly one prompt in order. Image 1 &rarr; Prompt 1, Image 2 &rarr; Prompt 2. When OFF, all images are used for every prompt.</p>
+              </div>
+              <div class="btn-explain">
+                <strong>Repeat first prompt for all uploaded images</strong>
+                <p>When ON, the first prompt text is reused for every uploaded image. Useful when you have many reference images but want the same prompt applied to all of them.</p>
+              </div>
+            </div>
+
+            <p class="guide-tip"><strong>Quick rule:</strong> Use <em>Shared Ref</em> or <em>1:1 Batch</em> for one-off jobs. Use <em>Add to Library</em> for images you want to keep and reuse across multiple jobs.</p>
+          </div>
+        </details>
+
+        <!-- Gallery & Buttons -->
+        <details class="accordion" id="guide-gallery">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </span>
+            Gallery — Every Button Explained
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>The Gallery tab has two sub-tabs: <strong>Images</strong> and <strong>Videos</strong>. Each has its own set of controls.</p>
+
+            <div class="guide-screenshot">
+              <img src="images/gallery-images-full.png" alt="Images gallery showing all controls: 1K resolution dropdown, Scan All button, Import Images, sort dropdown, Random Pick, Pick Matched, Deselect All, Download, and Animate Images" loading="lazy">
+              <span class="screenshot-caption">Images Gallery — All Controls</span>
+            </div>
+
+            <h4 class="guide-subheading">Image Gallery Buttons</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>Scan All</strong> <span class="btn-tag gold">Gold Button</span><p>Scans the Google Flow page to find all generated images. Click this after generation completes to populate the gallery. It detects images from all prompt groups.</p></div>
+              <div class="btn-explain"><strong>Import Images</strong><p>Manually import local images into the gallery. Useful if you want to bring in images from outside Google Flow.</p></div>
+              <div class="btn-explain"><strong>Random Pick</strong><p>Randomly selects <strong>1 image per prompt group</strong>. If you generated 4 images per prompt, it picks 1 random winner from each group. Great for quickly curating the best outputs.</p></div>
+              <div class="btn-explain"><strong>Pick Matched</strong><p>Selects <strong>matched image + video pairs</strong>. If you generated images and then animated them into videos, this finds the pairs that go together — so you can download both the source image and its video. Works best with the <a href="#guide-formatting">prompt formatting guide</a> below.</p></div>
+              <div class="btn-explain"><strong>Deselect All</strong><p>Clears all current selections in the gallery.</p></div>
+              <div class="btn-explain"><strong>Download (N)</strong><p>Downloads all selected images at the chosen resolution. The number shows how many are selected. See <a href="#guide-resolution">Download Resolution</a> for details on 1K/2K/4K.</p></div>
+              <div class="btn-explain"><strong>Animate Images</strong><p>Sends all selected images to the <strong>Frame-to-Video</strong> queue. This creates a new job that will animate each selected image into a video using your video prompts.</p></div>
+            </div>
+
+            <div class="guide-screenshot">
+              <img src="images/gallery-videos.png" alt="Videos gallery showing 1080p resolution dropdown, Scan All button, sort dropdown, Speed and Volume controls, Random Pick and Download buttons" loading="lazy">
+              <span class="screenshot-caption">Videos Gallery — Playback & Download Controls</span>
+            </div>
+
+            <h4 class="guide-subheading">Video Gallery Buttons</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>Scan All</strong> <span class="btn-tag gold">Gold Button</span><p>Same as images — scans the page for all generated videos.</p></div>
+              <div class="btn-explain"><strong>Random Pick</strong><p>Randomly selects 1 video per prompt group.</p></div>
+              <div class="btn-explain"><strong>Speed / Vol</strong><p>Control video playback speed (0.5x to 6x) and volume directly in the gallery preview. Useful for quickly reviewing outputs.</p></div>
+              <div class="btn-explain"><strong>Download (N)</strong><p>Downloads selected videos at the chosen resolution (720p, 1080p, or 4K).</p></div>
+            </div>
+
+            <h4 class="guide-subheading">Layout Options</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>Default</strong><p>4-column grid layout. Good for browsing many images at once.</p></div>
+              <div class="btn-explain"><strong>Large</strong><p>2-column layout with bigger thumbnails. Better for comparing details.</p></div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Prompt Formatting -->
+        <details class="accordion" id="guide-formatting">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </span>
+            Prompt Formatting Guide
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>How you format your prompts determines how Auto Flow processes them and how the gallery sorts your results.</p>
+
+            <h4 class="guide-subheading">Basic Format</h4>
+            <p>One prompt per line. Each line = one generation task.</p>
+            <div class="code-example">a golden retriever running on the beach, slow motion, cinematic<br>a cat sleeping in a sunbeam on a window sill<br>a hummingbird hovering near red flowers, macro shot</div>
+
+            <h4 class="guide-subheading">Tagged Format (Recommended)</h4>
+            <p>Use tags like <code>[V1-S1]</code> to organize by video and scene. This enables proper sorting and <strong>Pick Matched</strong> functionality.</p>
+            <div class="code-example">[V1-S1] a character walks into a dark laboratory, wide shot<br>[V1-S2] close-up of the character's face as they see the experiment<br>[V1-S3] the experiment glows bright blue, camera pulls back<br>[V2-S1] a chef prepares a meal in a busy restaurant kitchen<br>[V2-S2] close-up of the dish being plated with garnish</div>
+            <p class="guide-tip"><strong>V</strong> = Video number, <strong>S</strong> = Scene number. This tells Auto Flow which prompts belong together. The gallery will group them and <strong>Pick Matched</strong> will pair images with their animated videos by matching these tags.</p>
+
+            <h4 class="guide-subheading">Multi-line Prompts</h4>
+            <p>Separate prompts with a blank line if a single prompt spans multiple lines:</p>
+            <div class="code-example">A detailed scene of a medieval castle at sunrise,<br>with fog rolling through the valley below.<br><br>A close-up of a knight's armor reflecting firelight,<br>cinematic depth of field.</div>
+
+            <h4 class="guide-subheading">Image-to-Video Format</h4>
+            <p>When using Frame-to-Video with the <code>|||</code> delimiter (for Auto Flow paste):</p>
+            <div class="code-example">[V#-S#] image prompt ||| [V#-S#] video prompt</div>
+            <p>The left side generates the image, the right side animates it. Tags must match on both sides.</p>
+
+            <h4 class="guide-subheading">Full Example (2 videos, 5 scenes each)</h4>
+            <p>Here's a complete real-world example showing how to structure a multi-video project:</p>
+            <div class="code-example">[V1-S1] Neon city skyline in rain, reflective rooftops, dramatic clouds ||| [V1-S1] Cinematic tilt from skyline to street with rainfall streaking across lens.<br>[V1-S2] Courier under glowing signage, wet jacket, intense expression ||| [V1-S2] Slow dolly-in while steam drifts and signs pulse.<br>[V1-S3] Close-up data chip in gloved hand, water droplets, amber glow ||| [V1-S3] Macro rack-focus from droplets to glowing chip core.<br>[V1-S4] Narrow alley with hologram ads and mist, long perspective lines ||| [V1-S4] Handheld forward move through alley with subtle parallax.<br>[V1-S5] Rooftop dawn reveal, storm clearing over city skyline ||| [V1-S5] Crane-up shot as sunlight breaks through clouds.<br><br>[V2-S1] Desert outpost at sunset, dust haze, long warm shadows ||| [V2-S1] Slow panorama establishing outpost and surrounding dunes.<br>[V2-S2] Pilot inspecting drone wing by hangar, toolkit on ground ||| [V2-S2] Medium orbit around pilot with drifting dust particles.<br>[V2-S3] Cracked visor close-up reflecting lightning from distant storm ||| [V2-S3] Push-in close-up with subtle head turn and light flicker.<br>[V2-S4] Convoy vehicles driving into dunes, headlights cutting dust ||| [V2-S4] Side tracking shot matching convoy speed with motion blur.<br>[V2-S5] Night camp under stars, blue emergency lamps, quiet atmosphere ||| [V2-S5] Slow pullback to wide aerial while camp lights dim.</div>
+            <p><a href="sample-prompts.txt" download class="btn btn-outline" style="margin-top:8px; display:inline-flex;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download sample-prompts.txt
+            </a></p>
+
+            <h4 class="guide-subheading">AI Prompting Guide</h4>
+            <p>Use this prompt with <strong>ChatGPT, Claude, Gemini, or any AI</strong> to generate Auto Flow-compatible prompts. Save it as a custom instruction or paste it at the start of your conversation:</p>
+            <div class="code-example" style="white-space: pre-wrap;">You are an Auto Flow prompt generator. You create prompts for bulk AI video and image generation.
+
+FORMAT RULES:
+- Each line is one prompt. One line = one generation.
+- Use [V#-S#] tags: V = video number, S = scene number.
+- For image-to-video: [V#-S#] image prompt ||| [V#-S#] video prompt
+- Image prompts describe the STILL FRAME (composition, lighting, subject).
+- Video prompts describe the CAMERA MOTION and ANIMATION (dolly, pan, tilt, zoom, tracking).
+- Keep each prompt on a SINGLE LINE (no line breaks within a prompt).
+- Be specific about: camera angle, lighting, mood, color palette, movement.
+- DO NOT add headers, comments, or blank lines between prompts.
+
+CAMERA VOCABULARY FOR VIDEO PROMPTS:
+Dolly-in/out, Pan left/right, Tilt up/down, Crane up/down,
+Tracking shot, Orbit/arc, Push-in, Pull-back, Handheld,
+Rack-focus, Slow zoom, Whip pan, Parallax, Aerial/drone.
+
+When I describe a concept, generate prompts in Auto Flow format.
+Output ONLY the prompts, no explanations.</div>
+            <p class="guide-tip">Copy the prompt above and paste it into your AI of choice. Then just describe what kind of video you want and it will output ready-to-paste Auto Flow prompts.</p>
+          </div>
+        </details>
+
+        <!-- Gallery Sorting -->
+        <details class="accordion" id="guide-sorting">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </span>
+            Gallery Sorting Options
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>The sort dropdown controls how images and videos are ordered in the gallery:</p>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>Newest First</strong> <span class="btn-tag blue">Default</span><p>Most recently generated content appears at the top. Best for reviewing your latest batch.</p></div>
+              <div class="btn-explain"><strong>1 &rarr; 99</strong><p>Sort by prompt index ascending. Prompt 1 first, then 2, 3, etc. Follows the order you wrote your prompts.</p></div>
+              <div class="btn-explain"><strong>99 &rarr; 1</strong><p>Sort by prompt index descending. Last prompt first. Useful when your latest prompts are at the bottom.</p></div>
+              <div class="btn-explain"><strong>A &rarr; Z</strong><p>Alphabetical sort. If you used tags like <code>[V1-S1]</code>, this groups all scenes of each video together in order — V1-S1, V1-S2, V1-S3, then V2-S1, etc.</p></div>
+              <div class="btn-explain"><strong>Z &rarr; A</strong><p>Reverse alphabetical. Last video/scene first.</p></div>
+            </div>
+            <p class="guide-tip">Use <strong>A &rarr; Z</strong> sorting with tagged prompts like <code>[V1-S1]</code> for the cleanest gallery organization. All scenes from Video 1 will group together, then Video 2, etc.</p>
+          </div>
+        </details>
+
+        <!-- Download Resolution -->
+        <details class="accordion" id="guide-resolution">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </span>
+            Download Resolution (1K / 2K / 4K)
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>The resolution dropdown in the Gallery controls the quality of downloaded files.</p>
+
+            <h4 class="guide-subheading">Image Resolution</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>1K</strong> <span class="btn-tag blue">Default</span><p>Standard resolution (~1024px). Fast downloads, smaller file size. Good for previews, social media, or high-volume workflows where speed matters.</p></div>
+              <div class="btn-explain"><strong>2K</strong><p>High resolution (~2048px). Good balance of quality and file size. Suitable for most final outputs including prints and high-quality posts.</p></div>
+              <div class="btn-explain"><strong>4K</strong> <span class="btn-tag gold">Pro</span><p>Maximum resolution (~4096px). Largest file size but highest quality. Best for large format prints, zoom-in detail, or archival quality. Requires Pro subscription.</p></div>
+            </div>
+
+            <h4 class="guide-subheading">Video Resolution</h4>
+            <div class="button-explainer-list">
+              <div class="btn-explain"><strong>720p</strong><p>Standard definition. Smaller files, faster downloads. Fine for social media where platforms compress anyway.</p></div>
+              <div class="btn-explain"><strong>1080p (Upscaled)</strong> <span class="btn-tag blue">Default</span><p>Full HD. Upscaled from native resolution. Good quality for most uses.</p></div>
+              <div class="btn-explain"><strong>4K</strong> <span class="btn-tag gold">Pro</span><p>Ultra HD. Maximum quality. Requires Pro subscription. Best for professional work and highest quality exports.</p></div>
+            </div>
+
+            <p class="guide-tip">Higher resolution = larger file size = longer download time. For batch workflows with many images, start with 1K to preview, then re-download your picks at 2K or 4K.</p>
+          </div>
+        </details>
+
+        <!-- Queue Management -->
+        <details class="accordion" id="guide-queue">
+          <summary class="accordion-trigger">
+            <span class="accordion-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </span>
+            Queue Management
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <ol>
+              <li>Build up multiple jobs by clicking <strong>Add to Queue</strong> multiple times</li>
+              <li>Click <strong>Manage</strong> to view/edit queued jobs</li>
+              <li>Set a custom <strong>Job Download Folder</strong> name</li>
+              <li>Enable <strong>Auto-start next job in queue</strong> to chain them</li>
+              <li>Click <strong>Start</strong> — Auto Flow runs each job sequentially</li>
+              <li>Monitor progress with the live Task Progress table</li>
+            </ol>
+            <div class="guide-screenshot">
+              <img src="images/progress-tracking.png" alt="Queue and progress tracking section" loading="lazy">
+              <span class="screenshot-caption">Progress Tracking & Task Status Table</span>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- ====== FEATURES ====== -->
+    <section class="features" id="features">
+      <div class="section-header">
+        <h2 class="section-title">Everything you need</h2>
+        <p class="section-subtitle">Four powerful tabs. One seamless workflow.</p>
+      </div>
+
+      <!-- Feature 1: Control Panel -->
+      <div class="feature-row" id="feat-control">
+        <div class="feature-text">
+          <div class="feature-icon feature-icon--control">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          </div>
+          <h3 class="feature-name">Control Panel</h3>
+          <p class="feature-desc">Four generation modes in one interface. Switch between Create Image, Text-to-Video, Frame-to-Video, and Ingredients mode instantly. Import prompts from text files, manage reference images, and map them to individual prompts.</p>
+          <ul class="feature-list">
+            <li>4 generation modes with one-click switching</li>
+            <li>Bulk prompt import from .txt files</li>
+            <li>Shared Ref Upload or 1:1 Batch Upload</li>
+            <li>Per-prompt reference image mapping</li>
+            <li>Reference Library with persistent storage</li>
           </ul>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== 7. INGREDIENTS MODE ===== -->
-    <section id="ingredients-mode" class="section">
-      <h2 class="section-title" data-i18n="ing_title">Ingredients Mode</h2>
-      <p class="section-desc" data-i18n="ing_desc">Combine product ingredient images with video prompts for showcase videos. Upload ingredient images, add your video prompts, and Auto Flow handles the rest.</p>
-
-      <h3 class="subsection-title" data-i18n="ing_how_title">How It Works</h3>
-      <ol class="numbered-list">
-        <li data-i18n="ing_step1">Upload your ingredient or product images</li>
-        <li data-i18n="ing_step2">Write video prompts that describe how to animate each product</li>
-        <li data-i18n="ing_step3">Add to queue &mdash; Auto Flow pairs images with prompts and generates videos</li>
-      </ol>
-
-      <h3 class="subsection-title" data-i18n="ing_best_title">Best For</h3>
-      <ul class="feature-list">
-        <li data-i18n="ing_best_1">Product demos and unboxings</li>
-        <li data-i18n="ing_best_2">Supplement and nutrition showcases</li>
-        <li data-i18n="ing_best_3">Food and recipe videos</li>
-        <li data-i18n="ing_best_4">E-commerce product highlight reels</li>
-      </ul>
-    </section>
-
-    <!-- ===== 8. GALLERY ===== -->
-    <section id="gallery" class="section">
-      <h2 class="section-title" data-i18n="gal_title">Gallery</h2>
-      <p class="section-desc" data-i18n="gal_desc">Your generated content is automatically collected in the gallery. Browse, select, download, and send images directly to the video pipeline.</p>
-
-      <p data-i18n="gal_overview">The gallery has two main tabs &mdash; <strong>Images</strong> and <strong>Videos</strong> &mdash; each with their own set of controls for browsing, selecting, and exporting your generated content.</p>
-
-      <div class="screenshot-container">
-        <img src="images/gallery.png" alt="Auto Flow Gallery with image grid and toolbar" class="screenshot-img" loading="lazy">
-      </div>
-
-      <h3 class="subsection-title" data-i18n="gal_images_title">Image Gallery</h3>
-      <p data-i18n="gal_img_intro">The Image Gallery tab displays all generated images in a browsable grid. Use the toolbar controls to manage your content:</p>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="gal_img_toolbar_title">Toolbar Controls</h4>
-      <ul class="feature-list">
-        <li data-i18n="gal_img_subtabs"><strong>Images / Videos sub-tabs</strong> &mdash; Switch between viewing generated images and generated videos</li>
-        <li data-i18n="gal_img_layout"><strong>Layout toggle</strong> &mdash; Switch between Default (compact grid) and Large (bigger thumbnails) views</li>
-        <li data-i18n="gal_img_resolution"><strong>Resolution dropdown (1K)</strong> &mdash; Select the resolution for scanning and display</li>
-        <li data-i18n="gal_img_scan_all"><strong>Scan All</strong> (yellow/highlighted button) &mdash; Scans the Google Flow page for all generated images. This is the primary way to populate the gallery.</li>
-        <li data-i18n="gal_img_import"><strong>Import Images</strong> &mdash; Import images from your local computer into the gallery</li>
-        <li data-i18n="gal_img_sort"><strong>Sort dropdown (Default)</strong> &mdash; Sort images by different criteria</li>
-        <li data-i18n="gal_img_count"><strong>Image count</strong> &mdash; Displays the total number of images found</li>
-      </ul>
-
-      <h4 class="subsection-title" style="font-size:15px; margin-top:20px;" data-i18n="gal_img_actions_title">Selection &amp; Actions</h4>
-      <ul class="feature-list">
-        <li data-i18n="gal_img_select">Click images to select them (checkmark overlay appears)</li>
-        <li data-i18n="gal_img_random"><strong>Random Pick</strong> &mdash; Randomly select images from the gallery. Useful for quick variety when you have many generated images.</li>
-        <li data-i18n="gal_img_matched"><strong>Pick Matched</strong> &mdash; Automatically select the best-matched images for each prompt. Smart selection based on prompt-image pairing.</li>
-        <li data-i18n="gal_img_deselect"><strong>Deselect All</strong> &mdash; Clear all current selections</li>
-        <li data-i18n="gal_img_download_btn"><strong>Download (N)</strong> &mdash; Download all selected images at the chosen resolution (1K instant, 2K/4K upscaled)</li>
-        <li data-i18n="gal_img_animate"><strong>Animate Images</strong> &mdash; Send selected images to the Frame-to-Video queue for animation. This is the key Image-to-Video bridge that connects the image pipeline to video generation.</li>
-        <li data-i18n="gal_img_howto"><strong>"How to use"</strong> expandable section &mdash; Built-in guide within the gallery for quick reference</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="gal_videos_title">Video Gallery</h3>
-      <ul class="feature-list">
-        <li data-i18n="gal_vid_grouped">Videos are grouped by prompt for easy browsing</li>
-        <li data-i18n="gal_vid_layout"><strong>Layout controls</strong> &mdash; Same Default/Large layout toggle as the image gallery</li>
-        <li data-i18n="gal_vid_download">Download at <strong>720p</strong> (instant) or <strong>1080p/4K</strong> (serialized upscale)</li>
-        <li data-i18n="gal_vid_select"><strong>Selection &amp; batch download</strong> &mdash; Select multiple videos and download them all at once</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="gal_workflow_title">Gallery Workflow</h3>
-      <ol class="numbered-list">
-        <li data-i18n="gal_wf_1">Generate images or videos using any mode (Create Image, Text-to-Video, etc.)</li>
-        <li data-i18n="gal_wf_2">Switch to the Gallery tab</li>
-        <li data-i18n="gal_wf_3">Click <strong>"Scan All"</strong> to populate the gallery with your generated content</li>
-        <li data-i18n="gal_wf_4">Browse and select the best results</li>
-        <li data-i18n="gal_wf_5">Download at your desired resolution, OR</li>
-        <li data-i18n="gal_wf_6">Click <strong>"Animate Images"</strong> to send selected images to the video pipeline</li>
-      </ol>
-
-      <div class="callout callout-tip">
-        <div class="callout-icon">&#128161;</div>
-        <p data-i18n="gal_vid_tip">4K video downloads are serialized &mdash; only one upscale processes at a time. Be patient!</p>
-      </div>
-    </section>
-
-    <!-- ===== 9. QUEUE MANAGEMENT ===== -->
-    <section id="queue-management" class="section">
-      <h2 class="section-title" data-i18n="queue_title">Queue Management</h2>
-      <p class="section-desc" data-i18n="queue_desc">The queue system lets you stack multiple generation jobs and run them back to back. Monitor progress, reorder priorities, and handle failures gracefully.</p>
-
-      <div class="screenshot-container">
-        <img src="images/queue.png" alt="Queue management panel with progress and job list" class="screenshot-img" loading="lazy">
-      </div>
-
-      <h3 class="subsection-title" data-i18n="queue_adding_title">Adding Jobs</h3>
-      <p data-i18n="queue_adding_desc">Select your mode, enter prompts, configure settings, then click <strong>"Add to Queue"</strong>. Jobs are added in order and can be rearranged before starting.</p>
-
-      <h3 class="subsection-title" data-i18n="queue_section_title">QUEUE Section</h3>
-      <ul class="feature-list">
-        <li data-i18n="queue_dl_folder"><strong>Job Download Folder</strong> &mdash; Text input with auto-incrementing folder name (e.g., "Auto-Flow-08"). Sets where the output for each job is saved.</li>
-        <li data-i18n="queue_manage_btn"><strong>Queue manage button</strong> &mdash; Opens the full queue modal to view, reorder, and manage all jobs</li>
-        <li data-i18n="queue_autostart"><strong>Auto-start next job in queue</strong> &mdash; Toggle to automatically begin the next job when the current one completes</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="queue_progress_title">PROGRESS Section</h3>
-      <ul class="feature-list">
-        <li data-i18n="queue_progress_bar"><strong>Progress bar</strong> &mdash; Visual progress indicator showing completion percentage</li>
-        <li data-i18n="queue_progress_status"><strong>Status</strong> &mdash; Shows current state (Ready, Running, etc.) with a checkmark icon when complete</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="queue_modal_title">Queue Modal</h3>
-      <p data-i18n="queue_modal_desc">Open the queue modal to view all jobs and their current status:</p>
-      <div class="status-badges">
-        <span class="status-badge status-pending" data-i18n="queue_status_pending">Pending</span>
-        <span class="status-badge status-running" data-i18n="queue_status_running">Running</span>
-        <span class="status-badge status-done" data-i18n="queue_status_done">Done</span>
-        <span class="status-badge status-failed" data-i18n="queue_status_failed">Failed</span>
-      </div>
-
-      <h3 class="subsection-title" data-i18n="queue_actions_title">Actions</h3>
-      <ul class="feature-list">
-        <li data-i18n="queue_action_front"><strong>Move to front</strong> &mdash; Prioritize a job to run next</li>
-        <li data-i18n="queue_action_reset"><strong>Reset</strong> &mdash; Re-run a completed job from scratch</li>
-        <li data-i18n="queue_action_delete"><strong>Delete</strong> &mdash; Remove a job from the queue</li>
-        <li data-i18n="queue_action_redo"><strong>Redo selected</strong> &mdash; Pick specific prompts within a job to retry</li>
-        <li data-i18n="queue_action_inline"><strong>Inline settings</strong> &mdash; Edit model, aspect ratio, and repeat count before running</li>
-      </ul>
-
-      <div class="screenshot-container">
-        <img src="images/queue-failed.png" alt="Failed tasks panel with retry controls and auto-retry option" class="screenshot-img" loading="lazy">
-      </div>
-
-      <h3 class="subsection-title" data-i18n="queue_failed_title">Failed Tasks</h3>
-      <ul class="feature-list">
-        <li data-i18n="queue_failed_count"><strong>Failed count</strong> &mdash; Shows the number of tasks that have failed</li>
-        <li data-i18n="queue_failed_empty"><strong>Placeholder</strong> &mdash; Shows "No failed prompts yet." when there are no failures</li>
-        <li data-i18n="queue_failed_copy"><strong>Copy Failed Prompts/Images</strong> button &mdash; Copies all failed prompts to your clipboard for quick re-entry</li>
-        <li data-i18n="queue_failed_retry"><strong>Retry Failed</strong> button &mdash; Creates a new job from all failed prompts and adds it to the queue</li>
-        <li data-i18n="queue_failed_autoretry"><strong>Auto retry failed until 0</strong> checkbox &mdash; Automatic retry loop that keeps retrying failed prompts until none remain. Maximum 12 retry rounds.</li>
-      </ul>
-
-      <div class="callout callout-tip">
-        <div class="callout-icon">&#128161;</div>
-        <p data-i18n="queue_autoretry_tip">The "Auto retry failed until 0" feature is great for overnight batch runs. It will keep retrying failed prompts automatically (up to 12 rounds) so you don't have to babysit the queue.</p>
-      </div>
-    </section>
-
-    <!-- ===== 10. SETTINGS ===== -->
-    <section id="settings" class="section">
-      <h2 class="section-title" data-i18n="set_title">Settings</h2>
-      <p class="section-desc" data-i18n="set_desc">Fine-tune Auto Flow's behavior to match your workflow. Access settings from the gear icon in the control panel.</p>
-
-      <div class="screenshot-container">
-        <img src="images/settings-general.png" alt="General settings panel with model, ratio, and per-task options" class="screenshot-img" loading="lazy">
-      </div>
-
-      <h3 class="subsection-title" data-i18n="set_general_title">General Settings</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_gen_vids_per"><strong>Videos per task</strong> &mdash; How many videos to generate per prompt (dropdown: 1&ndash;4)</li>
-        <li data-i18n="set_gen_vid_model"><strong>Video Model</strong> &mdash; Veo 3.1 Fast (Lower Priority), Veo 3.1 Quality, or Veo 2</li>
-        <li data-i18n="set_gen_vid_ratio"><strong>Video Ratio</strong> &mdash; Landscape (16:9) or Portrait (9:16)</li>
-        <li data-i18n="set_gen_imgs_per"><strong>Images per task</strong> &mdash; How many images to generate per prompt (dropdown: 1&ndash;4)</li>
-        <li data-i18n="set_gen_img_model"><strong>Image Model</strong> &mdash; Nano Banana Pro (Default), or other available models</li>
-        <li data-i18n="set_gen_img_ratio"><strong>Image Ratio</strong> &mdash; Landscape (16:9) or Portrait (9:16)</li>
-        <li data-i18n="set_gen_start_from"><strong>Start from (Prompt/Image)</strong> &mdash; Skip to a specific prompt number. Useful for resuming interrupted jobs.</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="set_timing_title">Timing</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_timing_wait"><strong>Video creation wait time</strong> (min/max seconds) &mdash; Random wait between min and max after each generation</li>
-        <li data-i18n="set_timing_humanized"><strong>Humanized mode</strong> (experimental) &mdash; Adds random delays to simulate human browsing behavior</li>
-        <li data-i18n="set_timing_speed"><strong>Typing speed (humanized)</strong> &mdash; Slider from 0.5x to ~3.0x controlling how fast prompts are typed. Renamed from "Humanized speed" for clarity.</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="set_download_title">Download Settings</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_dl_auto_vid"><strong>Auto-download videos</strong> &mdash; Toggle on/off + "Configure folder" link to set download destination</li>
-        <li data-i18n="set_dl_vid_res"><strong>Video resolution</strong> &mdash; Original (720p), 1080p, or 4K</li>
-        <li data-i18n="set_dl_auto_img"><strong>Auto-download images</strong> &mdash; Toggle on/off + resolution dropdown (1K, 2K, 4K)</li>
-        <li data-i18n="set_dl_img_res"><strong>Image resolution</strong> &mdash; 1K, 2K, or 4K</li>
-      </ul>
-
-      <div class="callout callout-tip">
-        <div class="callout-icon">&#128161;</div>
-        <p data-i18n="set_tip">Turn off "Ask where to save each file before downloading" in your browser's download settings for seamless auto-downloading.</p>
-      </div>
-
-      <h3 class="subsection-title" data-i18n="set_interface_title">Interface</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_interface_lang"><strong>Language</strong> &mdash; Dropdown with 14+ language options for the full interface</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="set_sub_title">Subscription</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_sub_status"><strong>Subscription status</strong> &mdash; Shows your current plan (Free or Pro)</li>
-        <li data-i18n="set_sub_signin"><strong>Sign in / Upgrade</strong> &mdash; Sign in with your email via magic link, then upgrade to Pro</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="set_maintenance_title">Maintenance</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_maintenance_cache"><strong>Clear Flow Cache</strong> &mdash; Red-bordered button that clears cached data on the Flow page. Use this when generation stops working or the page gets slow. Does NOT affect your downloaded files.</li>
-      </ul>
-
-      <div class="callout callout-warning">
-        <div class="callout-icon">&#9888;&#65039;</div>
-        <p data-i18n="set_maintenance_tip">Only use Clear Flow Cache as a last resort when generation stalls or the page becomes unresponsive. It resets the extension's state on the current page.</p>
-      </div>
-
-      <h3 class="subsection-title" data-i18n="set_guide_title">User Guide</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_guide_links"><strong>Guide links</strong> &mdash; Quick links to the user guide in Ti&#7871;ng Vi&#7879;t and English (this page)</li>
-      </ul>
-
-      <h3 class="subsection-title" data-i18n="set_discord_title">Discord</h3>
-      <ul class="feature-list">
-        <li data-i18n="set_discord_link"><strong>Discord community</strong> &mdash; Join the Auto Flow Discord for support, tips, and feature requests</li>
-      </ul>
-    </section>
-
-    <!-- ===== 11. SUBSCRIPTION ===== -->
-    <section id="subscription" class="section">
-      <h2 class="section-title" data-i18n="sub_title">Subscription</h2>
-      <p class="section-desc" data-i18n="sub_desc">Auto Flow offers a Free tier and a Pro tier. Compare what's included:</p>
-
-      <div class="tier-comparison">
-        <div class="tier-card tier-free">
-          <h3 class="tier-name" data-i18n="sub_free_title">Free</h3>
-          <div class="info-table-wrap">
-            <table class="info-table">
-              <thead>
-                <tr>
-                  <th data-i18n="sub_feature_col">Feature</th>
-                  <th data-i18n="sub_limit_col">Limit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td data-i18n="sub_prompts">Prompts</td>
-                  <td data-i18n="sub_free_prompts">10/day</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_downloads">Downloads</td>
-                  <td data-i18n="sub_free_downloads">10/day</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_scans">Gallery Scans</td>
-                  <td data-i18n="sub_free_scans">5/day</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_resolution">Max Resolution</td>
-                  <td data-i18n="sub_free_resolution">1K / 720p</td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="feature-screenshots">
+          <div class="screenshot-card">
+            <img src="images/control-modes.png" alt="Control Panel header with 4 generation mode buttons: Create Image, Text-to-Video, Frame-to-Video, and Ingredients" loading="lazy">
+            <span class="screenshot-caption">4 Generation Modes</span>
           </div>
-        </div>
-
-        <div class="tier-card tier-pro">
-          <h3 class="tier-name" data-i18n="sub_pro_title">Pro</h3>
-          <span class="pro-badge" data-i18n="sub_pro_badge">Recommended</span>
-          <div class="info-table-wrap">
-            <table class="info-table">
-              <thead>
-                <tr>
-                  <th data-i18n="sub_feature_col">Feature</th>
-                  <th data-i18n="sub_limit_col">Limit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td data-i18n="sub_prompts">Prompts</td>
-                  <td data-i18n="sub_pro_prompts">Unlimited</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_downloads">Downloads</td>
-                  <td data-i18n="sub_pro_downloads">Unlimited</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_scans">Gallery Scans</td>
-                  <td data-i18n="sub_pro_scans">Unlimited</td>
-                </tr>
-                <tr>
-                  <td data-i18n="sub_resolution">Max Resolution</td>
-                  <td data-i18n="sub_pro_resolution">4K</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="screenshot-card">
+            <img src="images/input-upload.png" alt="Input section showing Prompt List with Import file button, Queue Images with Shared Ref Upload and 1:1 Batch Upload buttons, Bulk mode toggle, and Reference Library" loading="lazy">
+            <span class="screenshot-caption">Prompt Input & Upload Options</span>
           </div>
         </div>
       </div>
 
-      <h3 class="subsection-title" data-i18n="sub_how_title">How to Subscribe</h3>
-      <p data-i18n="sub_how_desc">Sign in with your email via magic link in the Subscription section, then upgrade to Pro. Daily quotas reset at midnight UTC.</p>
-    </section>
-
-    <!-- ===== 12. FAQ ===== -->
-    <section id="faq" class="section">
-      <h2 class="section-title" data-i18n="faq_title">FAQ</h2>
-      <p class="section-desc" data-i18n="faq_desc">Frequently asked questions about Auto Flow.</p>
-
-      <div class="faq-list">
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q1">Why are my prompts failing?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a1">Policy violations are the most common cause. Some content types are restricted by Google Flow's content policy. Try rephrasing your prompt to avoid potentially flagged terms. Also check that your prompts don't exceed the character limit.</p>
+      <!-- Feature 2: Gallery -->
+      <div class="feature-row feature-row--reverse" id="feat-gallery">
+        <div class="feature-text">
+          <div class="feature-icon feature-icon--gallery">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h3 class="feature-name">Smart Gallery</h3>
+          <p class="feature-desc">Scan, browse, and manage all your generated content. Golden "Scan All" button finds every image and video. Smart selection tools let you pick randoms, matched pairs, or custom selections — then download at up to 4K resolution or send images directly to the video queue.</p>
+          <ul class="feature-list">
+            <li>Scan All with one-click golden button</li>
+            <li>Random Pick & Pick Matched for curation</li>
+            <li>Default or Large grid layout</li>
+            <li>Download at 1K, 2K, or 4K resolution</li>
+            <li>Animate Images — send to Frame-to-Video queue</li>
+          </ul>
+        </div>
+        <div class="feature-screenshots">
+          <div class="screenshot-card screenshot-card--wide">
+            <img src="images/gallery-overview.png" alt="Gallery tab showing Images/Videos toggle, layout options (Default/Large), Scan All button with gold glow, Import Images, sort dropdown, Random Pick, Pick Matched, Deselect All, Download, and Animate Images buttons" loading="lazy">
+            <span class="screenshot-caption">Gallery — Images Tab with All Controls</span>
           </div>
         </div>
+      </div>
 
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q2">Why is the gallery empty?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a2">Make sure you're on a Google Flow project page (labs.google.com/fx/), then click the <strong>Scan</strong> button. Images auto-populate during generation, but Scan will pick up any that were missed.</p>
+      <!-- Feature 3: Settings -->
+      <div class="feature-row" id="feat-settings">
+        <div class="feature-text">
+          <div class="feature-icon feature-icon--settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </div>
+          <h3 class="feature-name">Full Configuration</h3>
+          <p class="feature-desc">Fine-tune every aspect of generation. Choose video models (Veo 3.1 Fast/Quality), set aspect ratios, configure timing with humanized mode, auto-download in your preferred resolution, and pick from 14+ interface languages.</p>
+          <ul class="feature-list">
+            <li>Video Model: Veo 3.1 Fast or Quality</li>
+            <li>Image Model: Nano Banana 2</li>
+            <li>Aspect Ratios: 16:9, 9:16, 1:1</li>
+            <li>Humanized mode with speed control</li>
+            <li>Auto-download at up to 4K</li>
+            <li>14+ language interface</li>
+          </ul>
+        </div>
+        <div class="feature-screenshots">
+          <div class="screenshot-card">
+            <img src="images/settings-full.png" alt="Settings tab showing General Settings: Videos per task, Video Model (Veo 3.1 Fast), Video Ratio (Portrait 9:16), Images per task, Image Model (Nano Banana 2), Image Ratio, Start from index, and Timing section" loading="lazy">
+            <span class="screenshot-caption">General Settings & Model Selection</span>
+          </div>
+          <div class="screenshot-card">
+            <img src="images/settings-download.png" alt="Download Settings showing Auto-download videos toggle, Video Resolution (Upscaled 1080p), Auto-download images toggle with 1K resolution, and tip about browser download settings" loading="lazy">
+            <span class="screenshot-caption">Download Settings</span>
           </div>
         </div>
+      </div>
 
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q3">Can I use Auto Flow on multiple devices?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a3">Yes, with Pro. Your subscription is linked to your email account, so you can sign in on any device. Free tier usage is tracked per device.</p>
+      <!-- Feature 4: Queue & Progress -->
+      <div class="feature-row feature-row--reverse" id="feat-queue">
+        <div class="feature-text">
+          <div class="feature-icon feature-icon--queue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
           </div>
+          <h3 class="feature-name">Queue & Progress Tracking</h3>
+          <p class="feature-desc">Stack multiple jobs and let Auto Flow run them sequentially. Monitor every prompt with live status updates — Waiting, Generating, Done, or Error. Failed prompts are captured separately for easy retry.</p>
+          <ul class="feature-list">
+            <li>Multi-job queue with auto-start</li>
+            <li>Custom download folder per job</li>
+            <li>Live task progress table</li>
+            <li>Per-prompt status: Waiting → Generating → Done</li>
+            <li>Failed prompt capture with one-click retry</li>
+          </ul>
         </div>
-
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q4">What's the ||| delimiter?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a4">The <code>|||</code> delimiter separates image prompts from video prompts in the Image &rarr; Video workflow. Everything before it describes the still image to generate, and everything after describes how to animate it.</p>
+        <div class="feature-screenshots">
+          <div class="screenshot-card">
+            <img src="images/progress-tracking.png" alt="Queue section showing Job Download Folder name, auto-start toggle, progress bar at Job 2/3, and Task Progress table with prompt statuses showing GENERATING state" loading="lazy">
+            <span class="screenshot-caption">Progress Tracking & Task Table</span>
           </div>
-        </div>
-
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q5">Why is 4K download slow?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a5">Veo serializes upscaling &mdash; only one video upscales at a time on Google's end. This is a platform limitation, not an Auto Flow issue. 720p downloads are instant since no upscaling is needed.</p>
-          </div>
-        </div>
-
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q6">The extension isn't detecting the Flow page</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a6">Make sure you're on <code>labs.google.com/fx/</code> and the Chrome sidepanel is open. Try refreshing the page. If the issue persists, disable and re-enable the extension in <code>chrome://extensions</code>.</p>
-          </div>
-        </div>
-
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q7">How do I get Pro?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a7">Open the Subscription section in Settings, sign in with your email (you'll receive a magic link), then click Upgrade. Your Pro access activates immediately.</p>
-          </div>
-        </div>
-
-        <div class="expandable">
-          <button class="expandable-header" aria-expanded="false">
-            <span data-i18n="faq_q8">What's humanized mode?</span>
-            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
-          </button>
-          <div class="expandable-content">
-            <p data-i18n="faq_a8">Humanized mode adds random delays between actions (800&ndash;3000ms) to simulate natural browsing behavior. Adjust the speed with the slider &mdash; lower values mean longer delays. Useful if you're experiencing rate limiting.</p>
+          <div class="screenshot-card">
+            <img src="images/queue-config.png" alt="Queue configuration showing Job Download Folder field, clear queue button, and Auto-start next job toggle enabled" loading="lazy">
+            <span class="screenshot-caption">Queue Configuration</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 13. TIPS & SHORTCUTS ===== -->
-    <section id="tips-shortcuts" class="section">
-      <h2 class="section-title" data-i18n="tips_title">Tips &amp; Shortcuts</h2>
-      <p class="section-desc" data-i18n="tips_desc">Power-user tips to get the most out of Auto Flow.</p>
+    <!-- ====== BUTTON EXPLAINER ====== -->
+    <section class="explainer" id="explainer">
+      <div class="section-header">
+        <h2 class="section-title">Every button, explained</h2>
+        <p class="section-subtitle">A visual guide to every control in Auto Flow.</p>
+      </div>
 
-      <ul class="tips-list">
-        <li data-i18n="tip_1">Use <strong>bulk mode</strong> for efficient image-per-prompt batching</li>
-        <li data-i18n="tip_2">Set up <strong>reference images</strong> for consistent character style across scenes</li>
-        <li data-i18n="tip_3">Queue <strong>multiple jobs</strong> before pressing Start &mdash; they'll run back to back</li>
-        <li data-i18n="tip_4">Enable <strong>auto-download + auto-start</strong> for fully hands-off operation</li>
-        <li data-i18n="tip_5">Use <strong>[V#-S#] tags</strong> to keep multi-scene videos organized</li>
-        <li data-i18n="tip_6">Lower the <strong>humanized speed multiplier</strong> if you're getting rate limited</li>
-        <li data-i18n="tip_7">The <strong>Gallery persists</strong> across queue restarts &mdash; your generated content won't disappear</li>
-        <li data-i18n="tip_8">Use <strong>9:16 portrait</strong> for TikTok, Reels, and Shorts content</li>
-        <li data-i18n="tip_9">Enable <strong>Scan</strong> in the gallery if content isn't appearing after generation</li>
-        <li data-i18n="tip_10"><strong>Redo selected</strong> lets you retry specific prompts without re-running the whole job</li>
-      </ul>
+      <div class="explainer-grid">
+        <div class="explainer-group" id="exp-uploads">
+          <h4 class="explainer-group-title">Upload Controls</h4>
+          <div class="explainer-items">
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/btn-shared-ref.png" alt="Shared Ref Upload button with upload icon" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Shared Ref Upload</strong>
+                <p>Upload reference images shared across all prompts. Every prompt in your list uses these images as visual references.</p>
+              </div>
+            </div>
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/btn-batch-upload.png" alt="1:1 Batch Upload button with lightning icon" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>1:1 Batch Upload</strong>
+                <p>Pair images 1-to-1 with prompts. First image goes with first prompt, second with second, and so on.</p>
+              </div>
+            </div>
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/btn-toggles.png" alt="Bulk mode toggle (off) and Repeat first prompt toggle (on) with help buttons" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Bulk Mode & Repeat</strong>
+                <p><em>Bulk mode:</em> 1 image per prompt in line order. <em>Repeat first prompt:</em> reuses the first prompt text for all uploaded images.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explainer-group" id="exp-mapping">
+          <h4 class="explainer-group-title">Reference Mapping</h4>
+          <div class="explainer-items">
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/ref-mapping-table.png" alt="Map references by prompt panel showing 3 prompts with 2 refs active and 3 custom mapped, Select all/Apply/Clear buttons, and prompt list with MAPPED status badges" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Prompt Mapping Table</strong>
+                <p>Assign specific reference images to individual prompts. Select All, Apply Active Refs, or Clear Selected. Each prompt shows MAPPED or UNMAPPED status.</p>
+              </div>
+            </div>
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/ref-mapping-images.png" alt="Reference mapping showing UNMAPPED and MAPPED prompts with image thumbnails assigned to each prompt row" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Image Thumbnails per Prompt</strong>
+                <p>See exactly which reference images are assigned to each prompt. Unmapped prompts use default refs, mapped ones use your custom selection.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explainer-group" id="exp-gallery">
+          <h4 class="explainer-group-title">Gallery Actions</h4>
+          <div class="explainer-items">
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/gallery-full.png" alt="Gallery tab full view showing Images/Videos toggle, Default/Large layout buttons, Scan All golden button, Import Images, sort by Newest First, Random Pick, Pick Matched, Deselect All, Download, and Animate Images buttons" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Full Gallery Controls</strong>
+                <p><em>Scan All</em> (gold button) finds all generated content. <em>Random Pick</em> selects 1 per prompt group. <em>Pick Matched</em> selects paired image+video sets. <em>Animate Images</em> sends selected to Frame-to-Video.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explainer-group" id="exp-settings">
+          <h4 class="explainer-group-title">Settings Panels</h4>
+          <div class="explainer-items">
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/settings-timing.png" alt="Timing settings showing Video creation wait time slider (10 to 20 seconds), Humanized mode toggle (experimental), and Typing speed humanized slider at 1.00x" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Timing Controls</strong>
+                <p>Set video creation wait times. Enable <em>Humanized mode</em> to add natural typing speed variation — makes automation less detectable.</p>
+              </div>
+            </div>
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/settings-interface.png" alt="Interface section showing Language dropdown with 14+ options including English, Vietnamese, Turkish, Arabic, German, French, Japanese, Indonesian, Korean, Italian, Russian. Subscription status and Maintenance section visible" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Interface & Language</strong>
+                <p>14+ languages including Vietnamese, Turkish, Arabic, German, French, Japanese, Korean, and more. Full UI translation.</p>
+              </div>
+            </div>
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/settings-maintenance.png" alt="Maintenance section with red Clear Flow Cache button, description text, and User Guide links for Vietnamese and English plus Discord button" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Maintenance & Help</strong>
+                <p><em>Clear Flow Cache</em> resets the page when generation stops working. User guide links and Discord access directly from settings.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explainer-group" id="exp-help">
+          <h4 class="explainer-group-title">Help Center</h4>
+          <div class="explainer-items">
+            <div class="explainer-item">
+              <div class="explainer-img"><img src="images/help-center.png" alt="Duck Auto Flow Help Center overlay with Video Tutorial and Discord buttons, guide sections for Text to Video, Create Image, Image to Video pipeline, Gallery usage, and guided walkthrough button" loading="lazy"></div>
+              <div class="explainer-info">
+                <strong>Built-in Help Center</strong>
+                <p>Click the <strong>?</strong> button for instant help. Guides for every mode, video tutorials, and a guided walkthrough. Direct links to Discord support.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== FAQ ====== -->
+    <section class="faq" id="faq">
+      <div class="section-header">
+        <h2 class="section-title">FAQ</h2>
+      </div>
+      <div class="accordion-list">
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            What is Auto Flow?
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Auto Flow is a Chrome extension that automates bulk AI video and image generation on Google Flow (formerly Google Vids/ImageFX). It lets you queue up hundreds of prompts and run them automatically.</p>
+          </div>
+        </details>
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            Is it free?
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Auto Flow has a free tier with limited daily prompts, and a Pro tier that unlocks unlimited generation, priority features, and 4K downloads.</p>
+          </div>
+        </details>
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            What models does it support?
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Video generation uses <strong>Veo 3.1</strong> (Fast or Quality mode). Image generation uses <strong>Nano Banana 2</strong>. Both are Google's latest models available through Google Flow.</p>
+          </div>
+        </details>
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            The extension stopped working / page is slow
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Go to Settings → Maintenance → <strong>Clear Flow Cache</strong>. This resets cached data on the Flow page without affecting your downloads. If that doesn't help, try reloading the page or restarting Chrome.</p>
+          </div>
+        </details>
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            How do I update the extension?
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Chrome auto-updates extensions, but it can take hours. To force an update: go to <code>chrome://extensions</code>, enable Developer mode, then click the <strong>Update</strong> button at the top.</p>
+          </div>
+        </details>
+        <details class="accordion">
+          <summary class="accordion-trigger">
+            Where can I get help?
+            <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="accordion-content">
+            <p>Join the <a href="https://discord.gg/WK2qVXCrHE" target="_blank">Auto Flow Discord</a> for community support, bug reports, and feature requests. You can also use the built-in Help Center by clicking the <strong>?</strong> button in the extension.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ====== CTA BANNER ====== -->
+    <section class="cta-banner">
+      <div class="cta-content">
+        <h2 class="cta-title">Start automating today</h2>
+        <p class="cta-subtitle">Join 60,000+ creators using Auto Flow.</p>
+        <div class="cta-buttons">
+          <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa" target="_blank" class="btn btn-primary btn-lg" id="ctaInstall">Install Free</a>
+          <a href="https://discord.gg/WK2qVXCrHE" target="_blank" class="btn btn-outline btn-lg">Join Discord</a>
+          <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa/reviews" target="_blank" class="btn btn-outline btn-lg btn-review">&#9733; Leave a Review</a>
+        </div>
+      </div>
     </section>
 
   </main>
 
-  <!-- ==================== FOOTER ==================== -->
+  <!-- ====== FOOTER ====== -->
   <footer class="footer">
-    <p class="footer-credits" data-i18n="footer_credits">Devs: @duckmartians &amp; @ergophobian</p>
-    <p class="footer-site"><a href="https://ergophobia.info" data-i18n="footer_site">ergophobia.info</a></p>
-    <p class="footer-version" data-i18n="footer_version">v10.6.89</p>
-  </footer>
-
-  <!-- ==================== SCROLL TO TOP ==================== -->
-  <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path d="M10 5.586l-4.707 4.707 1.414 1.414L10 8.414l3.293 3.293 1.414-1.414z"/>
-    </svg>
-  </button>
-
-  <!-- ==================== WHAT'S NEW MODAL ==================== -->
-  <div class="patch-overlay" id="patch-overlay">
-    <div class="patch-modal" id="patch-modal">
-      <h3 class="patch-title" data-i18n="patch_title">What's New in Auto Flow</h3>
-      <p class="patch-intro" data-i18n="patch_intro">Auto Flow has evolved into a full-featured AI content studio. Here's what's been added since v7.7.7:</p>
-
-      <h4 class="patch-category" data-i18n="patch_cat_pipeline">Image &rarr; Video Pipeline</h4>
-      <ul class="patch-list">
-        <li data-i18n="patch_1">Frame-to-Video mode &mdash; upload images as first/last frames for video generation</li>
-        <li data-i18n="patch_2">Reference Library &mdash; persistent image library with bulk management across all jobs</li>
-        <li data-i18n="patch_3">Queue Images &mdash; separate upload system with one-time queue upload option</li>
-        <li data-i18n="patch_4">Map references by prompt &mdash; assign specific reference images to individual prompts</li>
-        <li data-i18n="patch_5">Bulk queue mode &mdash; one image per prompt in line order</li>
-      </ul>
-
-      <h4 class="patch-category" data-i18n="patch_cat_gallery">Gallery &amp; Downloads</h4>
-      <ul class="patch-list">
-        <li data-i18n="patch_6">Smart Gallery with auto-populated images and videos from generation</li>
-        <li data-i18n="patch_7">Random Pick &amp; Pick Matched &mdash; intelligent image selection tools</li>
-        <li data-i18n="patch_8">1K / 2K / 4K image downloads and 720p / 1080p / 4K video downloads</li>
-        <li data-i18n="patch_9">Animate Images &mdash; send gallery images directly to the video pipeline</li>
-      </ul>
-
-      <h4 class="patch-category" data-i18n="patch_cat_queue">Queue &amp; Automation</h4>
-      <ul class="patch-list">
-        <li data-i18n="patch_10">Multi-job queue system with auto-start, reorder, and inline settings</li>
-        <li data-i18n="patch_11">Auto retry failed until 0 &mdash; automatic retry loop (max 12 rounds)</li>
-        <li data-i18n="patch_12">Auto-download for both images and videos with configurable resolution</li>
-      </ul>
-
-      <h4 class="patch-category" data-i18n="patch_cat_settings">Settings &amp; Support</h4>
-      <ul class="patch-list">
-        <li data-i18n="patch_13">Full settings panel &mdash; models, ratios, timing, downloads, language</li>
-        <li data-i18n="patch_14">14+ language support for the entire interface</li>
-        <li data-i18n="patch_15">Discord community for support and feature requests</li>
-        <li data-i18n="patch_16">Clear Flow Cache &mdash; maintenance tool for when generation stalls</li>
-      </ul>
-
-      <button class="patch-dismiss" id="patch-dismiss" data-i18n="patch_dismiss">Got it, let's go!</button>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-name">Auto Flow</span>
+        <span class="footer-version">v10.7.32</span>
+      </div>
+      <div class="footer-links">
+        <span class="footer-credit">by <a href="#">@duckmartians</a> &amp; <a href="https://ergophobia.info">@ergophobian</a></span>
+        <a href="https://discord.gg/WK2qVXCrHE" target="_blank">Discord</a>
+        <a href="https://chromewebstore.google.com/detail/auto-flow-auto-veo-nano-b/lhcmnhdbddgagibbbgppakocflbnknoa/reviews" target="_blank">Leave a Review</a>
+      </div>
     </div>
-  </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>

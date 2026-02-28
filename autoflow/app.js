@@ -1,348 +1,129 @@
 /* ============================================
-   Auto Flow - User Guide Scripts
+   Auto Flow — Website Scripts
    ============================================ */
 
 (function () {
   'use strict';
 
-  // --- DOM References ---
-  const hamburger = document.getElementById('hamburger');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  const scrollTopBtn = document.getElementById('scroll-top');
-  const langSelect = document.getElementById('lang-select');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('.section');
+  var CURRENT_VERSION = '10.7.32';
+  var LS_KEY = 'af_changelog_seen';
 
-  // ============================================
-  // 1. Smooth Scroll Navigation
-  // ============================================
-  navLinks.forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      var targetId = this.getAttribute('href').substring(1);
-      var target = document.getElementById(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Close mobile sidebar
-        closeSidebar();
-      }
+  // --- Changelog Modal ---
+  var modal = document.getElementById('changelogModal');
+  var dismissBtn = document.getElementById('dismissChangelog');
+
+  function showModal() {
+    if (!modal) return;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideModal() {
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    try {
+      localStorage.setItem(LS_KEY, CURRENT_VERSION);
+    } catch (e) { /* storage unavailable */ }
+  }
+
+  // Show modal if user hasn't seen this version
+  // Extension can trigger with ?changelog or ?v=10.7.32
+  var params = new URLSearchParams(window.location.search);
+  var forceShow = params.has('changelog') || params.has('v');
+  var seenVersion = null;
+  try { seenVersion = localStorage.getItem(LS_KEY); } catch (e) {}
+
+  if (forceShow || seenVersion !== CURRENT_VERSION) {
+    setTimeout(showModal, 400);
+  }
+
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', hideModal);
+  }
+  if (modal) {
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) hideModal();
     });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+      hideModal();
+    }
   });
 
-  // ============================================
-  // 2. Active Section Tracking
-  // ============================================
-  var observerOptions = {
-    root: null,
-    rootMargin: '-80px 0px -60% 0px',
-    threshold: 0
-  };
+  // --- Scroll Reveal ---
+  var revealEls = document.querySelectorAll('.feature-row, .explainer-group, .accordion, .cta-banner');
+  revealEls.forEach(function (el) { el.classList.add('reveal'); });
 
-  var currentActive = null;
-
-  var observer = new IntersectionObserver(function (entries) {
+  var revealObserver = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
-        var id = entry.target.id;
-        setActiveNav(id);
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-  sections.forEach(function (section) {
-    observer.observe(section);
-  });
+  revealEls.forEach(function (el) { revealObserver.observe(el); });
 
-  function setActiveNav(sectionId) {
-    if (currentActive === sectionId) return;
-    currentActive = sectionId;
-    navLinks.forEach(function (link) {
-      var href = link.getAttribute('href').substring(1);
-      if (href === sectionId) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+  // --- Mobile Nav Toggle ---
+  var hamburger = document.getElementById('hamburger');
+  var headerNav = document.getElementById('headerNav');
+
+  if (hamburger && headerNav) {
+    hamburger.addEventListener('click', function () {
+      headerNav.classList.toggle('open');
+    });
+    headerNav.querySelectorAll('.nav-link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        headerNav.classList.remove('open');
+      });
     });
   }
 
-  // ============================================
-  // 3. Mobile Hamburger
-  // ============================================
-  function closeSidebar() {
-    document.body.classList.remove('sidebar-open');
-  }
+  // --- Active Nav on Scroll ---
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.header-nav .nav-link');
 
-  function toggleSidebar() {
-    document.body.classList.toggle('sidebar-open');
-  }
-
-  if (hamburger) {
-    hamburger.addEventListener('click', toggleSidebar);
-  }
-
-  if (overlay) {
-    overlay.addEventListener('click', closeSidebar);
-  }
-
-  // Close on escape key
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
-      closeSidebar();
-    }
-  });
-
-  // ============================================
-  // 4. Expandable Sections
-  // ============================================
-  var expandableHeaders = document.querySelectorAll('.expandable-header');
-
-  expandableHeaders.forEach(function (header) {
-    header.addEventListener('click', function () {
-      var content = this.nextElementSibling;
-      var isExpanded = this.getAttribute('aria-expanded') === 'true';
-
-      if (isExpanded) {
-        this.setAttribute('aria-expanded', 'false');
-        content.style.maxHeight = null;
-      } else {
-        this.setAttribute('aria-expanded', 'true');
-        content.style.maxHeight = content.scrollHeight + 'px';
-      }
-    });
-  });
-
-  // ============================================
-  // 5. Copy Buttons
-  // ============================================
-  var copyButtons = document.querySelectorAll('.copy-btn');
-
-  copyButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var codeBlock = this.closest('.code-block');
-      if (!codeBlock) return;
-
-      var codeEl = codeBlock.querySelector('code');
-      if (!codeEl) return;
-
-      var text = codeEl.textContent;
-
-      navigator.clipboard.writeText(text).then(function () {
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(function () {
-          btn.classList.remove('copied');
-          // Restore i18n text if available
-          if (currentTranslations && currentTranslations['copy_btn']) {
-            btn.textContent = currentTranslations['copy_btn'];
-          } else {
-            btn.textContent = 'Copy';
+  function updateActiveNav() {
+    var scrollY = window.scrollY + 120;
+    sections.forEach(function (section) {
+      var top = section.offsetTop;
+      var height = section.offsetHeight;
+      var id = section.getAttribute('id');
+      if (scrollY >= top && scrollY < top + height) {
+        navLinks.forEach(function (link) {
+          link.style.color = '';
+          if (link.getAttribute('href') === '#' + id) {
+            link.style.color = '#e8e8ed';
           }
-        }, 2000);
-      }).catch(function () {
-        // Fallback for older browsers / file:// protocol
-        var textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-          document.execCommand('copy');
-          btn.textContent = 'Copied!';
-          btn.classList.add('copied');
-          setTimeout(function () {
-            btn.classList.remove('copied');
-            btn.textContent = 'Copy';
-          }, 2000);
-        } catch (err) {
-          btn.textContent = 'Error';
-          setTimeout(function () {
-            btn.textContent = 'Copy';
-          }, 2000);
-        }
-        document.body.removeChild(textarea);
-      });
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+  // --- Smooth Scroll ---
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var href = a.getAttribute('href');
+      if (href === '#') return;
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   });
 
-  // ============================================
-  // 6. Language Switcher (i18n)
-  // ============================================
-  var currentTranslations = null;
-  var defaultLang = 'en';
-
-  // RTL languages
-  var rtlLanguages = ['ar'];
-
-  // Store original innerHTML for each i18n element so we can restore
-  // English formatting (which uses <strong>, <code>, etc.)
-  var originalHTML = {};
-  document.querySelectorAll('[data-i18n]').forEach(function (el) {
-    originalHTML[el.getAttribute('data-i18n')] = el.innerHTML;
-  });
-
-  // Simple sanitizer: only allow <strong>, <code>, <em>, <br> tags
-  // Safe because we control all translation JSON files
-  function sanitizeHTML(str) {
-    // First escape everything
-    var div = document.createElement('div');
-    div.textContent = str;
-    var escaped = div.innerHTML;
-    // Then restore only allowed tags
-    escaped = escaped.replace(/&lt;(\/?(strong|code|em|br)\s*\/?)&gt;/gi, '<$1>');
-    return escaped;
-  }
-
-  function applyTranslations(translations) {
-    currentTranslations = translations;
-    var elements = document.querySelectorAll('[data-i18n]');
-    elements.forEach(function (el) {
-      var key = el.getAttribute('data-i18n');
-      if (translations[key] !== undefined) {
-        // Use sanitized innerHTML to preserve <strong>, <code>, <em> formatting
-        el.innerHTML = sanitizeHTML(translations[key]);
-      }
-    });
-  }
-
-  function setLanguageDirection(lang) {
-    if (rtlLanguages.indexOf(lang) !== -1) {
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.documentElement.dir = 'ltr';
-    }
-  }
-
-  function restoreOriginalHTML() {
-    document.querySelectorAll('[data-i18n]').forEach(function (el) {
-      var key = el.getAttribute('data-i18n');
-      if (originalHTML[key] !== undefined) {
-        el.innerHTML = originalHTML[key];
-      }
-    });
-  }
-
-  function loadLanguage(lang) {
-    setLanguageDirection(lang);
-
-    // For English, restore original HTML (preserves inline formatting)
-    if (lang === defaultLang) {
-      restoreOriginalHTML();
-      currentTranslations = null;
-      localStorage.setItem('autoflow-lang', lang);
-      // Still load en.json for copy button text etc.
-      fetch('i18n/en.json')
-        .then(function (r) { return r.ok ? r.json() : {}; })
-        .then(function (t) { currentTranslations = t; })
-        .catch(function () {});
-      return;
-    }
-
-    var url = 'i18n/' + lang + '.json';
-
-    fetch(url)
-      .then(function (response) {
-        if (!response.ok) throw new Error('Language file not found');
-        return response.json();
-      })
-      .then(function (translations) {
-        applyTranslations(translations);
-        localStorage.setItem('autoflow-lang', lang);
-      })
-      .catch(function (err) {
-        console.warn('Could not load language file: ' + lang, err);
-        if (lang !== defaultLang) {
-          loadLanguage(defaultLang);
-        }
-      });
-  }
-
-  if (langSelect) {
-    langSelect.addEventListener('change', function () {
-      loadLanguage(this.value);
-    });
-
-    // Restore saved language
-    var savedLang = localStorage.getItem('autoflow-lang');
-    if (savedLang && savedLang !== defaultLang) {
-      langSelect.value = savedLang;
-      loadLanguage(savedLang);
-    } else {
-      // Load English to populate currentTranslations
-      loadLanguage(defaultLang);
-    }
-  }
-
-  // ============================================
-  // 7. Scroll-to-Top Button
-  // ============================================
-  function handleScrollTop() {
-    if (window.scrollY > 300) {
-      scrollTopBtn.classList.add('visible');
-    } else {
-      scrollTopBtn.classList.remove('visible');
-    }
-  }
-
-  if (scrollTopBtn) {
-    window.addEventListener('scroll', handleScrollTop, { passive: true });
-
-    scrollTopBtn.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  // ============================================
-  // 8. Patch Notes Modal
-  // ============================================
-  var PATCH_VERSION = 'v10.6.89';
-  var patchOverlay = document.getElementById('patch-overlay');
-  var patchDismiss = document.getElementById('patch-dismiss');
-
-  function showPatchNotes() {
-    var dismissed = localStorage.getItem('autoflow-patch-dismissed');
-    if (dismissed === PATCH_VERSION) return;
-
-    if (patchOverlay) {
-      setTimeout(function () {
-        patchOverlay.classList.add('visible');
-      }, 600);
-    }
-  }
-
-  function dismissPatchNotes() {
-    if (patchOverlay) {
-      patchOverlay.classList.remove('visible');
-      localStorage.setItem('autoflow-patch-dismissed', PATCH_VERSION);
-    }
-  }
-
-  if (patchDismiss) {
-    patchDismiss.addEventListener('click', dismissPatchNotes);
-  }
-
-  if (patchOverlay) {
-    patchOverlay.addEventListener('click', function (e) {
-      if (e.target === patchOverlay) {
-        dismissPatchNotes();
-      }
-    });
-  }
-
-  // Show patch notes on load
-  showPatchNotes();
-
-  // ============================================
-  // 9. Smooth page load — set first section active
-  // ============================================
-  // If URL has a hash, scroll to it
+  // --- Hash on Load ---
   if (window.location.hash) {
     var hashTarget = document.querySelector(window.location.hash);
     if (hashTarget) {
       setTimeout(function () {
-        hashTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        hashTarget.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
   }
