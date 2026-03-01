@@ -101,6 +101,8 @@ h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
   box-shadow: 0 0 16px rgba(88, 101, 242, 0.3);
 }
 .btn-discord:hover { background: #6d79f5; color: #fff; transform: translateY(-1px); }
+.btn-telegram { border-color: rgba(38, 165, 228, 0.2); color: #26a5e4; }
+.btn-telegram:hover { border-color: #26a5e4; color: #26a5e4; background: rgba(38, 165, 228, 0.1); box-shadow: 0 0 16px rgba(38, 165, 228, 0.25); }
 .btn-continue {
   background: var(--green); color: #0a0a0b; border: none;
   padding: 14px 36px; border-radius: var(--radius); cursor: pointer;
